@@ -85,7 +85,7 @@
       </li> --}}
       <li class="nav-item nav-category">Gudang</li>
       <li class="nav-item">
-        <a class="nav-link" href="/">
+        <a class="nav-link" href="{{ route('gudang.index') }}">
           <i class="menu-icon mdi mdi-layers-outline"></i>
           <span class="menu-title">Barang</span>
         </a>
@@ -94,13 +94,19 @@
       <li class="nav-item">
         <a class="nav-link" href="/">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Keuangan</span>
+          <span class="menu-title">Penjualan</span>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/">
           <i class="menu-icon mdi mdi-layers-outline"></i>
           <span class="menu-title">Barang</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/">
+          <i class="menu-icon mdi mdi-layers-outline"></i>
+          <span class="menu-title">Toko</span>
         </a>
       </li>
     </ul>
