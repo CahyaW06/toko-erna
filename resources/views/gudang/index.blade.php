@@ -11,10 +11,10 @@
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3">
                 <a href="{{ route('gudang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Barang</a>
-                <button type="button" class="btn btn-outline-success btn-icon-text">
+                {{-- <button type="button" class="btn btn-outline-success btn-icon-text" id="printBtn">
                   Print
                   <i class="ti-printer btn-icon-append"></i>
-                </button>
+                </button> --}}
               </div>
             </div>
             <p class="card-description">
@@ -79,36 +79,15 @@
 </div>
 
 <script>
-  let modelDataTables = new DataTable('#model-datatables', {
-        "searching": true,
-        initComplete: function () {
-            // Move the footer to the top of the table
-            $(this.api().table().header()).prepend($(this.api().table().footer()).children());
-            this.api().columns().every(function () {
-                var that = this;
+function printData() {
+  var divToPrint = document.getElementById("model-datatables");
+  newWin = window.open("");
+  newWin.document.write(divToPrint.outerHTML);
+  newWin.print();
+  newWin.close();
+}
 
-                $('input', this.footer()).on('keyup change clear', function () {
-                    if (that.search() !== this.value) {
-                        that
-                            .search(this.value)
-                            .draw();
-                    }
-                });
-            });
-        },
-        responsive: {
-            details: {
-                display: $.fn.dataTable.Responsive.display.modal({
-                    header: function (row) {
-                        var data = row.data();
-                        return 'Details for ' + data[0] + ' ' + data[1];
-                    }
-                }),
-                renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-                    tableClass: 'table'
-                })
-            }
-        }
-    });
+const btn = document.getElementById("printBtn");
+btn.addEventListener('click', () => printData())
 </script>
 @endsection

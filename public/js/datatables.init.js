@@ -43,6 +43,11 @@ function initializeTables() {
         info : false,
         scrollX: true,
         // serverSide: true,
+        layout: {
+            topStart: {
+                buttons: ['pdf', 'excelHtml5']
+            }
+        },
         initComplete: function () {
             // Move the footer to the top of the table
             $(this.api().table().header()).prepend($(this.api().table().footer()).children());
