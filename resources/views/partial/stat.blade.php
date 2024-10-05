@@ -7,18 +7,18 @@
           <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
         </div>
         <div>
-          <p class="statistics-title">Pendapatan</p>
-          <h3 class="rate-percentage">Rp 120.000/bln</h3>
+          <p class="statistics-title">Pendapatan Bulan Ini</p>
+          <h3 class="rate-percentage">Rp 120.000</h3>
           <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p>
         </div>
         <div>
-          <p class="statistics-title">Pengeluaran</p>
-          <h3 class="rate-percentage">Rp 100.000/bln</h3>
+          <p class="statistics-title">Pengeluaran Bulan Ini</p>
+          <h3 class="rate-percentage">Rp 100.000</h3>
           <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8%</span></p>
         </div>
         <div class="d-none d-md-block">
           <p class="statistics-title">Jenis Barang</p>
-          <h3 class="rate-percentage">12 Item</h3>
+          <h3 class="rate-percentage">{{ $barangCounter }}</h3>
           <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p>
         </div>
         <div class="d-none d-md-block">

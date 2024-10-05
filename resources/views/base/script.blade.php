@@ -22,4 +22,6 @@
 <script src="../../js/file-upload.js"></script>
 <script src="../../js/typeahead.js"></script>
 <script src="../../js/select2.js"></script>
-<!-- End custom js for this page-->
+<script src="js/datatables.init.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs5/dt-2.1.8/b-3.1.2/b-print-3.1.2/cr-2.0.4/r-3.0.3/sb-1.8.1/sp-2.3.2/datatables.min.js"></script>

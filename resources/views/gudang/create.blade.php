@@ -4,31 +4,30 @@
 <div class="col-lg-4">
     <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Ubah Data Barang</h4>
+          <h4 class="card-title">Tambah Barang</h4>
           <p class="card-description">
-            Silahkan masukkan data barang yang baru
+            Silahkan masukkan data dari barang yang baru
           </p>
-          <form class="forms-sample" action="{{ route('gudang.update', ['gudang' => $barang->id]) }}" method="POST">
+          <form class="forms-sample" action="{{ route('gudang.store') }}" method="POST">
             @csrf
-            @method('PUT')
             <div class="form-group">
               <label for="kode">Kode Barang</label>
-              <input type="text" class="form-control" id="kode" name="kode_barang" placeholder="Kode Barang" value="{{ $barang->kode_barang }}" required>
+              <input type="text" class="form-control" id="kode" name="kode_barang" placeholder="Kode Barang" required>
             </div>
             <div class="form-group">
               <label for="nama">Nama</label>
-              <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama" value="{{ $barang->nama }}" required>
+              <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama" required>
             </div>
             <div class="form-group">
               <label for="harga">Harga</label>
-              <input type="integer" class="form-control" id="harga" name="harga" placeholder="Harga" value="{{ $barang->harga }}" required>
+              <input type="integer" class="form-control" id="harga" name="harga" placeholder="Harga" value="0" required>
             </div>
             <div class="form-group">
               <label for="jumlah">Stok Gudang</label>
-              <input type="integer" class="form-control" id="jumlah" name="jumlah" placeholder="Jumlah" value="{{ $barang->jumlah }}" required>
+              <input type="integer" class="form-control" id="jumlah" name="jumlah" placeholder="Jumlah" value="0" required>
             </div>
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary me-2" onclick="return confirm('Apakah data sudah valid?')">Terapkan</button>
+                <button type="submit" class="btn btn-primary me-2" onclick="return confirm('Apakah data sudah valid?')">Tambahkan</button>
             </div>
           </form>
         </div>

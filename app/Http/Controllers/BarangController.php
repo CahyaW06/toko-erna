@@ -13,7 +13,8 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = Barang::paginate(10);
+        $barangs = Barang::orderby('kode_barang')->paginate(10);
+        // return $barangs;
         return view('gudang.index', [
             'barangs' => $barangs
         ]);
@@ -24,7 +25,7 @@ class BarangController extends Controller
      */
     public function create()
     {
-        //
+        return view('gudang.create');
     }
 
     /**
@@ -32,7 +33,21 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'kode_barang' => 'required',
+            'nama' => 'required',
+            'harga' => 'required',
+            'jumlah' => 'required'
+        ]);
+
+        Barang::create([
+            'kode_barang' => $validated['kode_barang'],
+            'nama' => $validated['nama'],
+            'harga' => str_replace('.', '', $validated['harga']),
+            'jumlah' => str_replace('.', '', $validated['jumlah']),
+        ]);
+
+        return redirect()->route('gudang.index')->with('success', 'Barang berhasil ditambahkan!');
     }
 
     /**
@@ -78,7 +93,7 @@ class BarangController extends Controller
 
         $barang->save();
 
-        return redirect()->route('gudang.index');
+        return redirect()->route('gudang.index')->with('success', 'Barang berhasil diperbarui!');
     }
 
     /**
@@ -94,6 +109,6 @@ class BarangController extends Controller
         } catch (Exception $e) {
             return redirect()->route('gudang.index')->with('error', 'Barang gagal dihapus!');
         }
-        return redirect()->route('gudang.index')->with('error', 'Barang berhasil dihapus!');
+        return redirect()->route('gudang.index')->with('success', 'Barang berhasil dihapus!');
     }
 }

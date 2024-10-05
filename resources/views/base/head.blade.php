@@ -1,7 +1,7 @@
 <!-- Required meta tags -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Star Admin2 </title>
+<title>Toko</title>
 <!-- plugins:css -->
 <link rel="stylesheet" href="../../vendors/feather/feather.css">
 <link rel="stylesheet" href="../../vendors/mdi/css/materialdesignicons.min.css">
@@ -20,4 +20,7 @@
 <link rel="stylesheet" href="../../css/vertical-layout-light/style.css">
 <!-- endinject -->
 <link rel="shortcut icon" href="../../images/favicon.png" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+<link href="https://cdn.datatables.net/v/bs5/dt-2.1.8/b-3.1.2/b-print-3.1.2/cr-2.0.4/r-3.0.3/sb-1.8.1/sp-2.3.2/datatables.min.css" rel="stylesheet">
+
