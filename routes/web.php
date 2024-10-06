@@ -17,6 +17,7 @@ Route::get('/', function() {
 })->name('home');
 
 Route::resource('/gudang', BarangController::class);
+Route::get('/get-gudangs', [BarangController::class, 'getDatas'])->name('gudang.get');
 Route::group(['middleware' => 'guest', 'prefix' => 'statistik', 'as' => 'statistik.'], function() {
     Route::resource('/keuangan', LogKeuanganController::class);
     Route::resource('/barang', LogStokController::class);

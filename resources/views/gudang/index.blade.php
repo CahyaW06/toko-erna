@@ -17,11 +17,11 @@
               Berikut ini keterangan barang di gudang.
             </p>
             <div class="table-responsive">
-              <table class="table table-hover table-bordered" id="model-datatables">
+              <table class="table table-hover table-bordered" id="data-table">
                 <thead>
                   <tr>
                       <th>No</th>
-                      <th>Kode</th>
+                      <th>Kode Barang</th>
                       <th>Nama</th>
                       <th>Harga</th>
                       <th>Stok Gudang</th>
@@ -30,28 +30,6 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($barangs as $barang)
-                  <tr>
-                      <td>{{ $barangs->firstItem() + $loop->index }}</td>
-                      <td>{{ $barang->kode_barang }}</td>
-                      <td>{{ $barang->nama }}</td>
-                      <td>@currency($barang->harga)</td>
-                      <td>@number($barang->jumlah) pcs</td>
-                      <td>{{ Carbon\Carbon::parse($barang->updated_at)->format('d M Y') }}</td>
-                      <td>
-                        <form action="{{ route('gudang.destroy', ['gudang' => $barang->id]); }}" method="POST" class="d-flex gap-1">
-                          @csrf
-                          @method('DELETE')
-                          <a href="{{ route('gudang.edit', ['gudang' => $barang->id]); }}" type="button" class="btn btn-outline-warning btn-sm">
-                              <i class="mdi mdi-lead-pencil"></i>
-                          </a>
-                          <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Yakin ingin menghapus item {{ $barang->nama }}?')">
-                              <i class="mdi mdi-delete"></i>
-                          </button>
-                        </form>
-                      </td>
-                  </tr>
-                  @endforeach
                 </tbody>
                 <tfoot>
                   <tr>
@@ -73,6 +51,49 @@
       </div>
     </div>
 </div>
+
+{{-- Datatables --}}
+<script>
+$(document).ready(function () {
+  $("#data-table").DataTable({
+    scrollX: true,
+    ordering: false,
+    serverSide: true,
+    processing: true,
+    ajax: "{{ route('gudang.get') }}",
+    // dom: 'Bfrtip',
+    layout: {
+        topStart: {
+            buttons: ['pdf', 'excelHtml5']
+        }
+    },
+    columns: [
+      { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+      { data: 'kode_barang', name: 'kode_barang' },
+      { data: 'nama', name: 'nama' },
+      { data: 'harga', name: 'harga' },
+      { data: 'jumlah', name: 'jumlah' },
+      { data: 'updated_at', name: 'updated_at' },
+      { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
+    ],
+    initComplete: function () {
+        // Pindahkan footer ke atas tabel
+        $(this.api().table().header()).prepend($(this.api().table().footer()).children());
+
+        // Penerapan pencarian kolom di input field (tfoot)
+        this.api().columns().every(function () {
+            var that = this;
+
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
+        });
+    }
+  });
+});
+</script>
 
 {{-- Toast --}}
 @if (session('success'))
