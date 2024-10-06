@@ -17,8 +17,12 @@ Route::get('/', function() {
 })->name('home');
 
 Route::resource('/gudang', BarangController::class);
-Route::get('/get-gudangs', [BarangController::class, 'getDatas'])->name('gudang.get');
-Route::group(['middleware' => 'guest', 'prefix' => 'statistik', 'as' => 'statistik.'], function() {
+Route::get('/gudang-get-data', [BarangController::class, 'getDatas'])->name('gudang.get');
+Route::get('/gudang-export-excel', [BarangController::class, 'exportExcel'])->name('gudang.export-excel');
+Route::get('/gudang-export-pdf', [BarangController::class, 'exportPdf'])->name('gudang.export-pdf');
+Route::get('/gudang-printed-data', [BarangController::class, 'printedData'])->name('gudang.printed-data');
+
+Route::group(['prefix' => 'catatan', 'as' => 'catatan.'], function() {
     Route::resource('/keuangan', LogKeuanganController::class);
     Route::resource('/barang', LogStokController::class);
     Route::resource('/toko', LogTokoController::class);

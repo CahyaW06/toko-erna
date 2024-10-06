@@ -90,17 +90,17 @@
           <span class="menu-title">Barang</span>
         </a>
       </li>
-      <li class="nav-item nav-category">Statistik</li>
+      <li class="nav-item nav-category">Catatan</li>
       <li class="nav-item">
         <a class="nav-link" href="/">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Penjualan</span>
+          <span class="menu-title">Barang</span>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Barang</span>
+          <span class="menu-title">Penjualan</span>
         </a>
       </li>
       <li class="nav-item">

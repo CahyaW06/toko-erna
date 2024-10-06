@@ -11,6 +11,8 @@
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2">
                 <a href="{{ route('gudang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Barang</a>
+                <a href="{{ route('gudang.export-pdf') }}" type="button" class="btn btn-outline-success btn-md">Ekspor ke PDF</a>
+                <a href="{{ route('gudang.export-excel') }}" type="button" class="btn btn-outline-success btn-md">Ekspor ke Excel</a>
               </div>
             </div>
             <p class="card-description">
@@ -61,12 +63,6 @@ $(document).ready(function () {
     serverSide: true,
     processing: true,
     ajax: "{{ route('gudang.get') }}",
-    // dom: 'Bfrtip',
-    layout: {
-        topStart: {
-            buttons: ['pdf', 'excelHtml5']
-        }
-    },
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
       { data: 'kode_barang', name: 'kode_barang' },

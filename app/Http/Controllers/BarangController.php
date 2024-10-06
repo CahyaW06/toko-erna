@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\GudangExport;
 use App\Models\Barang;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
 class BarangController extends Controller
@@ -18,6 +21,12 @@ class BarangController extends Controller
         // return $barangs;
         return view('gudang.index', [
             'barangs' => $barangs
+        ]);
+    }
+
+    public function printedData() {
+        return view('gudang.print', [
+            'barangs' => Barang::all()
         ]);
     }
 
@@ -55,6 +64,18 @@ class BarangController extends Controller
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
+    }
+
+    public function exportExcel() {
+        $date = date('Y_m_d');
+        return Excel::download(new GudangExport, $date . '_gudang.xlsx');
+    }
+
+    public function exportPdf() {
+        $barangs = Barang::all(); // Ambil semua data
+        $date = date('Y_m_d');
+        $pdf = Pdf::loadView("gudang.print", compact('barangs'));
+        return $pdf->download($date . '_gudang.pdf');
     }
 
     /**
