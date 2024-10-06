@@ -8,16 +8,26 @@
             <div class="row">
               <div class="col">
                 <h3 class="card-title">Data Gudang</h3>
+                <p class="card-description">
+                  Berikut ini keterangan barang di gudang.
+                </p>
               </div>
-              <div class="col d-flex justify-content-end gap-1 me-3 mb-2">
+              <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
                 <a href="{{ route('gudang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Barang</a>
-                <a href="{{ route('gudang.export-pdf') }}" type="button" class="btn btn-outline-success btn-md">Ekspor ke PDF</a>
-                <a href="{{ route('gudang.export-excel') }}" type="button" class="btn btn-outline-success btn-md">Ekspor ke Excel</a>
+                {{-- <a href="{{ route('gudang.export-pdf') }}" type="button" class="btn btn-outline-success btn-md">PDF</a> --}}
+                {{-- <a href="{{ route('gudang.export-excel') }}" type="button" class="btn btn-outline-success btn-md">Excel</a> --}}
+                <div class="dropdown">
+                  <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="ti-printer btn-icon-append"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1">
+                    <h6 class="dropdown-header">Ekspor dalam bentuk</h6>
+                    <a class="dropdown-item" href="{{ route('gudang.export-excel') }}">Excel</a>
+                    <a class="dropdown-item" href="{{ route('gudang.export-pdf') }}">PDF</a>
+                  </div>
+                </div>
               </div>
             </div>
-            <p class="card-description">
-              Berikut ini keterangan barang di gudang.
-            </p>
             <div class="table-responsive">
               <table class="table table-hover table-bordered" id="data-table">
                 <thead>
