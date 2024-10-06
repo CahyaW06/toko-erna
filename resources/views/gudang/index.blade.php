@@ -7,14 +7,10 @@
         <div class="card-body">
             <div class="row">
               <div class="col">
-                <h4 class="card-title">Data Gudang</h4>
+                <h3 class="card-title">Data Gudang</h3>
               </div>
-              <div class="col d-flex justify-content-end gap-1 me-3">
+              <div class="col d-flex justify-content-end gap-1 me-3 mb-2">
                 <a href="{{ route('gudang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Barang</a>
-                {{-- <button type="button" class="btn btn-outline-success btn-icon-text" id="printBtn">
-                  Print
-                  <i class="ti-printer btn-icon-append"></i>
-                </button> --}}
               </div>
             </div>
             <p class="card-description">
@@ -78,16 +74,62 @@
     </div>
 </div>
 
-<script>
-function printData() {
-  var divToPrint = document.getElementById("model-datatables");
-  newWin = window.open("");
-  newWin.document.write(divToPrint.outerHTML);
-  newWin.print();
-  newWin.close();
-}
+{{-- Toast --}}
+@if (session('success'))
+<div class="toast align-items-center text-bg-success border-0 bottom-0 end-0 position-fixed" role="alert" aria-live="polite" aria-atomic="true" id="liveToast">
+  <div class="d-flex">
+    <div class="toast-body">
+      {{ session('success') }}
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
 
-const btn = document.getElementById("printBtn");
-btn.addEventListener('click', () => printData())
+  <!-- Progress Bar -->
+  <div class="progress" style="height: 5px;">
+    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" id="toastProgressBar"></div>
+  </div>
+</div>
+@elseif (session('error'))
+<div class="toast align-items-center text-bg-danger border-0 bottom-0 end-0 position-fixed" role="alert" aria-live="polite" aria-atomic="true" id="liveToast">
+  <div class="d-flex">
+    <div class="toast-body">
+      {{ session('error') }}
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress" style="height: 5px;">
+    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" id="toastProgressBar"></div>
+  </div>
+</div>
+@endif
+
+<script>
+$(document).ready(function () {
+  var toastEl = document.getElementById('liveToast');
+  var toastProgressBar = document.getElementById('toastProgressBar');
+
+  if (toastEl) {
+    var toast = new bootstrap.Toast(toastEl, { delay: 5000 }); // Set toast muncul selama 5 detik
+    toast.show();
+
+    // Inisialisasi progress bar (5 detik)
+    var totalDuration = 5000; // Durasi total dalam milidetik (5 detik)
+    var intervalTime = 50; // Interval waktu untuk memperbarui progress
+    var decrement = 100 / (totalDuration / intervalTime); // Pengurangan per interval
+
+    var width = 100; // Awal width progress bar
+    var progressInterval = setInterval(function () {
+      width -= decrement;
+      toastProgressBar.style.width = width + "%";
+
+      if (width <= 0) {
+        clearInterval(progressInterval);
+      }
+    }, intervalTime);
+  }
+});
 </script>
+
 @endsection
