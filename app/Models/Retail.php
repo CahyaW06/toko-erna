@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Barang extends Model
+class Retail extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
 
-    public function retails() {
-        return $this->belongsToMany(Retail::class)->withPivot('jumlah');
+    public function barangs() {
+        return $this->belongsToMany(Barang::class)->withPivot('jumlah');
     }
 }

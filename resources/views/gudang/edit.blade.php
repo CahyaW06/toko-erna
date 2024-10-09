@@ -8,7 +8,7 @@
           <p class="card-description">
             Silahkan masukkan data barang yang baru
           </p>
-          <form class="forms-sample" action="{{ route('gudang.update', ['gudang' => $barang->id]) }}" method="POST">
+          <form class="forms-sample" action="{{ route('stok.gudang.update', ['gudang' => $barang->id]) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="form-group">

@@ -8,7 +8,7 @@
           <p class="card-description">
             Silahkan masukkan data dari barang yang baru
           </p>
-          <form class="forms-sample" action="{{ route('gudang.store') }}" method="POST">
+          <form class="forms-sample" action="{{ route('stok.gudang.store') }}" method="POST">
             @csrf
             <div class="form-group">
               <label for="kode">Kode Barang</label>

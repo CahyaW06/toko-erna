@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             BarangSeeder::class,
+            RetailSeeder::class,
+            BarangRetailSeeder::class,
         ]);
     }
 }

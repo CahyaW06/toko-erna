@@ -83,14 +83,20 @@
           </ul>
         </div>
       </li> --}}
-      <li class="nav-item nav-category">Gudang</li>
+      <li class="nav-item nav-category">Stok</li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ route('gudang.index') }}">
+        <a class="nav-link" href="{{ route('stok.gudang.index') }}">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Barang</span>
+          <span class="menu-title">Gudang</span>
         </a>
       </li>
-      <li class="nav-item nav-category">Catatan</li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('stok.retail.index') }}">
+          <i class="menu-icon mdi mdi-layers-outline"></i>
+          <span class="menu-title">Retail</span>
+        </a>
+      </li>
+      <li class="nav-item nav-category">Log</li>
       <li class="nav-item">
         <a class="nav-link" href="/">
           <i class="menu-icon mdi mdi-layers-outline"></i>

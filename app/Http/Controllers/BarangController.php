@@ -17,11 +17,7 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = Barang::orderby('kode_barang')->paginate(50);
-        // return $barangs;
-        return view('gudang.index', [
-            'barangs' => $barangs
-        ]);
+        return view('gudang.index');
     }
 
     public function printedData() {
@@ -30,15 +26,24 @@ class BarangController extends Controller
         ]);
     }
 
+    public function getListBarang() {
+        return Barang::select('nama')
+            ->orderBy('kode_barang')
+            ->get()
+            ->map(function ($item) {
+                // Mengubah spasi menjadi underscore pada kolom 'nama'
+                $item->nama = str_replace(' ', '_', $item->nama);
+                return $item;
+            })
+            ->toArray();
+    }
+
     public function getDatas(Request $request) {
         if ($request->ajax()) {
-            $data = Barang::select('id', 'kode_barang', 'nama', 'harga', 'jumlah', 'updated_at')->orderby('kode_barang');
+            $data = Barang::select('id', 'kode_barang', 'nama', 'jumlah', 'updated_at')->orderby('kode_barang');
 
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->editColumn('harga', function($row) {
-                    return "Rp " . number_format($row->harga,0,',','.');
-                })
                 ->editColumn('jumlah', function($row) {
                     return number_format($row->jumlah,0,',','.') . " pcs";
                 })
@@ -48,8 +53,8 @@ class BarangController extends Controller
                 ->addColumn('aksi', function($row){
                     $csrfToken = csrf_field();
                     $methodField = method_field('DELETE');
-                    $editUrl = route('gudang.edit', ['gudang' => $row->id]);
-                    $deleteUrl = route('gudang.destroy', ['gudang' => $row->id]);
+                    $editUrl = route('stok.gudang.edit', ['gudang' => $row->id]);
+                    $deleteUrl = route('stok.gudang.destroy', ['gudang' => $row->id]);
                     $namaBarang = $row->nama;
 
                     $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
@@ -98,14 +103,18 @@ class BarangController extends Controller
             'jumlah' => 'required'
         ]);
 
-        Barang::create([
-            'kode_barang' => $validated['kode_barang'],
-            'nama' => $validated['nama'],
-            'harga' => str_replace('.', '', $validated['harga']),
-            'jumlah' => str_replace('.', '', $validated['jumlah']),
-        ]);
+        try {
+            Barang::create([
+                'kode_barang' => $validated['kode_barang'],
+                'nama' => $validated['nama'],
+                'harga' => str_replace('.', '', $validated['harga']),
+                'jumlah' => str_replace('.', '', $validated['jumlah']),
+            ]);
+        } catch (Exception $e) {
+            return redirect()->route('stok.gudang.index')->with('error', $e->getMessage());
+        }
 
-        return redirect()->route('gudang.index')->with('success', 'Barang berhasil ditambahkan!');
+        return redirect()->route('stok.gudang.index')->with('success', 'Barang berhasil ditambahkan!');
     }
 
     /**
@@ -149,9 +158,13 @@ class BarangController extends Controller
         $barang->harga = str_replace('.', '', $validated['harga']);
         $barang->jumlah = str_replace('.', '', $validated['jumlah']);
 
-        $barang->save();
+        try {
+            $barang->save();
+        } catch (Exception $e) {
+            return redirect()->route('stok.gudang.index')->with('error', $e->getMessage());
+        }
 
-        return redirect()->route('gudang.index')->with('success', 'Barang berhasil diperbarui!');
+        return redirect()->route('stok.gudang.index')->with('success', 'Barang berhasil diperbarui!');
     }
 
     /**
@@ -165,8 +178,8 @@ class BarangController extends Controller
             $barang = Barang::find($id);
             $barang->delete();
         } catch (Exception $e) {
-            return redirect()->route('gudang.index')->with('error', 'Barang gagal dihapus!');
+            return redirect()->route('stok.gudang.index')->with('error', $e->getMessage());
         }
-        return redirect()->route('gudang.index')->with('success', 'Barang berhasil dihapus!');
+        return redirect()->route('stok.gudang.index')->with('success', 'Barang berhasil dihapus!');
     }
 }

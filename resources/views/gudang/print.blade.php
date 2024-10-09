@@ -30,7 +30,6 @@
               <th>No</th>
               <th>Kode Barang</th>
               <th>Nama</th>
-              <th>Harga</th>
               <th>Stok Gudang</th>
               <th>Terakhir Update</th>
           </tr>
@@ -41,7 +40,6 @@
                 <td>{{ $loop->index }}</td>
                 <td>{{ $barang->kode_barang }}</td>
                 <td>{{ $barang->nama }}</td>
-                <td>@currency($barang->harga)</td>
                 <td>@number($barang->jumlah) pcs</td>
                 <td>{{ Carbon\Carbon::parse($barang->updated_at)->format('d M Y') }}</td>
             </tr>
