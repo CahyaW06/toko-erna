@@ -21,7 +21,6 @@
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1">
                     <h6 class="dropdown-header">Ekspor dalam bentuk</h6>
                     <a class="dropdown-item" href="{{ route('stok.retail.export-excel') }}">Excel</a>
-                    {{-- <a class="dropdown-item" href="{{ route('stok.retail.export-pdf') }}">PDF</a> --}}
                   </div>
                 </div>
               </div>
@@ -86,7 +85,7 @@
                 ajax: "{{ route('stok.retail.get') }}",
                 columns: columns,
                 fixedColumns: {
-                    start: 3
+                    start: 2
                 },
                 layout: {
                     topStart: {
@@ -116,7 +115,7 @@
 </script>
 
 {{-- Toast --}}
-@if (session('success'))
+{{-- @if (session('success'))
     <div class="toast align-items-center text-bg-success border-0 bottom-0 end-0 position-fixed" role="alert" aria-live="polite" aria-atomic="true" id="liveToast">
     <div class="d-flex">
         <div class="toast-body">
@@ -144,9 +143,9 @@
         <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" id="toastProgressBar"></div>
     </div>
     </div>
-@endif
+@endif --}}
 
-<script>
+{{-- <script>
     $(document).ready(function () {
     var toastEl = document.getElementById('liveToast');
     var toastProgressBar = document.getElementById('toastProgressBar');
@@ -171,6 +170,6 @@
         }, intervalTime);
     }
     });
-</script>
+</script> --}}
 
 @endsection

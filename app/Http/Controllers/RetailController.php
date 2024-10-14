@@ -8,6 +8,7 @@ use App\Models\Retail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
@@ -49,7 +50,6 @@ class RetailController extends Controller
             ->addColumn('aksi', function($row){
                 $csrfToken = csrf_field();
                 $methodField = method_field('DELETE');
-                $showUrl = route('stok.retail.show', ['retail' => $row->id]);
                 $editUrl = route('stok.retail.edit', ['retail' => $row->id]);
                 $deleteUrl = route('stok.retail.destroy', ['retail' => $row->id]);
                 $namaRetail = $row->nama;
@@ -57,7 +57,6 @@ class RetailController extends Controller
                 $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
                 $btn .= $csrfToken;
                 $btn .= $methodField;
-                $btn .= '<a href="'.$showUrl.'" type="button" class="btn btn-outline-info btn-sm"><i class="mdi mdi-magnify"></i></a>';
                 $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
                 $btn .= '<button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus item '.$namaRetail.'?\')"><i class="mdi mdi-delete"></i></button>';
                 $btn .= '</form>';
@@ -107,6 +106,17 @@ class RetailController extends Controller
                 'nama' => $validated['nama'],
                 'alamat' => $validated['alamat'],
             ]);
+
+            $barangs = Barang::all();
+            $retail = Retail::get()->last();
+
+            foreach ($barangs as $barang) {
+                DB::table('barang_retail')->insert([
+                    'barang_id' => $barang->id,
+                    'retail_id' => $retail->id,
+                    'jumlah' => 0,
+                ]);
+            }
         } catch (Exception $e) {
             return redirect()->route('stok.retail.index')->with('error', $e->getMessage());
         }

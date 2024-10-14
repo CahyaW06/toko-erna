@@ -21,7 +21,6 @@
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1">
                     <h6 class="dropdown-header">Ekspor dalam bentuk</h6>
                     <a class="dropdown-item" href="{{ route('stok.gudang.export-excel') }}">Excel</a>
-                    <a class="dropdown-item" href="{{ route('stok.gudang.export-pdf') }}">PDF</a>
                   </div>
                 </div>
               </div>
@@ -62,10 +61,17 @@
 $(document).ready(function () {
   $("#data-table").DataTable({
     scrollX: true,
+    scrollY: 400,
     ordering: false,
     serverSide: true,
     processing: true,
     ajax: "{{ route('stok.gudang.get') }}",
+    layout: {
+    topStart: {
+      buttons: ['pageLength'],
+      },
+    },
+    scrollCollapse: true,
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
       { data: 'kode_barang', name: 'kode_barang' },

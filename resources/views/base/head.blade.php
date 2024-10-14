@@ -24,4 +24,5 @@
 <link rel="shortcut icon" href="../../images/favicon.png" />
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.1.8/b-3.1.2/b-html5-3.1.2/cr-2.0.4/date-1.5.4/fc-5.0.3/fh-4.0.1/sb-1.8.1/sp-2.3.3/datatables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/v/bs4/dt-2.1.8/b-3.1.2/b-colvis-3.1.2/date-1.5.4/fc-5.0.3/sc-2.4.3/datatables.min.css" rel="stylesheet">
+
