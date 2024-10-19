@@ -7,13 +7,13 @@
         <div class="card-body">
             <div class="row">
               <div class="col">
-                <h3 class="card-title">Data Stok Retail</h3>
+                <h3 class="card-title">Data Log Retail</h3>
                 <p class="card-description">
-                  Berikut ini daftar dari seluruh retail.
+                  Berikut ini daftar transaksi pembelian/pengeluaran barang di seluruh retail.
                 </p>
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
-                <a href="{{ route('stok.retail.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Retail</a>
+                <a href="{{ route('log.barang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Log</a>
                 <div class="dropdown">
                   <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="ti-printer btn-icon-append"></i>
@@ -30,12 +30,14 @@
                 <thead>
                   <tr>
                       <th>No</th>
-                      <th>Nama</th>
+                      <th>Tanggal Transaksi</th>
+                      <th>Retail</th>
                       <th>Alamat</th>
-                      @foreach ($barangs as $barang)
-                        <th>{{ str_replace('_', ' ', $barang->nama) }}</th>
-                      @endforeach
-                      <th>Aksi</th>
+                      <th>Kode Barang</th>
+                      <th>Barang</th>
+                      <th>Jenis</th>
+                      <th>Jumlah</th>
+                      <th>Nominal</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -45,10 +47,12 @@
                       <th></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
-                      @foreach ($barangs as $barang)
-                        <th><input type="integer" class="form-control"></th>
-                      @endforeach
-                      <th></th>
+                      <th><input type="text" class="form-control"></th>
+                      <th><input type="text" class="form-control"></th>
+                      <th><input type="text" class="form-control"></th>
+                      <th><input type="text" class="form-control"></th>
+                      <th><input type="text" class="form-control"></th>
+                      <th><input type="text" class="form-control"></th>
                   </tr>
                 </tfoot>
               </table>
@@ -60,62 +64,66 @@
 
 {{-- Datatables --}}
 <script>
-    $(document).ready(function () {
-      var columns = [];
-        $.ajax({
-          type: "GET",
-          url: "{{ route('stok.gudang.get-list-nama') }}",
-          success: function (response) {
-            columns.push({ data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false });
-            columns.push({ data: 'nama', name: 'nama' });
-            columns.push({ data: 'alamat', name: 'alamat' });
+$(document).ready(function () {
+  $.ajax({
+    type: "GET",
+    url: "{{ route('log.barang.get') }}",
+    success: function (response) {
+      var table = $("#data-table").DataTable({
+        ordering: false,
+        serverSide: true,
+        processing: true,
+        scrollX: true,
+        scrollY: 400,
+        autoWidth: false,
+        ajax: "{{ route('log.barang.get') }}", // Anda bisa menggunakan data dari response jika perlu
+        columns: [
+          { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+          { data: 'created_at', name: 'created_at' },
+          { data: 'retail.nama', name: 'retail.nama' },
+          { data: 'retail.alamat', name: 'retail.alamat' },
+          { data: 'barang.kode_barang', name: 'barang.kode_barang' },
+          { data: 'barang.nama', name: 'barang.nama' },
+          { data: 'jenis_log_stok_id', name: 'jenis_log_stok_id' },
+          { data: 'jumlah', name: 'jumlah' },
+          { data: 'nominal', name: 'nominal' },
+        ],
+        layout: {
+          topStart: {
+            buttons: ['pageLength'],
+          },
+        },
+        scrollCollapse: true,
+        initComplete: function () {
+          var api = this.api();
 
-            response.forEach(element => {
-              columns.push({ data: element.nama, name: element.nama });
+          // Pindahkan footer ke atas tabel
+          $(api.table().header()).prepend($(api.table().footer()).children());
+
+          // Penerapan pencarian kolom di input field (tfoot)
+          api.columns().every(function () {
+            var that = this;
+            $('input', this.footer()).on('keyup change clear', function () {
+              if (that.search() !== this.value) {
+                that.search(this.value).draw();
+              }
             });
+          });
 
-            columns.push({ data: 'aksi', name: 'aksi', orderable: false, searchable: false });
+          // Menyesuaikan kolom setelah tabel diinisialisasi
+          api.columns.adjust().draw();
+        }
+      });
 
-            $("#data-table").DataTable({
-                ordering: false,
-                serverSide: true,
-                processing: true,
-                scrollX: true,
-                scrollY: 400,
-                ajax: "{{ route('stok.retail.get') }}",
-                columns: columns,
-                fixedColumns: {
-                    start: 2
-                },
-                layout: {
-                    topStart: {
-                        buttons: ['pageLength'],
-                    },
-                },
-                scrollCollapse: true,
-                initComplete: function () {
-                    // Pindahkan footer ke atas tabel
-                    $(this.api().table().header()).prepend($(this.api().table().footer()).children());
-
-                    // Penerapan pencarian kolom di input field (tfoot)
-                    this.api().columns().every(function () {
-                        var that = this;
-
-                        $('input', this.footer()).on('keyup change clear', function () {
-                            if (that.search() !== this.value) {
-                                that.search(this.value).draw();
-                            }
-                        });
-                    });
-                }
-            });
-          }
-        });
-    });
+      // Pastikan pemanggilan adjust dilakukan setelah tabel diinisialisasi
+      table.columns.adjust().draw();
+    }
+  });
+});
 </script>
 
 {{-- Toast --}}
-{{-- @if (session('success'))
+@if (session('success'))
     <div class="toast align-items-center text-bg-success border-0 bottom-0 end-0 position-fixed" role="alert" aria-live="polite" aria-atomic="true" id="liveToast">
     <div class="d-flex">
         <div class="toast-body">
@@ -143,9 +151,9 @@
         <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" id="toastProgressBar"></div>
     </div>
     </div>
-@endif --}}
+@endif
 
-{{-- <script>
+<script>
     $(document).ready(function () {
     var toastEl = document.getElementById('liveToast');
     var toastProgressBar = document.getElementById('toastProgressBar');
@@ -170,6 +178,6 @@
         }, intervalTime);
     }
     });
-</script> --}}
+</script>
 
 @endsection

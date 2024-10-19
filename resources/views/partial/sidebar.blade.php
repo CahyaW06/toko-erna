@@ -100,7 +100,13 @@
       <li class="nav-item">
         <a class="nav-link" href="/">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Barang</span>
+          <span class="menu-title">Gudang</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('log.barang.index') }}">
+          <i class="menu-icon mdi mdi-layers-outline"></i>
+          <span class="menu-title">Outlet</span>
         </a>
       </li>
       <li class="nav-item">

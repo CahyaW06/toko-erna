@@ -45,11 +45,6 @@ class BarangSeeder extends Seeder
             ['MILKY-D', 'KANTONG ASI MILKY HOUSE DELUXE 120 ML']
         ];
 
-        // $daftar = [
-        //     ['A1', 'MANUAL'],
-        //     ['A1.1', 'MANUALMK201'],
-        // ];
-
         foreach ($daftar as $key => $value) {
             Barang::create([
                 'kode_barang' => $value[0],

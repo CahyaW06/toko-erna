@@ -14,4 +14,8 @@ class Retail extends Model
     public function barangs() {
         return $this->belongsToMany(Barang::class)->withPivot('jumlah');
     }
+
+    public function logRetails() {
+        return $this->hasMany(LogRetail::class);
+    }
 }

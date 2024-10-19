@@ -3,6 +3,7 @@
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LogKeuanganController;
+use App\Http\Controllers\LogRetailController;
 use App\Http\Controllers\LogStokController;
 use App\Http\Controllers\LogTokoController;
 use App\Http\Controllers\RetailController;
@@ -35,6 +36,7 @@ Route::group(['prefix' => 'stok', 'as' => 'stok.'], function() {
 
 Route::group(['prefix' => 'log', 'as' => 'log.'], function() {
     Route::resource('/keuangan', LogKeuanganController::class);
-    Route::resource('/barang', LogStokController::class);
+    Route::resource('/barang', LogRetailController::class);
+    Route::get('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
     Route::resource('/toko', LogTokoController::class);
 });

@@ -67,10 +67,10 @@ $(document).ready(function () {
     processing: true,
     ajax: "{{ route('stok.gudang.get') }}",
     layout: {
-    topStart: {
-      buttons: ['pageLength'],
+      topStart: {
+        buttons: ['pageLength'],
+        },
       },
-    },
     scrollCollapse: true,
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },

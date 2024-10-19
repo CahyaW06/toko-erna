@@ -45,7 +45,7 @@ class BarangController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('jumlah', function($row) {
-                    return number_format($row->jumlah,0,',','.') . " pcs";
+                    return number_format($row->jumlah,0,',','.');
                 })
                 ->editColumn('updated_at', function ($row) {
                     return $row->updated_at->format('d M Y');
