@@ -17,9 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Barang::class);
             $table->foreignIdFor(Retail::class);
-            $table->foreignId('jenis_log_stok_id')->constrained('jenis_log_stok', 'id');
+            $table->enum('status', ['Diterima', 'Dikembalikan']);
             $table->integer('jumlah');
-            $table->integer('nominal');
             $table->timestamps();
         });
     }

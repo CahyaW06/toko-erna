@@ -106,13 +106,13 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ route('log.barang.index') }}">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Outlet</span>
+          <span class="menu-title">Konsinyasi</span>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Penjualan</span>
+          <span class="menu-title">Transaksi</span>
         </a>
       </li>
       <li class="nav-item">

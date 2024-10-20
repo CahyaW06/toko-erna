@@ -17,9 +17,8 @@ class LogRetailSeeder extends Seeder
             [
                 'barang_id' => 1,
                 'retail_id' => 1,
-                'jenis_log_stok_id' => 1,
+                'status' => 1,
                 'jumlah' => 10,
-                'nominal' => 150000,
             ]
         ];
 

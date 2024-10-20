@@ -9,10 +9,10 @@
         <p class="card-description">
           Silahkan masukkan log barang yang masuk/keluar
         </p>
-        <form class="forms-sample mt-5" action="{{ route('log.barang.store') }}" method="POST">
+        <form class="forms-sample" action="{{ route('log.barang.store') }}" method="POST">
           @csrf
           <div id="form-container">
-            <div class="d-md-flex gap-2 align-items-center" id="row-input">
+            <div class="d-md-flex gap-2 align-items-center mt-3" id="row-input">
               <div class="form-group">
                 <label for="retail">Retail</label>
                 <div class="d-flex flex-column">
@@ -34,11 +34,11 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="jenis_log">Jenis Log</label>
+                <label for="status">Status Barang</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm" name="jenis_log[]" id="jenis_log">
-                    <option value="1">Masuk</option>
-                    <option value="2">Keluar</option>
+                  <select class="form-control form-control-sm" name="status[]" id="status">
+                    <option value="1">Diterima</option>
+                    <option value="2">Dikembalikan</option>
                   </select>
                 </div>
               </div>
@@ -46,11 +46,7 @@
                 <label for="jumlah">Jumlah</label>
                 <input type="integer" class="form-control form-control-sm" name="jumlah[]" id="jumlah" placeholder="Jumlah" required>
               </div>
-              <div class="form-group">
-                <label for="nominal">Nominal</label>
-                <input type="integer" class="form-control form-control-sm" name="nominal[]" id="nominal" placeholder="Nominal" required>
-              </div>
-              <button type="button" class="btn btn-danger remove-row ms-5"><i class="mdi mdi-delete"></i></button>
+              <button type="button" class="btn btn-danger btn-sm remove-row ms-1 d-flex align-items-center"><i class="mdi mdi-delete"></i><span class="ms-1">Hapus</span></button>
             </div>
           </div>
           <div class="d-flex gap-1">
@@ -71,9 +67,8 @@
       function updateIds(row, count) {
           row.find('#retail-1').attr('id', 'retail-' + count);
           row.find('#barang-1').attr('id', 'barang-' + count);
-          row.find('#jenis_log-1').attr('id', 'jenis_log-' + count);
+          row.find('#status-1').attr('id', 'status-' + count);
           row.find('#jumlah-1').attr('id', 'jumlah-' + count);
-          row.find('#nominal-1').attr('id', 'nominal-' + count);
       }
 
       // Tambahkan event listener untuk format angka

@@ -14,15 +14,6 @@
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
                 <a href="{{ route('log.barang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Log</a>
-                <div class="dropdown">
-                  <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="ti-printer btn-icon-append"></i>
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1">
-                    <h6 class="dropdown-header">Ekspor dalam bentuk</h6>
-                    <a class="dropdown-item" href="{{ route('stok.retail.export-excel') }}">Excel</a>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="table-responsive">
@@ -35,9 +26,8 @@
                       <th>Alamat</th>
                       <th>Kode Barang</th>
                       <th>Barang</th>
-                      <th>Jenis</th>
+                      <th>Status Barang</th>
                       <th>Jumlah</th>
-                      <th>Nominal</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -45,7 +35,6 @@
                 <tfoot>
                   <tr>
                       <th></th>
-                      <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
@@ -84,13 +73,36 @@ $(document).ready(function () {
           { data: 'retail.alamat', name: 'retail.alamat' },
           { data: 'barang.kode_barang', name: 'barang.kode_barang' },
           { data: 'barang.nama', name: 'barang.nama' },
-          { data: 'jenis_log_stok_id', name: 'jenis_log_stok_id' },
-          { data: 'jumlah', name: 'jumlah' },
-          { data: 'nominal', name: 'nominal' },
+          { data: 'status', name: 'status' },
+          { data: 'jumlah', name: 'jumlah' }
         ],
         layout: {
           topStart: {
-            buttons: ['pageLength'],
+            buttons: [
+              'pageLength', // Tombol untuk mengatur panjang halaman
+              {
+                extend: 'excelHtml5',
+                text: 'Ekspor ke Excel',
+                filename: function() {
+                  var date = new Date();
+                  var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
+                  return formattedDate + '_log_retail'; // Nama file yang dihasilkan
+                },
+                title: 'Data Log Retail', // Judul di dalam file Excel
+                exportOptions: {
+                  columns: ':visible', // Ekspor semua kolom yang terlihat
+                  format: {
+                    body: function (data, row, column, node) {
+                      // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
+                      if (column === 7) {
+                        return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
+                      }
+                      return data; // Untuk kolom lain, tetap ekspor apa adanya
+                    }
+                  }
+                }
+              }
+            ],
           },
         },
         scrollCollapse: true,

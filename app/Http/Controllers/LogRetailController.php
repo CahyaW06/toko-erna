@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LogRetailExport;
 use App\Models\Barang;
 use App\Models\LogRetail;
 use App\Models\Retail;
 use Exception;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class LogRetailController extends Controller
@@ -22,7 +24,7 @@ class LogRetailController extends Controller
     public function getDatas(Request $request)
     {
         if ($request->ajax()) {
-            $data = LogRetail::with('barang', 'retail')->orderBy('id', 'desc');
+            $data = LogRetail::with('barang', 'retail')->get()->reverse();
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -33,21 +35,16 @@ class LogRetailController extends Controller
 
                     return "";
                 })
-                ->editColumn('jenis_log_stok_id', function($row) {
-                    if ($row->jenis_log_stok_id == 1) {
-                        return "Masuk";
-                    }
-
-                    return "Keluar";
-                })
                 ->editColumn('jumlah', function($row) {
                     return number_format($row->jumlah,0,',','.');
                 })
-                ->editColumn('nominal', function($row) {
-                    return "Rp " . number_format($row->nominal,0,',','.');
-                })
                 ->make(true);
         }
+    }
+
+    public function exportExcel() {
+        $date = date('Y_m_d');
+        return Excel::download(new LogRetailExport, $date . '_retail.xlsx');
     }
 
     /**
@@ -66,31 +63,29 @@ class LogRetailController extends Controller
      */
     public function store(Request $request)
     {
-        $masuk = [];
-        $keluar = [];
+        $diterima = [];
+        $dikembalikan = [];
 
-        foreach ($request->jenis_log as $key => $log) {
-            if ($log == 1) {
-                $masuk[] = $key;
+        foreach ($request->status as $key => $status) {
+            if ($status == 1) {
+                $diterima[] = $key;
             } else {
-                $keluar[] = $key;
+                $dikembalikan[] = $key;
             }
         }
 
         try {
-            if ($masuk != []) {
-                foreach ($masuk as $key => $value) {
+            if ($diterima != []) {
+                foreach ($diterima as $key => $value) {
                     $retail = Retail::with('barangs')->find($request->retail[$value]);
                     $gudang = Barang::find($request->barang[$value]);
                     $jumlah = str_replace(".", "", $request->jumlah[$value]);
-                    $nominal = str_replace(".", "", $request->nominal[$value]);
 
                     LogRetail::create([
                         'barang_id' => $request->barang[$value],
                         'retail_id' => $request->retail[$value],
-                        'jenis_log_stok_id' => $request->jenis_log[$value],
+                        'status' => $request->status[$value],
                         'jumlah' => $jumlah,
-                        'nominal' => $nominal,
                     ]);
 
                     $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
@@ -101,19 +96,17 @@ class LogRetailController extends Controller
                 }
             }
 
-            if ($keluar != []) {
-                foreach ($keluar as $key => $value) {
+            if ($dikembalikan != []) {
+                foreach ($dikembalikan as $key => $value) {
                     $retail = Retail::with('barangs')->find($request->retail[$value]);
                     $gudang = Barang::find($request->barang[$value]);
                     $jumlah = str_replace(".", "", $request->jumlah[$value]);
-                    $nominal = str_replace(".", "", $request->nominal[$value]);
 
                     LogRetail::create([
                         'barang_id' => $request->barang[$value],
                         'retail_id' => $request->retail[$value],
-                        'jenis_log_stok_id' => $request->jenis_log[$value],
+                        'status' => $request->status[$value],
                         'jumlah' => $jumlah,
-                        'nominal' => $nominal,
                     ]);
 
                     $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
