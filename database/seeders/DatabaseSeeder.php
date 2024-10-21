@@ -23,9 +23,8 @@ class DatabaseSeeder extends Seeder
             BarangSeeder::class,
             RetailSeeder::class,
             BarangRetailSeeder::class,
-            JenisLogStokSeeder::class,
-            JenisLogKeuanganSeeder::class,
             LogRetailSeeder::class,
+            LogKeuanganSeeder::class,
         ]);
     }
 }

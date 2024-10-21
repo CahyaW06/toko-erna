@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('log_stoks', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Barang::class);
-            $table->foreignId('id_jenis_log_stok');
+            $table->enum('status', ['Masuk', 'Keluar']);
             $table->integer('jumlah');
             $table->timestamps();
         });
