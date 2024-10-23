@@ -7,13 +7,13 @@
         <div class="card-body">
             <div class="row">
               <div class="col">
-                <h3 class="card-title">Data Log Retail</h3>
+                <h3 class="card-title">Data Log Transaksi</h3>
                 <p class="card-description">
-                  Berikut ini daftar transaksi konsinyasi barang di seluruh retail.
+                  Berikut ini daftar transaksi pembelian/ganti rugi barang di seluruh retail.
                 </p>
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
-                <a href="{{ route('log.barang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Konsinyasi</a>
+                <a href="{{ route('log.keuangan.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Transaksi</a>
               </div>
             </div>
             <div class="table-responsive">
@@ -26,8 +26,9 @@
                       <th>Alamat</th>
                       <th>Kode Barang</th>
                       <th>Barang</th>
-                      <th>Status Barang</th>
+                      <th>Status Transaksi</th>
                       <th>Jumlah</th>
+                      <th>Nominal</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -35,6 +36,7 @@
                 <tfoot>
                   <tr>
                       <th></th>
+                      <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
@@ -56,7 +58,7 @@
 $(document).ready(function () {
   $.ajax({
     type: "GET",
-    url: "{{ route('log.barang.get') }}",
+    url: "{{ route('log.keuangan.get') }}",
     success: function (response) {
       var table = $("#data-table").DataTable({
         ordering: false,
@@ -65,16 +67,17 @@ $(document).ready(function () {
         scrollX: true,
         scrollY: 400,
         autoWidth: false,
-        ajax: "{{ route('log.barang.get') }}", // Anda bisa menggunakan data dari response jika perlu
+        ajax: "{{ route('log.keuangan.get') }}",
         columns: [
           { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
           { data: 'created_at', name: 'created_at' },
-          { data: 'retail.nama', name: 'retail.nama' },
-          { data: 'retail.alamat', name: 'retail.alamat' },
-          { data: 'barang.kode_barang', name: 'barang.kode_barang' },
-          { data: 'barang.nama', name: 'barang.nama' },
+          { data: 'log_retail.retail.nama', name: 'log_retail.retail.nama' },
+          { data: 'log_retail.retail.alamat', name: 'log_retail.retail.alamat' },
+          { data: 'log_retail.barang.kode_barang', name: 'log_retail.barang.kode_barang' },
+          { data: 'log_retail.barang.nama', name: 'log_retail.barang.nama' },
           { data: 'status', name: 'status' },
-          { data: 'jumlah', name: 'jumlah' }
+          { data: 'jumlah', name: 'jumlah' },
+          { data: 'nominal', name: 'nominal' }
         ],
         layout: {
           topStart: {

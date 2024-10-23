@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class LogKeuangan extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    public function logRetail() {
+        return $this->belongsTo(LogRetail::class);
+    }
 }

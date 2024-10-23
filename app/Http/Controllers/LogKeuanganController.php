@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LogRetail;
 use App\Models\LogKeuangan;
+use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreLogKeuanganRequest;
 use App\Http\Requests\UpdateLogKeuanganRequest;
+use Illuminate\Http\Request;
 
 class LogKeuanganController extends Controller
 {
@@ -13,7 +17,31 @@ class LogKeuanganController extends Controller
      */
     public function index()
     {
-        //
+        return view('log.transaksi.index');
+    }
+
+    public function getDatas(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = LogKeuangan::with('logRetail.barang', 'logRetail.retail')->get()->reverse();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    if ($row->created_at) {
+                        return $row->created_at->format('d M Y');
+                    }
+
+                    return "";
+                })
+                ->editColumn('jumlah', function($row) {
+                    return number_format($row->jumlah,0,',','.');
+                })
+                ->editColumn('nominal', function($row) {
+                    return "Rp " . number_format($row->nominal,0,',','.');
+                })
+                ->make(true);
+        }
     }
 
     /**
@@ -21,7 +49,11 @@ class LogKeuanganController extends Controller
      */
     public function create()
     {
-        //
+        $logRetails = LogRetail::where('status', 'Diterima')->with('barang', 'retail')->get()->reverse();
+
+        return view('log.transaksi.create', [
+            'logRetails' => $logRetails,
+        ]);
     }
 
     /**

@@ -18,4 +18,8 @@ class LogRetail extends Model
     public function retail() {
         return $this->belongsTo(Retail::class);
     }
+
+    public function logKeuangan() {
+        return $this->hasOne(LogKeuangan::class);
+    }
 }

@@ -30,6 +30,8 @@ Route::group(['prefix' => 'stok', 'as' => 'stok.'], function() {
 
 Route::group(['prefix' => 'log', 'as' => 'log.'], function() {
     Route::resource('/keuangan', LogKeuanganController::class);
+    Route::get('/keuangan-get-data', [LogKeuanganController::class, 'getDatas'])->name('keuangan.get');
+    Route::get('/keuangan-get-log-retails', [LogKeuanganController::class, 'getLogRetails'])->name('keuangan.get-log');
     Route::resource('/barang', LogRetailController::class);
     Route::get('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
     Route::resource('/toko', LogTokoController::class);
