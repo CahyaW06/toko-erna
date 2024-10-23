@@ -20,10 +20,6 @@
               <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama" value="{{ $barang->nama }}" required>
             </div>
             <div class="form-group">
-              <label for="harga">Harga</label>
-              <input type="integer" class="form-control" id="harga" name="harga" placeholder="Harga" value="{{ $barang->harga }}" required>
-            </div>
-            <div class="form-group">
               <label for="jumlah">Stok Gudang</label>
               <input type="integer" class="form-control" id="jumlah" name="jumlah" placeholder="Jumlah" value="{{ $barang->jumlah }}" required>
             </div>
@@ -45,13 +41,6 @@
           var n = parseInt($("#jumlah").val().replace(/\D/g,''),10);
           $("#jumlah").val(n.toLocaleString());
         }
-        $("#harga").keyup(function (e) {
-            e.preventDefault();
-            if ($(this).val().length > 3) {
-                var n = parseInt($(this).val().replace(/\D/g,''),10);
-                $(this).val(n.toLocaleString());
-            }
-        });
         $("#jumlah").keyup(function (e) {
             e.preventDefault();
             if ($(this).val().length > 3) {

@@ -16,7 +16,8 @@ class LogKeuanganSeeder extends Seeder
     {
         $data = [
             [
-                'log_retail_id' => 1,
+                'retail_id' => 1,
+                'barang_id' => 1,
                 'status' => 1,
                 'jumlah' => 10,
                 'nominal' => 1000000,

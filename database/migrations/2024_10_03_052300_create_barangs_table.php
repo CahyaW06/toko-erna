@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('kode_barang')->unique();
             $table->string('nama');
-            $table->integer('harga');
             $table->integer('jumlah');
             $table->timestamps();
         });

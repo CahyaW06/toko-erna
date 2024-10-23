@@ -71,10 +71,10 @@ $(document).ready(function () {
         columns: [
           { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
           { data: 'created_at', name: 'created_at' },
-          { data: 'log_retail.retail.nama', name: 'log_retail.retail.nama' },
-          { data: 'log_retail.retail.alamat', name: 'log_retail.retail.alamat' },
-          { data: 'log_retail.barang.kode_barang', name: 'log_retail.barang.kode_barang' },
-          { data: 'log_retail.barang.nama', name: 'log_retail.barang.nama' },
+          { data: 'retail.nama', name: 'retail.nama' },
+          { data: 'retail.alamat', name: 'retail.alamat' },
+          { data: 'barang.kode_barang', name: 'barang.kode_barang' },
+          { data: 'barang.nama', name: 'barang.nama' },
           { data: 'status', name: 'status' },
           { data: 'jumlah', name: 'jumlah' },
           { data: 'nominal', name: 'nominal' }

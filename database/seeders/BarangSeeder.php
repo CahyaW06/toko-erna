@@ -49,7 +49,6 @@ class BarangSeeder extends Seeder
             Barang::create([
                 'kode_barang' => $value[0],
                 'nama' => $value[1],
-                'harga' => 0,
                 'jumlah' => 0,
             ]);
         }

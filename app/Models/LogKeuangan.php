@@ -11,7 +11,12 @@ class LogKeuangan extends Model
 
     protected $guarded = ['id'];
 
-    public function logRetail() {
-        return $this->belongsTo(LogRetail::class);
+    public function barang() {
+        return $this->belongsTo(Barang::class);
     }
+
+    public function retail() {
+        return $this->belongsTo(Retail::class);
+    }
+
 }

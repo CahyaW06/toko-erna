@@ -20,15 +20,8 @@ class BarangController extends Controller
         return view('gudang.index');
     }
 
-    public function printedData() {
-        return view('gudang.print', [
-            'barangs' => Barang::all()
-        ]);
-    }
-
     public function getListBarang() {
         return Barang::select('nama')
-            ->orderBy('kode_barang')
             ->get()
             ->map(function ($item) {
                 // Mengubah spasi menjadi underscore pada kolom 'nama'
@@ -40,7 +33,7 @@ class BarangController extends Controller
 
     public function getDatas(Request $request) {
         if ($request->ajax()) {
-            $data = Barang::select('id', 'kode_barang', 'nama', 'jumlah', 'updated_at')->orderby('kode_barang');
+            $data = Barang::select('id', 'kode_barang', 'nama', 'jumlah', 'updated_at')->get();
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -60,8 +53,8 @@ class BarangController extends Controller
                     $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
                     $btn .= $csrfToken;
                     $btn .= $methodField;
-                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
-                    $btn .= '<button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus item '.$namaBarang.'?\')"><i class="mdi mdi-delete"></i></button>';
+                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
+                    $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus item '.$namaBarang.'?\')"><i class="mdi mdi-delete"></i></button>';
                     $btn .= '</form>';
 
                     return $btn;
@@ -69,18 +62,6 @@ class BarangController extends Controller
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
-    }
-
-    public function exportExcel() {
-        $date = date('Y_m_d');
-        return Excel::download(new GudangExport, $date . '_gudang.xlsx');
-    }
-
-    public function exportPdf() {
-        $barangs = Barang::all(); // Ambil semua data
-        $date = date('Y_m_d');
-        $pdf = Pdf::loadView("gudang.print", compact('barangs'));
-        return $pdf->download($date . '_gudang.pdf');
     }
 
     /**
@@ -146,7 +127,6 @@ class BarangController extends Controller
         $validated = $request->validate([
             'kode_barang' => 'required',
             'nama' => 'required',
-            'harga' => 'required',
             'jumlah' => 'required'
         ]);
 
@@ -155,7 +135,6 @@ class BarangController extends Controller
 
         $barang->kode_barang = $validated['kode_barang'];
         $barang->nama = $validated['nama'];
-        $barang->harga = str_replace('.', '', $validated['harga']);
         $barang->jumlah = str_replace('.', '', $validated['jumlah']);
 
         try {

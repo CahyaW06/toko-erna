@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\LogRetail;
+use App\Models\Barang;
+use App\Models\Retail;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('log_keuangans', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(LogRetail::class);
+            $table->foreignIdFor(Barang::class);
+            $table->foreignIdFor(Retail::class);
             $table->enum('status', ['Laku', 'Ganti Rugi']);
             $table->integer('jumlah');
             $table->integer('nominal');

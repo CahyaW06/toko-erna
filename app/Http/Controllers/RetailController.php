@@ -29,10 +29,9 @@ class RetailController extends Controller
         if ($request->ajax()) {
             $data = Retail::with('barangs')
                 ->select('id', 'nama', 'alamat')
-                ->orderby('nama')
                 ->get();
 
-            $barangs = Barang::select('id', 'nama')->orderBy('kode_barang')->get();
+            $barangs = Barang::select('id', 'nama')->get();
 
             $dataTables = DataTables::of($data)->addIndexColumn();
 
@@ -57,8 +56,8 @@ class RetailController extends Controller
                 $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
                 $btn .= $csrfToken;
                 $btn .= $methodField;
-                $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-outline-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
-                $btn .= '<button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus item '.$namaRetail.'?\')"><i class="mdi mdi-delete"></i></button>';
+                $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
+                $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus retail '.$namaRetail.'?\')"><i class="mdi mdi-delete"></i></button>';
                 $btn .= '</form>';
 
                 return $btn;
@@ -67,20 +66,6 @@ class RetailController extends Controller
 
             return $dataTables->make(true);
         }
-    }
-
-    public function exportExcel() {
-        $date = date('Y_m_d');
-        return Excel::download(new RetailExport, $date . '_retail.xlsx');
-    }
-
-    public function exportPdf() {
-        $retails = Retail::with('barangs')->get(); // Ambil semua data
-        $barangs = Barang::all();
-        $date = date('Y_m_d');
-        $pdf = Pdf::loadView("retail.print", compact('retails', 'barangs'))
-            ->setPaper('a4', 'landscape');
-        return $pdf->download($date . '_retail.pdf');
     }
 
     /**
@@ -151,8 +136,16 @@ class RetailController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Retail $retail)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->route('retail');
+
+        try {
+            $retail = Retail::find($id);
+            $retail->delete();
+        } catch (Exception $e) {
+            return redirect()->route('stok.retail.index')->with('error', $e->getMessage());
+        }
+        return redirect()->route('stok.retail.index')->with('success', 'Retail berhasil dihapus!');
     }
 }

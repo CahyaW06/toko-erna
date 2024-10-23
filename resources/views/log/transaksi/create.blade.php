@@ -9,21 +9,26 @@
         <p class="card-description">
           Silahkan masukkan log transaksi yang lunas/perlu ganti rugi
         </p>
-        <form class="forms-sample" action="{{ route('log.barang.store') }}" method="POST">
+        <form class="forms-sample" action="{{ route('log.keuangan.store') }}" method="POST">
           @csrf
           <div id="form-container">
             <div class="d-md-flex gap-2 align-items-center mt-3" id="row-input">
               <div class="form-group">
-                <label for="log_konsinyasi">Log Konsinyasi</label>
+                <label for="retail">Retail</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm log-retail" name="log_konsinyasi[]" id="log_konsinyasi">
-                    @foreach ($logRetails as $logRetail)
-                    <option value="{{ $logRetail->id }}">
-                      {{ $logRetail->created_at->format('d M Y') }} |
-                      {{ $logRetail->retail->nama }} |
-                      {{ $logRetail->barang->kode_barang }} |
-                      {{ $logRetail->barang->nama }}
-                    </option>
+                  <select class="form-control form-control-sm" name="retail[]" id="retail">
+                    @foreach ($retails as $retail)
+                    <option value="{{ $retail->id }}">{{ $retail->nama }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="barang">Barang</label>
+                <div class="d-flex flex-column">
+                  <select class="form-control form-control-sm" name="barang[]" id="barang">
+                    @foreach ($barangs as $barang)
+                    <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
                     @endforeach
                   </select>
                 </div>
@@ -32,7 +37,7 @@
                 <label for="status">Status Transaksi</label>
                 <div class="d-flex flex-column">
                   <select class="form-control form-control-sm" name="status[]" id="status">
-                    <option value="1">Lunas</option>
+                    <option value="1">Laku</option>
                     <option value="2">Ganti Rugi</option>
                   </select>
                 </div>

@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreLogKeuanganRequest;
 use App\Http\Requests\UpdateLogKeuanganRequest;
+use App\Models\Barang;
+use App\Models\Retail;
+use Exception;
 use Illuminate\Http\Request;
 
 class LogKeuanganController extends Controller
@@ -23,7 +26,7 @@ class LogKeuanganController extends Controller
     public function getDatas(Request $request)
     {
         if ($request->ajax()) {
-            $data = LogKeuangan::with('logRetail.barang', 'logRetail.retail')->get()->reverse();
+            $data = LogKeuangan::with('barang', 'retail')->get()->reverse();
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -49,19 +52,77 @@ class LogKeuanganController extends Controller
      */
     public function create()
     {
-        $logRetails = LogRetail::where('status', 'Diterima')->with('barang', 'retail')->get()->reverse();
+        $barangs = Barang::all();
+        $retails = Retail::all();
 
-        return view('log.transaksi.create', [
-            'logRetails' => $logRetails,
-        ]);
+        return view('log.transaksi.create', ['barangs' => $barangs, 'retails' => $retails]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLogKeuanganRequest $request)
+    public function store(Request $request)
     {
-        //
+        // dd($request);
+        $laku = [];
+        $rugi = [];
+
+        foreach ($request->status as $key => $status) {
+            if ($status == 1) {
+                $laku[] = $key;
+            } else {
+                $rugi[] = $key;
+            }
+        }
+
+        try {
+            if ($laku != []) {
+                foreach ($laku as $key => $value) {
+                    $retail = Retail::with('barangs')->find($request->retail[$value]);
+                    $gudang = Barang::find($request->barang[$value]);
+                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
+                    $nominal = str_replace(".", "", $request->nominal[$value]);
+
+                    LogKeuangan::create([
+                        'barang_id' => $request->barang[$value],
+                        'retail_id' => $request->retail[$value],
+                        'status' => $request->status[$value],
+                        'jumlah' => $jumlah,
+                        'nominal' => $nominal,
+                    ]);
+
+                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
+                    $retail->push();
+                }
+            }
+
+            if ($rugi != []) {
+                foreach ($rugi as $key => $value) {
+                    $retail = Retail::with('barangs')->find($request->retail[$value]);
+                    $gudang = Barang::find($request->barang[$value]);
+                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
+                    $nominal = str_replace(".", "", $request->nominal[$value]);
+
+                    LogKeuangan::create([
+                        'barang_id' => $request->barang[$value],
+                        'retail_id' => $request->retail[$value],
+                        'status' => $request->status[$value],
+                        'jumlah' => $jumlah,
+                        'nominal' => $nominal,
+                    ]);
+
+                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
+                    $retail->push();
+
+                    $gudang->jumlah = $gudang->jumlah - $jumlah;
+                    $gudang->save();
+                }
+            }
+        } catch(Exception $e) {
+            return redirect()->route('log.keuangan.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.keuangan.index')->with('success', 'Log Berhasil Dicatat!');
     }
 
     /**
