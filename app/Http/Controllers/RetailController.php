@@ -54,9 +54,9 @@ class RetailController extends Controller
                 $namaRetail = $row->nama;
 
                 $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
+                $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
                 $btn .= $csrfToken;
                 $btn .= $methodField;
-                $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
                 $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus retail '.$namaRetail.'?\')"><i class="mdi mdi-delete"></i></button>';
                 $btn .= '</form>';
 
@@ -120,17 +120,37 @@ class RetailController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Retail $retail)
+    public function edit(Request $request)
     {
-        //
+        $id = $request->route('retail');
+
+        $retail = Retail::find($id);
+
+        return view('retail.edit', ['retail' => $retail]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Retail $retail)
+    public function update(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required',
+        ]);
+
+        $id = $request->route('retail');
+        $retail = Retail::find($id);
+
+        $retail->nama = $validated['nama'];
+        $retail->alamat = $request->alamat ?? null;
+
+        try {
+            $retail->save();
+        } catch (Exception $e) {
+            return redirect()->route('stok.retail.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('stok.retail.index')->with('success', 'Retail berhasil diperbarui!');
     }
 
     /**

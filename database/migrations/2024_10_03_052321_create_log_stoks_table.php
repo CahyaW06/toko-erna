@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Barang::class);
             $table->enum('status', ['Masuk', 'Keluar']);
             $table->integer('jumlah');
+            $table->integer('nominal');
             $table->timestamps();
         });
     }

@@ -18,4 +18,8 @@ class Barang extends Model
     public function logRetails() {
         return $this->hasMany(LogRetail::class);
     }
+
+    public function logStok() {
+        return $this->hasMany(LogStok::class);
+    }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\LogStok;
 use App\Http\Requests\StoreLogStokRequest;
 use App\Http\Requests\UpdateLogStokRequest;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class LogStokController extends Controller
 {
@@ -13,7 +15,31 @@ class LogStokController extends Controller
      */
     public function index()
     {
-        //
+        return view('log.gudang.index');
+    }
+
+    public function getDatas(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = LogStok::with('barang')->get()->reverse();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    if ($row->created_at) {
+                        return $row->created_at->format('d M Y');
+                    }
+
+                    return "";
+                })
+                ->editColumn('jumlah', function($row) {
+                    return number_format($row->jumlah,0,',','.');
+                })
+                ->editColumn('nominal', function($row) {
+                    return 'Rp ' . number_format($row->nominal,0,',','.');
+                })
+                ->make(true);
+        }
     }
 
     /**

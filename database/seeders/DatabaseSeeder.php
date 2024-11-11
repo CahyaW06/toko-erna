@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             BarangRetailSeeder::class,
             LogRetailSeeder::class,
             LogKeuanganSeeder::class,
+            LogStokSeeder::class,
         ]);
     }
 }
