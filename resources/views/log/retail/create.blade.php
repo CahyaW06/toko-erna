@@ -12,7 +12,7 @@
         <form class="forms-sample" action="{{ route('log.barang.store') }}" method="POST">
           @csrf
           <div id="form-container">
-            <div class="d-md-flex gap-2 align-items-center mt-3" id="row-input">
+            <div class="d-md-flex gap-4 align-items-center mt-3" id="row-input">
               <div class="form-group">
                 <label for="retail">Retail</label>
                 <div class="d-flex flex-column">

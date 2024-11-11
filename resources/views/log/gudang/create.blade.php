@@ -5,24 +5,14 @@
   <div class="col-lg-9">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Tambah Log Barang</h4>
+        <h4 class="card-title">Tambah Log Stok Gudang</h4>
         <p class="card-description">
-          Silahkan masukkan log barang yang masuk/keluar
+          Silahkan masukkan log stok gudang yang masuk/keluar
         </p>
-        <form class="forms-sample" action="{{ route('log.barang.store') }}" method="POST">
+        <form class="forms-sample" action="{{ route('log.gudang.store') }}" method="POST">
           @csrf
           <div id="form-container">
-            <div class="d-md-flex gap-2 align-items-center mt-3" id="row-input">
-              <div class="form-group">
-                <label for="retail">Retail</label>
-                <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black" name="retail[]" id="retail">
-                    @foreach ($retails as $retail)
-                    <option value="{{ $retail->id }}">{{ $retail->nama }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
+            <div class="d-md-flex gap-4 align-items-center mt-3" id="row-input">
               <div class="form-group">
                 <label for="barang">Barang</label>
                 <div class="d-flex flex-column">
@@ -37,14 +27,18 @@
                 <label for="status">Status Barang</label>
                 <div class="d-flex flex-column">
                   <select class="form-control form-control-sm text-black" name="status[]" id="status">
-                    <option value="1">Diterima</option>
-                    <option value="2">Dikembalikan</option>
+                    <option value="1">Masuk</option>
+                    <option value="2">Keluar</option>
                   </select>
                 </div>
               </div>
               <div class="form-group">
                 <label for="jumlah">Jumlah</label>
                 <input type="integer" class="form-control form-control-sm" name="jumlah[]" id="jumlah" placeholder="Jumlah" required>
+              </div>
+              <div class="form-group">
+                <label for="nominal">Nominal</label>
+                <input type="integer" class="form-control form-control-sm" name="nominal[]" id="nominal" placeholder="Nominal" required>
               </div>
               <button type="button" class="btn btn-danger btn-sm remove-row ms-1 d-flex align-items-center"><i class="mdi mdi-delete"></i><span class="ms-1">Hapus</span></button>
             </div>
@@ -65,10 +59,10 @@
 
       // Fungsi untuk membuat ID unik
       function updateIds(row, count) {
-          row.find('#retail-1').attr('id', 'retail-' + count);
           row.find('#barang-1').attr('id', 'barang-' + count);
           row.find('#status-1').attr('id', 'status-' + count);
           row.find('#jumlah-1').attr('id', 'jumlah-' + count);
+          row.find('#nominal-1').attr('id', 'nominal-' + count);
       }
 
       // Tambahkan event listener untuk format angka

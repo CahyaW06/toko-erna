@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
+use App\Models\Retail;
 use App\Models\LogStok;
-use App\Http\Requests\StoreLogStokRequest;
-use App\Http\Requests\UpdateLogStokRequest;
+use App\Models\LogRetail;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use Exception;
 
 class LogStokController extends Controller
 {
@@ -47,15 +50,70 @@ class LogStokController extends Controller
      */
     public function create()
     {
-        //
+        $barangs = Barang::all();
+
+        return view('log.gudang.create', ['barangs' => $barangs]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLogStokRequest $request)
+    public function store(Request $request)
     {
-        //
+        // dd($request);
+
+        $masuk = [];
+        $keluar = [];
+
+        foreach ($request->status as $key => $status) {
+            if ($status == 1) {
+                $masuk[] = $key;
+            } else {
+                $keluar[] = $key;
+            }
+        }
+
+        try {
+            if ($masuk != []) {
+                foreach ($masuk as $key => $value) {
+                    $gudang = Barang::find($request->barang[$value]);
+                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
+                    $nominal = str_replace(".", "", $request->nominal[$value]);
+
+                    LogStok::create([
+                        'barang_id' => $request->barang[$value],
+                        'status' => $request->status[$value],
+                        'jumlah' => $jumlah,
+                        'nominal' => $nominal,
+                    ]);
+
+                    $gudang->jumlah = $gudang->jumlah + $jumlah;
+                    $gudang->save();
+                }
+            }
+
+            if ($keluar != []) {
+                foreach ($keluar as $key => $value) {
+                    $gudang = Barang::find($request->barang[$value]);
+                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
+                    $nominal = str_replace(".", "", $request->nominal[$value]);
+
+                    LogStok::create([
+                        'barang_id' => $request->barang[$value],
+                        'status' => $request->status[$value],
+                        'jumlah' => $jumlah,
+                        'nominal' => $nominal,
+                    ]);
+
+                    $gudang->jumlah = $gudang->jumlah - $jumlah;
+                    $gudang->save();
+                }
+            }
+        } catch(Exception $e) {
+            return redirect()->route('log.gudang.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.gudang.index')->with('success', 'Log Berhasil Dicatat!');
     }
 
     /**
@@ -77,7 +135,7 @@ class LogStokController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLogStokRequest $request, LogStok $logStok)
+    public function update(Request $request, LogStok $logStok)
     {
         //
     }
