@@ -16,7 +16,7 @@
               <div class="form-group">
                 <label for="retail">Retail</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm" name="retail[]" id="retail">
+                  <select class="form-control form-control-sm text-black" name="retail[]" id="retail">
                     @foreach ($retails as $retail)
                     <option value="{{ $retail->id }}">{{ $retail->nama }}</option>
                     @endforeach
@@ -26,7 +26,7 @@
               <div class="form-group">
                 <label for="barang">Barang</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm" name="barang[]" id="barang">
+                  <select class="form-control form-control-sm text-black" name="barang[]" id="barang">
                     @foreach ($barangs as $barang)
                     <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
                     @endforeach
@@ -36,7 +36,7 @@
               <div class="form-group">
                 <label for="status">Status Transaksi</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm" name="status[]" id="status">
+                  <select class="form-control form-control-sm text-black" name="status[]" id="status">
                     <option value="1">Laku</option>
                     <option value="2">Ganti Rugi</option>
                   </select>

@@ -17,7 +17,7 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ route('log.gudang.index') }}">
           <i class="menu-icon mdi mdi-layers-outline"></i>
-          <span class="menu-title">Gudang</span>
+          <span class="menu-title">Stok Gudang</span>
         </a>
       </li>
       <li class="nav-item">

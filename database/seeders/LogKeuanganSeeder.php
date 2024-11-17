@@ -14,20 +14,20 @@ class LogKeuanganSeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [
-            [
-                'retail_id' => 1,
-                'barang_id' => 1,
-                'status' => 1,
-                'jumlah' => 10,
-                'nominal' => 1000000,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]
-        ];
+        // $data = [
+        //     [
+        //         'retail_id' => 1,
+        //         'barang_id' => 1,
+        //         'status' => 1,
+        //         'jumlah' => 10,
+        //         'nominal' => 1000000,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ]
+        // ];
 
-        foreach ($data as $key => $value) {
-            LogKeuangan::create($value);
-        }
+        // foreach ($data as $key => $value) {
+        //     LogKeuangan::create($value);
+        // }
     }
 }

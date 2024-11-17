@@ -111,7 +111,7 @@ class LogKeuanganController extends Controller
                         'nominal' => $nominal,
                     ]);
 
-                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
+                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
                     $retail->push();
 
                     $gudang->jumlah = $gudang->jumlah - $jumlah;

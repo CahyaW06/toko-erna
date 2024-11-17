@@ -23,7 +23,8 @@ class BarangRetailSeeder extends Seeder
                 DB::table('barang_retail')->insert([
                     'barang_id' => $barang->id,
                     'retail_id' => $retail->id,
-                    'jumlah' => rand(1, 50),
+                    // 'jumlah' => rand(1, 50),
+                    'jumlah' => 0,
                 ]);
             }
         }

@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="row">
               <div class="col">
-                <h3 class="card-title">Data Log Gudang</h3>
+                <h3 class="card-title">Data Log Stok Gudang</h3>
                 <p class="card-description">
                   Berikut ini daftar log stok barang di gudang.
                 </p>

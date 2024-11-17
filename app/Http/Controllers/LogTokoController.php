@@ -13,7 +13,7 @@ class LogTokoController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
