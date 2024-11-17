@@ -2,11 +2,6 @@
     <div class="col-sm-12">
       <div class="statistics-details d-flex align-items-center justify-content-between">
         <div>
-          <p class="statistics-title">Saldo</p>
-          <h3 class="rate-percentage">Rp 1.000.000</h3>
-          <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p>
-        </div>
-        <div>
           <p class="statistics-title">Pendapatan Bulan Ini</p>
           <h3 class="rate-percentage">Rp 120.000</h3>
           <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p>
