@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LogStok;
 use App\Models\LogToko;
+use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLogTokoRequest;
 use App\Http\Requests\UpdateLogTokoRequest;
+use App\Models\LogKeuangan;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class LogTokoController extends Controller
 {
@@ -13,7 +19,26 @@ class LogTokoController extends Controller
      */
     public function index()
     {
+        return view('log.toko.index');
+    }
 
+    public function getDatas(Request $request) {
+        if ($request->ajax()) {
+            $data = LogToko::all()->reverse();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('omset', function($row) {
+                    return 'Rp ' . number_format($row->omset,0,',','.');
+                })
+                ->editColumn('pengeluaran', function($row) {
+                    return 'Rp ' . number_format($row->pengeluaran,0,',','.');
+                })
+                ->editColumn('bersih', function($row) {
+                    return 'Rp ' . number_format($row->bersih,0,',','.');
+                })
+                ->make(true);
+        }
     }
 
     /**

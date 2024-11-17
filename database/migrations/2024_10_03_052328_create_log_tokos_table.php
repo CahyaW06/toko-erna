@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('bulan');
             $table->integer('tahun');
             $table->integer('omset');
+            $table->integer('pengeluaran');
             $table->integer('bersih');
             $table->timestamps();
         });

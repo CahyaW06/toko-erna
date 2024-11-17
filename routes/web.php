@@ -36,4 +36,5 @@ Route::group(['prefix' => 'log', 'as' => 'log.'], function() {
     Route::resource('/barang', LogRetailController::class);
     Route::get('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
     Route::resource('/toko', LogTokoController::class);
+    Route::get('/toko-get-data', [LogTokoController::class, 'getDatas'])->name('toko.get');
 });

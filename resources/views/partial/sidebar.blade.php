@@ -33,7 +33,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/">
+        <a class="nav-link" href="{{ route('log.toko.index') }}">
           <i class="menu-icon mdi mdi-layers-outline"></i>
           <span class="menu-title">Toko</span>
         </a>
