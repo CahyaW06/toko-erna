@@ -1,7 +1,7 @@
 <!-- Required meta tags -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Toko</title>
+<title>Mom & Kiddos</title>
 <!-- plugins:css -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -14,7 +14,7 @@
 <!-- endinject -->
 <!-- Plugin css for this page -->
 {{-- <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css"> --}}
-<link rel="stylesheet" href="js/select.dataTables.min.css">
+<link rel="stylesheet" href="{{ asset('js/select.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ asset('vendors/select2/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
 <!-- End plugin css for this page -->

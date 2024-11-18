@@ -15,32 +15,35 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function() {
     $now = Carbon::now();
-    $logTokoSebelumnya = LogToko::where('created_at', $now->subMonth()->month)->get();
-    $logTransaksi = LogKeuangan::whereMonth('created_at', $now->month)
-        ->whereYear('created_at', $now->year)
-        ->get();
+    $logTokoSebelumnya = LogToko::where('created_at', '<' , $now->startOfMonth())->get()->first();
+    $logTransaksi = LogKeuangan::where('created_at', '>', $now->startOfMonth())->get();
 
     $omset = 0;
     $pengeluaran = 0;
+    $totalLaku = 0;
+    $totalRugi = 0;
 
     foreach ($logTransaksi as $key => $value) {
         if ($value->status == "Laku") {
             $omset += $value->nominal;
+            $totalLaku += $value->jumlah;
         } else {
             $pengeluaran += $value->nominal;
+            $totalRugi += $value->jumlah;
         }
     }
 
     $bersih = $omset - $pengeluaran;
 
     $barangCounter = Barang::count();
-    dd($now);
 
     return view('home.index', [
         'barangCounter' => $barangCounter,
         'omset' => $omset,
         'pengeluaran' => $pengeluaran,
         'bersih' => $bersih,
+        'totalLaku' => $totalLaku,
+        'totalRugi' => $totalRugi,
     ]);
 })->name('home');
 
@@ -59,6 +62,7 @@ Route::group(['prefix' => 'log', 'as' => 'log.'], function() {
     Route::get('/gudang-get-data', [LogStokController::class, 'getDatas'])->name('gudang.get');
     Route::resource('/keuangan', LogKeuanganController::class);
     Route::get('/keuangan-get-data', [LogKeuanganController::class, 'getDatas'])->name('keuangan.get');
+    Route::get('/keuangan-get-chart', [LogKeuanganController::class, 'chart'])->name('keuangan.chart');
     Route::resource('/barang', LogRetailController::class);
     Route::get('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
     Route::resource('/toko', LogTokoController::class);

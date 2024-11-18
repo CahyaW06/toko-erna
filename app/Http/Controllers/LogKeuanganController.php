@@ -10,8 +10,10 @@ use App\Http\Requests\StoreLogKeuanganRequest;
 use App\Http\Requests\UpdateLogKeuanganRequest;
 use App\Models\Barang;
 use App\Models\Retail;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LogKeuanganController extends Controller
 {
@@ -45,6 +47,57 @@ class LogKeuanganController extends Controller
                 })
                 ->make(true);
         }
+    }
+
+    public function chart() {
+        $labels = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+        $thisWeekData = LogKeuangan::selectRaw('DATE(created_at) as date, SUM(nominal) as nominal') // Ambil tanggal dan agregasi (contoh: SUM)
+        ->where('status', 'Laku')
+        ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+        ->groupBy('date') // Group berdasarkan tanggal
+        ->orderBy('date', 'asc') // Urutkan berdasarkan tanggal
+        ->get()
+        ->keyBy('date'); // Mengubah hasil menjadi array dengan key = tanggal
+
+        $lastWeekData = LogKeuangan::selectRaw('DATE(created_at) as date, SUM(nominal) as nominal') // Ambil tanggal dan agregasi (contoh: SUM)
+        ->where('status', 'Laku')
+        ->whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+        ->groupBy('date') // Group berdasarkan tanggal
+        ->orderBy('date', 'asc') // Urutkan berdasarkan tanggal
+        ->get()
+        ->keyBy('date'); // Mengubah hasil menjadi array dengan key = tanggal
+
+        // Langkah 2: Buat daftar semua hari dalam seminggu
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+        $datesOfWeek = [];
+        for ($date = $startOfWeek; $date->lte($endOfWeek); $date->addDay()) {
+            $datesOfWeek[] = $date->format('Y-m-d');
+        }
+
+        $startOfLastWeek = Carbon::now()->subWeek()->startOfWeek();
+        $endOfLastWeek = Carbon::now()->subWeek()->endOfWeek();
+        $datesOfLastWeek = [];
+        for ($date = $startOfLastWeek; $date->lte($endOfLastWeek); $date->addDay()) {
+            $datesOfLastWeek[] = $date->format('Y-m-d');
+        }
+
+        // Langkah 3: Gabungkan data dari database dengan hari kosong
+        $resultThisWeek = collect($datesOfWeek)->map(function ($date) use ($thisWeekData) {
+            return
+            ['nominal' => $thisWeekData->get($date)->nominal ?? 0];
+        });
+        $resultLastWeek = collect($datesOfLastWeek)->map(function ($date) use ($lastWeekData) {
+            return
+            ['nominal' => $lastWeekData->get($date)->nominal ?? 0];
+        });
+
+        return [
+            'labels' => $labels,
+            'thisWeekData' => $resultThisWeek->flatten(),
+            'lastWeekData' => $resultLastWeek->flatten(),
+        ];
     }
 
     /**
