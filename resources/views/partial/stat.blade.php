@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-12">
-      <div class="statistics-details d-flex align-items-center justify-content-between">
+      <div class="statistics-details d-flex align-items-center justify-content-between flex-md-nowrap flex-wrap gap-2">
         <div>
           <p class="statistics-title">Omset Bulan Ini</p>
           <h3 class="rate-percentage">@currency($omset)</h3>
@@ -14,11 +14,11 @@
           <h3 class="rate-percentage">@currency($bersih)</h3>
         </div>
         <div class="d-none d-md-block">
-          <p class="statistics-title">Total Barang Laku Bulan Ini</p>
+          <p class="statistics-title">Barang Laku Bulan Ini</p>
           <h3 class="rate-percentage">@number($totalLaku)</h3>
         </div>
         <div class="d-none d-md-block">
-          <p class="statistics-title">Total Barang Ganti Rugi Bulan Ini</p>
+          <p class="statistics-title">Barang Ganti Rugi Bulan Ini</p>
           <h3 class="rate-percentage">@number($totalRugi)</h3>
         </div>
       </div>

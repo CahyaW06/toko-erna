@@ -3,7 +3,7 @@
     <div class="d-sm-flex justify-content-between align-items-start">
       <div>
        <h4 class="card-title card-title-dash">Rekap Pendapatan</h4>
-       <h5 class="card-subtitle card-subtitle-dash">Perbandingan pendapatan bersih antara minggu ini dengan minggu sebelumnya</h5>
+       <p class="card-subtitle card-subtitle-dash">Perbandingan pendapatan bersih antara minggu ini dengan minggu sebelumnya</p>
       </div>
       <div id="performance-line-legend"></div>
     </div>

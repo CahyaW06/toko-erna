@@ -14,14 +14,12 @@
         <div class="tab-content tab-content-basic">
           <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
             @include('partial.stat')
-            <div class="row">
+            <div class="row d-flex gap-1 flex-md-nowrap flex-wrap">
               <div class="col-lg-8 d-flex flex-column">
-                <div class="row">
-                  @include('partial.log-pendapatan')
-                </div>
-                <div class="row mt-2">
+                @include('partial.log-pendapatan')
+                {{-- <div class="row mt-2">
                   @include('partial.stok-bar')
-                </div>
+                </div> --}}
               </div>
               <div class="col-lg-4 d-flex flex-column">
                 @include('partial.event')

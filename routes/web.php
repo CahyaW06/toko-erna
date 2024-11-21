@@ -18,7 +18,7 @@ Route::get('/', function() {
     $logTransaksi = LogKeuangan::where('created_at', '>', $now->startOfMonth())->get();
 
     $stokGudang = Barang::orderBy('jumlah', 'ASC')
-    ->limit(13)->get();
+    ->limit(5)->get();
 
     $omset = 0;
     $pengeluaran = 0;

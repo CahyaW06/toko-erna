@@ -1,4 +1,4 @@
-<div class="card card-rounded h-100">
+<div class="card card-rounded">
     <div class="card-body">
       <div class="d-flex align-items-center justify-content-between mb-3">
         <h4 class="card-title card-title-dash">Stok Gudang Berdasarkan Jumlah Paling Sedikit</h4>
@@ -7,7 +7,7 @@
         <ul class="bullet-line-list">
           @foreach ($stokGudang as $value)
           <li>
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between gap-5">
               <div><span class="text-light-green">{{ $value->nama }}</span></div>
               <p>{{ $value->jumlah }}</p>
             </div>
