@@ -15,8 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function() {
     $now = Carbon::now();
-    $logTokoSebelumnya = LogToko::where('created_at', '<' , $now->startOfMonth())->get()->first();
     $logTransaksi = LogKeuangan::where('created_at', '>', $now->startOfMonth())->get();
+
+    $stokGudang = Barang::orderBy('jumlah', 'ASC')
+    ->limit(13)->get();
 
     $omset = 0;
     $pengeluaran = 0;
@@ -44,6 +46,7 @@ Route::get('/', function() {
         'bersih' => $bersih,
         'totalLaku' => $totalLaku,
         'totalRugi' => $totalRugi,
+        'stokGudang' => $stokGudang,
     ]);
 })->name('home');
 
