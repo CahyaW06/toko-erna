@@ -24,6 +24,7 @@
                       <th>Kode Barang</th>
                       <th>Nama</th>
                       <th>Stok Gudang</th>
+                      <th>HPP</th>
                       <th>Terakhir Update</th>
                       <th>Aksi</th>
                   </tr>
@@ -33,6 +34,7 @@
                 <tfoot>
                   <tr>
                       <th></th>
+                      <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
@@ -92,6 +94,7 @@ $(document).ready(function () {
       { data: 'kode_barang', name: 'kode_barang' },
       { data: 'nama', name: 'nama' },
       { data: 'jumlah', name: 'jumlah' },
+      { data: 'harga', name: 'harga' },
       { data: 'updated_at', name: 'updated_at' },
       { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
     ],

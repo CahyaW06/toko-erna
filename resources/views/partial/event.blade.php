@@ -1,8 +1,7 @@
 <div class="card card-rounded h-100">
     <div class="card-body">
       <div class="d-flex align-items-center justify-content-between mb-3">
-        <h4 class="card-title card-title-dash">Aktivitas Terknini</h4>
-        {{-- <p class="mb-0">20 finished, 5 remaining</p> --}}
+        <h4 class="card-title card-title-dash">Aktivitas Terkini</h4>
       </div>
       <div class="mt-4">
         <ul class="bullet-line-list">

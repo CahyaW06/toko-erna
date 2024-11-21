@@ -23,6 +23,10 @@
               <label for="jumlah">Stok Gudang</label>
               <input type="integer" class="form-control" id="jumlah" name="jumlah" placeholder="Jumlah" value="{{ $barang->jumlah }}" required>
             </div>
+            <div class="form-group">
+              <label for="harga">Harga</label>
+              <input type="integer" class="form-control" id="harga" name="harga" placeholder="Harga" value="{{ $barang->harga }}" required>
+            </div>
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary me-2" onclick="return confirm('Apakah data sudah valid?')">Terapkan</button>
             </div>
@@ -42,6 +46,13 @@
           $("#jumlah").val(n.toLocaleString());
         }
         $("#jumlah").keyup(function (e) {
+            e.preventDefault();
+            if ($(this).val().length > 3) {
+                var n = parseInt($(this).val().replace(/\D/g,''),10);
+                $(this).val(n.toLocaleString());
+            }
+        });
+        $("#harga").keyup(function (e) {
             e.preventDefault();
             if ($(this).val().length > 3) {
                 var n = parseInt($(this).val().replace(/\D/g,''),10);

@@ -33,12 +33,15 @@ class BarangController extends Controller
 
     public function getDatas(Request $request) {
         if ($request->ajax()) {
-            $data = Barang::select('id', 'kode_barang', 'nama', 'jumlah', 'updated_at')->get();
+            $data = Barang::select('id', 'kode_barang', 'nama', 'jumlah', 'harga', 'updated_at')->get();
 
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('jumlah', function($row) {
                     return number_format($row->jumlah,0,',','.');
+                })
+                ->editColumn('harga', function($row) {
+                    return "Rp " . number_format($row->harga,0,',','.');
                 })
                 ->editColumn('updated_at', function ($row) {
                     return $row->updated_at->format('d M Y');
@@ -127,7 +130,8 @@ class BarangController extends Controller
         $validated = $request->validate([
             'kode_barang' => 'required',
             'nama' => 'required',
-            'jumlah' => 'required'
+            'jumlah' => 'required',
+            'harga' => 'required'
         ]);
 
         $id = $request->route('gudang');
@@ -136,6 +140,7 @@ class BarangController extends Controller
         $barang->kode_barang = $validated['kode_barang'];
         $barang->nama = $validated['nama'];
         $barang->jumlah = str_replace('.', '', $validated['jumlah']);
+        $barang->harga = str_replace('.', '', $validated['harga']);
 
         try {
             $barang->save();
