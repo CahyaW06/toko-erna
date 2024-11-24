@@ -38,5 +38,13 @@
           <span class="menu-title">Toko</span>
         </a>
       </li>
+      <li class="nav-item d-flex justify-content-center my-5">
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit" class="btn btn-danger d-flex align-items-center gap-1">
+            <i class="mdi mdi-logout"></i> Logout
+          </button>
+        </form>
+      </li>
     </ul>
   </nav>

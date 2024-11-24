@@ -1,20 +1,22 @@
-<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row ">
-    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-      <div class="me-3">
-        <button class="navbar-toggler navbar-toggler align-self-center d-lg-none" type="button" data-bs-toggle="minimize">
-          <span class="icon-menu"></span>
-        </button>
-      </div>
+<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+  <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+    <div>
+      <a class="navbar-brand brand-logo" href="{{ route('home') }}">
+        <h4>Mom & Kiddos</h4>
+      </a>
+      <a class="ms-4 navbar-brand brand-logo-mini" href="{{ route('home') }}">
+        <h6>M&K</h6>
+      </a>
     </div>
-    <div class="navbar-menu-wrapper d-flex align-items-top">
+  </div>
+  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
       <ul class="navbar-nav">
-        <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-          <a href="/" class="text-decoration-none"><h1 class="welcome-text"><span class="text-black fw-bold">Mom & Kiddos</span></h1></a>
-          <h3 class="welcome-sub-text"></h3>
-        </li>
+
       </ul>
+
       <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
         <span class="mdi mdi-menu"></span>
       </button>
-    </div>
-  </nav>
+  </div>
+</nav>
+
