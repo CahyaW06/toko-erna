@@ -86,7 +86,7 @@ $(document).ready(function () {
                 filename: function() {
                   var date = new Date();
                   var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
-                  return formattedDate + '_log_retail'; // Nama file yang dihasilkan
+                  return formattedDate + '_log_retail_tes'; // Nama file yang dihasilkan
                 },
                 title: 'Data Log Retail', // Judul di dalam file Excel
                 exportOptions: {
@@ -94,7 +94,7 @@ $(document).ready(function () {
                   format: {
                     body: function (data, row, column, node) {
                       // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
-                      if (column === 8) {
+                      if (column == 7) {
                         return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                       }
                       return data; // Untuk kolom lain, tetap ekspor apa adanya

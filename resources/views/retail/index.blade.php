@@ -92,11 +92,11 @@
                         },
                         title: 'Data Stok di Retail', // Judul di dalam file Excel
                         exportOptions: {
-                          columns: ':visible', // Ekspor semua kolom yang terlihat
+                          columns: ':not(:last-child)', // Ekspor semua kolom yang terlihat
                           format: {
                             body: function (data, row, column, node) {
                               // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
-                              if (column >= 4) {
+                              if (column >= 3) {
                                 return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                               }
                               return data; // Untuk kolom lain, tetap ekspor apa adanya
