@@ -85,7 +85,7 @@ $(document).ready(function () {
                   format: {
                     body: function (data, row, column, node) {
                       // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
-                      if (column === 7) {
+                      if (column >= 4) {
                         return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                       }
                       return data; // Untuk kolom lain, tetap ekspor apa adanya

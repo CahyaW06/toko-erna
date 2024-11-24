@@ -80,6 +80,9 @@ $(document).ready(function () {
                       if (column === 4) {
                         return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                       }
+                      if (column === 5) {
+                        return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
+                      }
                       return data; // Untuk kolom lain, tetap ekspor apa adanya
                     }
                   }
