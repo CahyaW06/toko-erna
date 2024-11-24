@@ -85,7 +85,7 @@ $(document).ready(function () {
                 filename: function() {
                   var date = new Date();
                   var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
-                  return formattedDate + '_log_retail'; // Nama file yang dihasilkan
+                  return formattedDate + '_log_stok_gudang'; // Nama file yang dihasilkan
                 },
                 title: 'Data Log Stok Gudang', // Judul di dalam file Excel
                 exportOptions: {

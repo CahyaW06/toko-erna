@@ -88,9 +88,9 @@
                         filename: function() {
                           var date = new Date();
                           var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
-                          return formattedDate + '_barang_retail'; // Nama file yang dihasilkan
+                          return formattedDate + '_stok_retail'; // Nama file yang dihasilkan
                         },
-                        title: 'Data Barang di Retail', // Judul di dalam file Excel
+                        title: 'Data Stok di Retail', // Judul di dalam file Excel
                         exportOptions: {
                           columns: ':visible', // Ekspor semua kolom yang terlihat
                           format: {

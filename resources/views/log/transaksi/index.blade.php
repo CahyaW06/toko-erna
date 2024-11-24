@@ -89,9 +89,9 @@ $(document).ready(function () {
                 filename: function() {
                   var date = new Date();
                   var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
-                  return formattedDate + '_log_retail'; // Nama file yang dihasilkan
+                  return formattedDate + '_log_transaksi'; // Nama file yang dihasilkan
                 },
-                title: 'Data Log Retail', // Judul di dalam file Excel
+                title: 'Data Log Transaksi', // Judul di dalam file Excel
                 exportOptions: {
                   columns: ':visible', // Ekspor semua kolom yang terlihat
                   format: {
