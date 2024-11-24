@@ -11,6 +11,7 @@
             </li>
           </ul>
         </div>
+        @auth
         <div class="tab-content tab-content-basic">
           <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
             @include('partial.stat')
@@ -27,6 +28,7 @@
             </div>
           </div>
         </div>
+        @endauth
       </div>
     </div>
 </div>
