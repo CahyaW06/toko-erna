@@ -41,6 +41,22 @@ class LogStokController extends Controller
                 ->editColumn('nominal', function($row) {
                     return 'Rp ' . number_format($row->nominal,0,',','.');
                 })
+                ->addColumn('aksi', function($row){
+                    $csrfToken = csrf_field();
+                    $methodField = method_field('DELETE');
+                    $editUrl = route('log.gudang.edit', ['gudang' => $row->id]);
+                    $deleteUrl = route('log.gudang.destroy', ['gudang' => $row->id]);
+
+                    $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
+                    $btn .= $csrfToken;
+                    $btn .= $methodField;
+                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
+                    $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus log ini?\')"><i class="mdi mdi-delete"></i></button>';
+                    $btn .= '</form>';
+
+                    return $btn;
+                })
+                ->rawColumns(['aksi'])
                 ->make(true);
         }
     }
@@ -127,24 +143,80 @@ class LogStokController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LogStok $logStok)
+    public function edit(Request $request)
     {
-        //
+        $log = LogStok::find($request->route('gudang'));
+        $barangs = Barang::all();
+        return view('log.gudang.edit', [
+            'log' => $log,
+            'barangs' => $barangs
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LogStok $logStok)
+    public function update(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'barang' => 'required',
+            'status' => 'required',
+            'jumlah' => 'required',
+            'nominal' => 'required'
+        ]);
+
+        try {
+            $logId = $request->route('gudang');
+            $log = LogStok::find($logId);
+            $gudangLama = Barang::find($log->barang_id);
+
+            $log->barang_id = $validated['barang'];
+            $log->status = $validated['status'];
+            $log->jumlah = str_replace('.', '', $validated['jumlah']);
+            $log->nominal = str_replace('.', '', $validated['nominal']);
+
+            $gudang = Barang::find($validated['barang']);
+            if ($validated['status'] == 1) {
+                $gudangLama->jumlah -= str_replace('.', '', $validated['jumlah']);
+                $gudang->jumlah += str_replace('.', '', $validated['jumlah']);
+            } else {
+                $gudangLama->jumlah += str_replace('.', '', $validated['jumlah']);
+                $gudang->jumlah -= str_replace('.', '', $validated['jumlah']);
+            }
+
+            $gudangLama->save();
+            $gudang->save();
+            $log->save();
+        } catch (Exception $e) {
+            return redirect()->route('log.gudang.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.gudang.index')->with('success', 'Log berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(LogStok $logStok)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $logId = $request->route('gudang');
+            $log = LogStok::find($logId);
+            // dd($log);
+
+            $gudang = Barang::find($log->barang_id);
+            if ($log->status == "Masuk") {
+                $gudang->jumlah -= $log->jumlah;
+            } else {
+                $gudang->jumlah += $log->jumlah;
+            }
+
+            $gudang->save();
+            $log->delete();
+        } catch (Exception $e) {
+            return redirect()->route('log.gudang.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.gudang.index')->with('success', 'Log berhasil dihapus!');
     }
 }

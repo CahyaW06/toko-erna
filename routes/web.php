@@ -15,10 +15,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
-// Route::get('/login', function() {
-//     return view('home.index');
-// })->name('login-page');
 Route::get('/', function() {
     if (Auth::check()) {
         $now = Carbon::now();
