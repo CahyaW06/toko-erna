@@ -38,6 +38,22 @@ class LogRetailController extends Controller
                 ->editColumn('jumlah', function($row) {
                     return number_format($row->jumlah,0,',','.');
                 })
+                ->addColumn('aksi', function($row){
+                    $csrfToken = csrf_field();
+                    $methodField = method_field('DELETE');
+                    $editUrl = route('log.barang.edit', ['barang' => $row->id]);
+                    $deleteUrl = route('log.barang.destroy', ['barang' => $row->id]);
+
+                    $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
+                    $btn .= $csrfToken;
+                    $btn .= $methodField;
+                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
+                    $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus log ini?\')"><i class="mdi mdi-delete"></i></button>';
+                    $btn .= '</form>';
+
+                    return $btn;
+                })
+                ->rawColumns(['aksi'])
                 ->make(true);
         }
     }
@@ -134,24 +150,95 @@ class LogRetailController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LogRetail $logRetail)
+    public function edit(Request $request)
     {
-        //
+        $log = LogRetail::find($request->route('barang'));
+        $barangs = Barang::all();
+        $retails = Retail::all();
+
+        return view('log.retail.edit', [
+            'log' => $log,
+            'barangs' => $barangs,
+            'retails' => $retails,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LogRetail $logRetail)
+    public function update(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'barang' => 'required',
+            'retail' => 'required',
+            'status' => 'required',
+            'jumlah' => 'required',
+        ]);
+
+        try {
+            $logId = $request->route('barang');
+            $log = LogRetail::find($logId);
+
+            // Kembalikan kondisi gudang
+            $retailLama = Retail::find($log->retail_id);
+            $statusLama = $log->status;
+            if ($statusLama == "Diterima") {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
+                $retailLama->push();
+            } else {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
+                $retailLama->push();
+            }
+
+            // Update log
+            $log->barang_id = $validated['barang'];
+            $log->retail_id = $validated['retail'];
+            $log->status = $validated['status'];
+            $log->jumlah = $validated['jumlah'];
+            $log->save();
+
+            // Update kondisi gudang
+            $retailBaru = Retail::find($validated['retail']);
+            $statusBaru = $validated['status'];
+            if ($statusBaru == 1) {
+                $retailBaru->barangs->find($validated['barang'])->pivot->jumlah += str_replace('.', '', $validated['jumlah']);
+                $retailBaru->push();
+            } else {
+                $retailBaru->barangs->find($validated['barang'])->pivot->jumlah -= str_replace('.', '', $validated['jumlah']);
+                $retailBaru->push();
+            }
+
+        } catch (Exception $e) {
+            return redirect()->route('log.barang.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.barang.index')->with('success', 'Log berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(LogRetail $logRetail)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $logId = $request->route('barang');
+            $log = LogRetail::find($logId);
+
+            $retailLama = Retail::find($log->retail_id);
+            $statusLama = $log->status;
+            if ($statusLama == "Diterima") {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
+                $retailLama->push();
+            } else {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
+                $retailLama->push();
+            }
+
+            $log->delete();
+        } catch (Exception $e) {
+            return redirect()->route('log.barang.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.barang.index')->with('success', 'Log berhasil dihapus!');
     }
 }

@@ -202,7 +202,6 @@ class LogStokController extends Controller
         try {
             $logId = $request->route('gudang');
             $log = LogStok::find($logId);
-            // dd($log);
 
             $gudang = Barang::find($log->barang_id);
             if ($log->status == "Masuk") {
