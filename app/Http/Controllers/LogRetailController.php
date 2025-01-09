@@ -194,7 +194,7 @@ class LogRetailController extends Controller
             $log->barang_id = $validated['barang'];
             $log->retail_id = $validated['retail'];
             $log->status = $validated['status'];
-            $log->jumlah = $validated['jumlah'];
+            $log->jumlah = str_replace('.', '', $validated['jumlah']);
             $log->save();
 
             // Update kondisi gudang

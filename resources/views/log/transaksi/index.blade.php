@@ -29,6 +29,7 @@
                       <th>Status Transaksi</th>
                       <th>Jumlah</th>
                       <th>Nominal</th>
+                      <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -44,6 +45,7 @@
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
+                      <th></th>
                   </tr>
                 </tfoot>
               </table>
@@ -77,7 +79,8 @@ $(document).ready(function () {
           { data: 'barang.nama', name: 'barang.nama' },
           { data: 'status', name: 'status' },
           { data: 'jumlah', name: 'jumlah' },
-          { data: 'nominal', name: 'nominal' }
+          { data: 'nominal', name: 'nominal' },
+          { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
         ],
         layout: {
           topStart: {

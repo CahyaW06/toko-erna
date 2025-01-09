@@ -45,6 +45,22 @@ class LogKeuanganController extends Controller
                 ->editColumn('nominal', function($row) {
                     return "Rp " . number_format($row->nominal,0,',','.');
                 })
+                ->addColumn('aksi', function($row){
+                    $csrfToken = csrf_field();
+                    $methodField = method_field('DELETE');
+                    $editUrl = route('log.keuangan.edit', ['keuangan' => $row->id]);
+                    $deleteUrl = route('log.keuangan.destroy', ['keuangan' => $row->id]);
+
+                    $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
+                    $btn .= $csrfToken;
+                    $btn .= $methodField;
+                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
+                    $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus log ini?\')"><i class="mdi mdi-delete"></i></button>';
+                    $btn .= '</form>';
+
+                    return $btn;
+                })
+                ->rawColumns(['aksi'])
                 ->make(true);
         }
     }
@@ -181,7 +197,7 @@ class LogKeuanganController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(LogKeuangan $logKeuangan)
+    public function show(Request $request)
     {
         //
     }
@@ -189,24 +205,110 @@ class LogKeuanganController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LogKeuangan $logKeuangan)
+    public function edit(Request $request)
     {
-        //
+        $log = LogKeuangan::find($request->route('keuangan'));
+        $barangs = Barang::all();
+        $retails = Retail::all();
+
+        return view('log.transaksi.edit', [
+            'log' => $log,
+            'barangs' => $barangs,
+            'retails' => $retails,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLogKeuanganRequest $request, LogKeuangan $logKeuangan)
+    public function update(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'barang' => 'required',
+            'retail' => 'required',
+            'status' => 'required',
+            'jumlah' => 'required',
+            'nominal' => 'required',
+        ]);
+
+        try {
+            $logId = $request->route('keuangan');
+            $log = LogKeuangan::find($logId);
+
+            // Kembalikan kondisi gudang
+            $retailLama = Retail::find($log->retail_id);
+            $statusLama = $log->status;
+            if ($statusLama == "Laku") {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
+                $retailLama->push();
+            } else {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
+                $retailLama->push();
+
+                $barang = Barang::find($log->barang_id);
+                $barang->jumlah += $log->jumlah;
+                $barang->save();
+            }
+
+            // Update log
+            $log->barang_id = $validated['barang'];
+            $log->retail_id = $validated['retail'];
+            $log->status = $validated['status'];
+            $log->jumlah = str_replace('.', '', $validated['jumlah']);
+            $log->nominal = str_replace('.', '', $validated['nominal']);
+            $log->save();
+
+            // Update kondisi gudang
+            $retailBaru = Retail::find($validated['retail']);
+            $statusBaru = $validated['status'];
+            if ($statusBaru == 1) {
+                $retailBaru->barangs->find($validated['barang'])->pivot->jumlah -= str_replace('.', '', $validated['jumlah']);
+                $retailBaru->push();
+            } else {
+                $retailBaru->barangs->find($validated['barang'])->pivot->jumlah += str_replace('.', '', $validated['jumlah']);
+                $retailBaru->push();
+
+                $barang = Barang::find($validated['barang']);
+                $barang->jumlah -= str_replace('.', '', $validated['jumlah']);
+                $barang->save();
+            }
+
+        } catch (Exception $e) {
+            return redirect()->route('log.keuangan.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.keuangan.index')->with('success', 'Log berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(LogKeuangan $logKeuangan)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $logId = $request->route('keuangan');
+            $log = LogKeuangan::find($logId);
+
+            // Kembalikan kondisi gudang
+            $retailLama = Retail::find($log->retail_id);
+            $statusLama = $log->status;
+            if ($statusLama == "Laku") {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
+                $retailLama->push();
+            } else {
+                $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
+                $retailLama->push();
+
+                $barang = Barang::find($log->barang_id);
+                $barang->jumlah += $log->jumlah;
+                $barang->save();
+            }
+
+            $log->delete();
+        } catch (Exception $e) {
+            return redirect()->route('log.keuangan.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.keuangan.index')->with('success', 'Log berhasil dihapus!');
     }
 }
