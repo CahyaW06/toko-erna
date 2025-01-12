@@ -44,6 +44,10 @@
               <label for="jumlah">Jumlah</label>
               <input type="integer" class="form-control form-control-sm" name="jumlah" id="jumlah" placeholder="Jumlah" value="{{ $log->jumlah }}" required>
             </div>
+            <div class="form-group">
+              <label for="nominal">Nominal</label>
+              <input type="integer" class="form-control form-control-sm" name="nominal" id="nominal" placeholder="Nominal" value="{{ $log->nominal }}" required>
+            </div>
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary me-2" onclick="return confirm('Apakah data sudah valid?')">Terapkan</button>
             </div>
@@ -53,18 +57,29 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        if ($("#jumlah").val().length > 3) {
-          var n = parseInt($("#jumlah").val().replace(/\D/g,''),10);
-          $("#jumlah").val(n.toLocaleString());
+  $(document).ready(function () {
+    if ($("#nominal").val().length > 3) {
+      var n = parseInt($("#nominal").val().replace(/\D/g,''),10);
+      $("#nominal").val(n.toLocaleString("id-ID"));
+    }
+    if ($("#jumlah").val().length > 3) {
+      var n = parseInt($("#jumlah").val().replace(/\D/g,''),10);
+      $("#jumlah").val(n.toLocaleString("id-ID"));
+    }
+    $("#jumlah").keyup(function (e) {
+        e.preventDefault();
+        if ($(this).val().length > 3) {
+            var n = parseInt($(this).val().replace(/\D/g,''),10);
+            $(this).val(n.toLocaleString("id-ID"));
         }
-        $("#jumlah").keyup(function (e) {
-            e.preventDefault();
-            if ($(this).val().length > 3) {
-                var n = parseInt($(this).val().replace(/\D/g,''),10);
-                $(this).val(n.toLocaleString());
-            }
-        });
     });
+    $("#nominal").keyup(function (e) {
+        e.preventDefault();
+        if ($(this).val().length > 3) {
+            var n = parseInt($(this).val().replace(/\D/g,''),10);
+            $(this).val(n.toLocaleString("id-ID"));
+        }
+    });
+  });
 </script>
 @endsection

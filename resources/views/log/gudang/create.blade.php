@@ -66,7 +66,7 @@
         $(".nominal").each(function () {
           if ($(this).parent().siblings(".status-form").find(".status").val() == 1) {total += parseInt($(this).val().replace(/[.]/g, ''));}
         });
-        $("#total-nota").text(total.toLocaleString());
+        $("#total-nota").text(total.toLocaleString("id-ID"));
       }
 
 
@@ -93,7 +93,7 @@
                   e.preventDefault();
                   if ($(this).val().length > 3) {
                       var n = parseInt($(this).val().replace(/\D/g,''),10);
-                      $(this).val(n.toLocaleString());
+                      $(this).val(n.toLocaleString("id-ID"));
                   }
 
                   updateTotal();

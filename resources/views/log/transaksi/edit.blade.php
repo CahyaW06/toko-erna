@@ -60,24 +60,24 @@
   $(document).ready(function () {
     if ($("#nominal").val().length > 3) {
       var n = parseInt($("#nominal").val().replace(/\D/g,''),10);
-      $("#nominal").val(n.toLocaleString());
+      $("#nominal").val(n.toLocaleString("id-ID"));
     }
     if ($("#jumlah").val().length > 3) {
       var n = parseInt($("#jumlah").val().replace(/\D/g,''),10);
-      $("#jumlah").val(n.toLocaleString());
+      $("#jumlah").val(n.toLocaleString("id-ID"));
     }
     $("#jumlah").keyup(function (e) {
         e.preventDefault();
         if ($(this).val().length > 3) {
             var n = parseInt($(this).val().replace(/\D/g,''),10);
-            $(this).val(n.toLocaleString());
+            $(this).val(n.toLocaleString("id-ID"));
         }
     });
     $("#nominal").keyup(function (e) {
         e.preventDefault();
         if ($(this).val().length > 3) {
             var n = parseInt($(this).val().replace(/\D/g,''),10);
-            $(this).val(n.toLocaleString());
+            $(this).val(n.toLocaleString("id-ID"));
         }
     });
   });

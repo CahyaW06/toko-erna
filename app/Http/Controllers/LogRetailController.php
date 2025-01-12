@@ -38,6 +38,9 @@ class LogRetailController extends Controller
                 ->editColumn('jumlah', function($row) {
                     return number_format($row->jumlah,0,',','.');
                 })
+                ->editColumn('nominal', function($row) {
+                    return "Rp " . number_format($row->nominal,0,',','.');
+                })
                 ->addColumn('aksi', function($row){
                     $csrfToken = csrf_field();
                     $methodField = method_field('DELETE');
@@ -96,12 +99,14 @@ class LogRetailController extends Controller
                     $retail = Retail::with('barangs')->find($request->retail[$value]);
                     $gudang = Barang::find($request->barang[$value]);
                     $jumlah = str_replace(".", "", $request->jumlah[$value]);
+                    $nominal = str_replace(".", "", $request->nominal[$value]);
 
                     LogRetail::create([
                         'barang_id' => $request->barang[$value],
                         'retail_id' => $request->retail[$value],
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
+                        'nominal' => $nominal,
                     ]);
 
                     $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
@@ -117,12 +122,14 @@ class LogRetailController extends Controller
                     $retail = Retail::with('barangs')->find($request->retail[$value]);
                     $gudang = Barang::find($request->barang[$value]);
                     $jumlah = str_replace(".", "", $request->jumlah[$value]);
+                    $nominal = str_replace(".", "", $request->nominal[$value]);
 
                     LogRetail::create([
                         'barang_id' => $request->barang[$value],
                         'retail_id' => $request->retail[$value],
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
+                        'nominal' => $nominal,
                     ]);
 
                     $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
@@ -173,6 +180,7 @@ class LogRetailController extends Controller
             'retail' => 'required',
             'status' => 'required',
             'jumlah' => 'required',
+            'nominal' => 'required',
         ]);
 
         try {
@@ -195,6 +203,7 @@ class LogRetailController extends Controller
             $log->retail_id = $validated['retail'];
             $log->status = $validated['status'];
             $log->jumlah = str_replace('.', '', $validated['jumlah']);
+            $log->nominal = str_replace('.', '', $validated['nominal']);
             $log->save();
 
             // Update kondisi gudang
