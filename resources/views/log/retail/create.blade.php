@@ -2,7 +2,7 @@
 
 @section('main-panel')
 <div class="row">
-  <div class="col-lg-9">
+  <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Tambah Log Barang</h4>

@@ -13,7 +13,7 @@
                 </p>
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
-                <a href="{{ route('log.keuangan.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Transaksi</a>
+                <a href="{{ route('log.keuangan.create') }}" type="button" class="btn btn-success btn-md">Tambah Transaksi</a>
               </div>
             </div>
             <div class="table-responsive">
@@ -29,6 +29,7 @@
                       <th>Status Transaksi</th>
                       <th>Jumlah</th>
                       <th>Nominal</th>
+                      <th>Asal Barang</th>
                       <th>Aksi</th>
                   </tr>
                 </thead>
@@ -37,6 +38,7 @@
                 <tfoot>
                   <tr>
                       <th></th>
+                      <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
@@ -80,6 +82,7 @@ $(document).ready(function () {
           { data: 'status', name: 'status' },
           { data: 'jumlah', name: 'jumlah' },
           { data: 'nominal', name: 'nominal' },
+          { data: 'keterangan', name: 'keterangan' },
           { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
         ],
         layout: {

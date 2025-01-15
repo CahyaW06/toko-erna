@@ -13,7 +13,7 @@
                 </p>
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
-                <a href="{{ route('log.gudang.create') }}" type="button" class="btn btn-outline-success btn-md">Tambah Stok Gudang</a>
+                <a href="{{ route('log.gudang.create') }}" type="button" class="btn btn-success btn-md">Tambah Stok Gudang</a>
               </div>
             </div>
             <div class="table-responsive">

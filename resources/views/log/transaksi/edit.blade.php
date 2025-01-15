@@ -48,6 +48,15 @@
               <label for="nominal">Nominal</label>
               <input type="integer" class="form-control form-control-sm" name="nominal" id="nominal" placeholder="Nominal" value="{{ $log->nominal }}" required>
             </div>
+            <div class="form-group">
+              <label for="keterangan">Asal Barang</label>
+              <div class="d-flex flex-column">
+                <select class="form-control form-control-sm text-black" name="keterangan" id="keterangan">
+                  <option @if($log->keterangan == "Konsinyasi") selected @endif value="1">Konsinyasi</option>
+                  <option @if($log->keterangan == "Gudang") selected @endif value="2">Gudang</option>
+                </select>
+              </div>
+            </div>
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary me-2" onclick="return confirm('Apakah data sudah valid?')">Terapkan</button>
             </div>

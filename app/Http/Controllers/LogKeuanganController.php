@@ -158,10 +158,16 @@ class LogKeuanganController extends Controller
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
+                        'keterangan' => $request->keterangan[$value],
                     ]);
 
-                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
-                    $retail->push();
+                    if ($request->keterangan[$value] == 1) {
+                        $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
+                        $retail->push();
+                    } else {
+                        $gudang->jumlah -= $jumlah;
+                        $gudang->save();
+                    }
                 }
             }
 
@@ -178,10 +184,13 @@ class LogKeuanganController extends Controller
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
+                        'keterangan' => $request->keterangan[$value],
                     ]);
 
-                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
-                    $retail->push();
+                    if ($request->keterangan[$value] == 1) {
+                        $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
+                        $retail->push();
+                    }
 
                     $gudang->jumlah = $gudang->jumlah - $jumlah;
                     $gudang->save();
@@ -229,6 +238,7 @@ class LogKeuanganController extends Controller
             'status' => 'required',
             'jumlah' => 'required',
             'nominal' => 'required',
+            'keterangan' => 'required',
         ]);
 
         try {
@@ -238,13 +248,21 @@ class LogKeuanganController extends Controller
             // Kembalikan kondisi gudang
             $retailLama = Retail::find($log->retail_id);
             $statusLama = $log->status;
-            if ($statusLama == "Laku") {
-                $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
-                $retailLama->push();
-            } else {
-                $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
-                $retailLama->push();
+            $ketLama = $log->keterangan;
 
+            if ($ketLama == "Konsinyasi") {
+                if ($statusLama == "Laku") {
+                    $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
+                    $retailLama->push();
+                } else {
+                    $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
+                    $retailLama->push();
+
+                    $barang = Barang::find($log->barang_id);
+                    $barang->jumlah += $log->jumlah;
+                    $barang->save();
+                }
+            } else {
                 $barang = Barang::find($log->barang_id);
                 $barang->jumlah += $log->jumlah;
                 $barang->save();
@@ -256,18 +274,27 @@ class LogKeuanganController extends Controller
             $log->status = $validated['status'];
             $log->jumlah = str_replace('.', '', $validated['jumlah']);
             $log->nominal = str_replace('.', '', $validated['nominal']);
+            $log->keterangan = $validated['keterangan'];
             $log->save();
 
             // Update kondisi gudang
             $retailBaru = Retail::find($validated['retail']);
             $statusBaru = $validated['status'];
-            if ($statusBaru == 1) {
-                $retailBaru->barangs->find($validated['barang'])->pivot->jumlah -= str_replace('.', '', $validated['jumlah']);
-                $retailBaru->push();
-            } else {
-                $retailBaru->barangs->find($validated['barang'])->pivot->jumlah += str_replace('.', '', $validated['jumlah']);
-                $retailBaru->push();
+            $ketBaru = $validated['keterangan'];
 
+            if ($ketBaru == 1) {
+                if ($statusBaru == 1) {
+                    $retailBaru->barangs->find($validated['barang'])->pivot->jumlah -= str_replace('.', '', $validated['jumlah']);
+                    $retailBaru->push();
+                } else {
+                    $retailBaru->barangs->find($validated['barang'])->pivot->jumlah += str_replace('.', '', $validated['jumlah']);
+                    $retailBaru->push();
+
+                    $barang = Barang::find($validated['barang']);
+                    $barang->jumlah -= str_replace('.', '', $validated['jumlah']);
+                    $barang->save();
+                }
+            } else {
                 $barang = Barang::find($validated['barang']);
                 $barang->jumlah -= str_replace('.', '', $validated['jumlah']);
                 $barang->save();
@@ -292,13 +319,21 @@ class LogKeuanganController extends Controller
             // Kembalikan kondisi gudang
             $retailLama = Retail::find($log->retail_id);
             $statusLama = $log->status;
-            if ($statusLama == "Laku") {
-                $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
-                $retailLama->push();
-            } else {
-                $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
-                $retailLama->push();
+            $ketLama = $log->keterangan;
 
+            if ($ketLama == 'Konsinyasi') {
+                if ($statusLama == "Laku") {
+                    $retailLama->barangs->find($log->barang_id)->pivot->jumlah += $log->jumlah;
+                    $retailLama->push();
+                } else {
+                    $retailLama->barangs->find($log->barang_id)->pivot->jumlah -= $log->jumlah;
+                    $retailLama->push();
+
+                    $barang = Barang::find($log->barang_id);
+                    $barang->jumlah += $log->jumlah;
+                    $barang->save();
+                }
+            } else {
                 $barang = Barang::find($log->barang_id);
                 $barang->jumlah += $log->jumlah;
                 $barang->save();

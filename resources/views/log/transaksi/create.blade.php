@@ -2,7 +2,7 @@
 
 @section('main-panel')
 <div class="row">
-  <div class="col-lg-10">
+  <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Tambah Log Transaksi</h4>
@@ -49,6 +49,15 @@
               <div class="form-group">
                 <label for="nominal">Nominal</label>
                 <input type="integer" class="form-control form-control-sm nominal" name="nominal[]" id="nominal" placeholder="Nominal" required>
+              </div>
+              <div class="form-group">
+                <label for="keterangan">Asal Barang</label>
+                <div class="d-flex flex-column">
+                  <select class="form-control form-control-sm text-black" name="keterangan[]" id="keterangan">
+                    <option value="1">Konsinyasi</option>
+                    <option value="2">Gudang</option>
+                  </select>
+                </div>
               </div>
               <button type="button" class="btn btn-danger btn-sm remove-row ms-1 d-flex align-items-center"><i class="mdi mdi-delete"></i><span class="ms-1">Hapus</span></button>
             </div>
