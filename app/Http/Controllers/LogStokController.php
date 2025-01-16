@@ -101,6 +101,7 @@ class LogStokController extends Controller
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
+                        'created_at' => $request->tanggal[$value],
                     ]);
 
                     $gudang->jumlah = $gudang->jumlah + $jumlah;
@@ -119,6 +120,7 @@ class LogStokController extends Controller
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
+                        'created_at' => $request->tanggal[$value],
                     ]);
 
                     $gudang->jumlah = $gudang->jumlah - $jumlah;
@@ -162,7 +164,8 @@ class LogStokController extends Controller
             'barang' => 'required',
             'status' => 'required',
             'jumlah' => 'required',
-            'nominal' => 'required'
+            'nominal' => 'required',
+            'tanggal' => 'required',
         ]);
 
         try {
@@ -174,6 +177,7 @@ class LogStokController extends Controller
             $log->status = $validated['status'];
             $log->jumlah = str_replace('.', '', $validated['jumlah']);
             $log->nominal = str_replace('.', '', $validated['nominal']);
+            $log->created_at = $validated['tanggal'];
 
             $gudang = Barang::find($validated['barang']);
             if ($validated['status'] == 1) {

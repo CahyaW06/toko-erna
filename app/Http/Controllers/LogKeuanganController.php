@@ -159,6 +159,7 @@ class LogKeuanganController extends Controller
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
                         'keterangan' => $request->keterangan[$value],
+                        'created_at' => $request->tanggal[$value],
                     ]);
 
                     if ($request->keterangan[$value] == 1) {
@@ -185,6 +186,7 @@ class LogKeuanganController extends Controller
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
                         'keterangan' => $request->keterangan[$value],
+                        'created_at' => $request->tanggal[$value],
                     ]);
 
                     if ($request->keterangan[$value] == 1) {
@@ -239,6 +241,7 @@ class LogKeuanganController extends Controller
             'jumlah' => 'required',
             'nominal' => 'required',
             'keterangan' => 'required',
+            'tanggal' => 'required',
         ]);
 
         try {
@@ -275,6 +278,7 @@ class LogKeuanganController extends Controller
             $log->jumlah = str_replace('.', '', $validated['jumlah']);
             $log->nominal = str_replace('.', '', $validated['nominal']);
             $log->keterangan = $validated['keterangan'];
+            $log->created_at = $validated['tanggal'];
             $log->save();
 
             // Update kondisi gudang

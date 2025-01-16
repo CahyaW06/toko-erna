@@ -107,6 +107,7 @@ class LogRetailController extends Controller
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
+                        'created_at' => $request->tanggal[$value],
                     ]);
 
                     $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
@@ -130,6 +131,7 @@ class LogRetailController extends Controller
                         'status' => $request->status[$value],
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
+                        'created_at' => $request->tanggal[$value],
                     ]);
 
                     $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
@@ -181,6 +183,7 @@ class LogRetailController extends Controller
             'status' => 'required',
             'jumlah' => 'required',
             'nominal' => 'required',
+            'tanggal' => 'required',
         ]);
 
         try {
@@ -204,6 +207,7 @@ class LogRetailController extends Controller
             $log->status = $validated['status'];
             $log->jumlah = str_replace('.', '', $validated['jumlah']);
             $log->nominal = str_replace('.', '', $validated['nominal']);
+            $log->created_at = $validated['tanggal'];
             $log->save();
 
             // Update kondisi gudang

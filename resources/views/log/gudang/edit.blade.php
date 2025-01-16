@@ -12,6 +12,10 @@
             @csrf
             @method('PUT')
             <div class="form-group">
+              <label for="tanggal">Tanggal</label>
+              <input type="date" class="form-control form-control-sm" name="tanggal" id="tanggal" placeholder="tanggal" value="{{ \Carbon\Carbon::parse($log->created_at)->format("Y-m-d") }}" required>
+            </div>
+            <div class="form-group">
               <label for="barang">Barang</label>
               <div class="d-flex flex-column">
                 <select class="form-control form-control-sm text-black" name="barang" id="barang">

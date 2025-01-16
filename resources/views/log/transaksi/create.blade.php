@@ -14,6 +14,10 @@
           <div id="form-container">
             <div class="d-lg-flex gap-2 align-items-center mt-3 border-bottom pb-4 pb-lg-0" id="row-input">
               <div class="form-group">
+                <label for="tanggal">Tanggal</label>
+                <input type="date" class="form-control form-control-sm" name="tanggal[]" id="tanggal" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
+              </div>
+              <div class="form-group">
                 <label for="retail">Retail</label>
                 <div class="d-flex flex-column">
                   <select class="form-control form-control-sm text-black" name="retail[]" id="retail">
