@@ -24,7 +24,6 @@
     type: "GET",
     url: "{{ route('log.keuangan.chart') }}",
     success: function (response) {
-      console.log(response)
       labels = response.labels;
       thisWeekData = response.thisWeekData;
       lastWeekData = response.lastWeekData;

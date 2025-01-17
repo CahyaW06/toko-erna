@@ -10,6 +10,7 @@ use App\Http\Controllers\LogTokoController;
 use App\Http\Controllers\RetailController;
 use App\Models\Barang;
 use App\Models\LogKeuangan;
+use App\Models\LogStok;
 use App\Models\LogToko;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,7 @@ Route::get('/', function() {
     if (Auth::check()) {
         $now = Carbon::now();
         $logTransaksi = LogKeuangan::where('created_at', '>', $now->startOfMonth())->get();
+        $logGudang = LogStok::where('created_at', '>', $now->startOfMonth())->get();
 
         $stokGudang = Barang::orderBy('jumlah', 'ASC')
         ->limit(5)->get();
@@ -36,6 +38,10 @@ Route::get('/', function() {
                 $pengeluaran += $value->nominal;
                 $totalRugi += $value->jumlah;
             }
+        }
+
+        foreach ($logGudang as $key => $value) {
+            $pengeluaran += $value->nominal;
         }
 
         $bersih = $omset - $pengeluaran;

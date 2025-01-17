@@ -13,11 +13,11 @@
           <p class="statistics-title">Keuntungan Bulan Ini</p>
           <h3 class="rate-percentage">@currency($bersih)</h3>
         </div>
-        <div class="d-none d-md-block">
+        <div>
           <p class="statistics-title">Barang Laku Bulan Ini</p>
           <h3 class="rate-percentage">@number($totalLaku)</h3>
         </div>
-        <div class="d-none d-md-block">
+        <div>
           <p class="statistics-title">Barang Ganti Rugi Bulan Ini</p>
           <h3 class="rate-percentage">@number($totalRugi)</h3>
         </div>
