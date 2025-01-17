@@ -32,9 +32,9 @@
       if (document.getElementById("performaneLine")) {
           var graphGradient = document.getElementById("performaneLine").getContext('2d');
           var graphGradient2 = document.getElementById("performaneLine").getContext('2d');
-          var saleGradientBg = graphGradient.createLinearGradient(5, 0, 5, 100);
-          saleGradientBg.addColorStop(0, 'rgba(26, 115, 232, 0.18)');
-          saleGradientBg.addColorStop(1, 'rgba(26, 115, 232, 0.02)');
+          var saleGradientBg = graphGradient.createLinearGradient(5, 0, 5, 150);
+          saleGradientBg.addColorStop(0, 'rgba(26, 115, 232, 0.5)');
+          saleGradientBg.addColorStop(1, 'rgba(26, 115, 232, 0.1)');
           var saleGradientBg2 = graphGradient2.createLinearGradient(100, 0, 50, 150);
           saleGradientBg2.addColorStop(0, 'rgba(0, 208, 255, 0.19)');
           saleGradientBg2.addColorStop(1, 'rgba(0, 208, 255, 0.03)');
@@ -65,8 +65,8 @@
                 borderWidth: 1.5,
                 fill: true, // 3: no fill
                 pointBorderWidth: 1,
-                pointRadius: [0, 0, 0, 4, 0],
-                pointHoverRadius: [0, 0, 0, 2, 0],
+                pointRadius: [4, 4, 4, 4, 4,4, 4, 4, 4, 4,4, 4, 4],
+                pointHoverRadius: [2, 2, 2, 2, 2,2, 2, 2, 2, 2,2, 2, 2],
                 pointBackgroundColor: ['#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)', '#52CDFF', '#52CDFF', '#52CDFF','#52CDFF)'],
                   pointBorderColor: ['#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff','#fff',],
             }]
