@@ -27,6 +27,12 @@ class RetailController extends Controller
 
     public function getRetails(Request $request) {
         if ($request->ajax()) {
+            /*
+                !update,
+                ide:
+                - dimapping dulu berdasarkan barang
+                - buat column berdasarkan map
+            */
             $data = Retail::with('barangs')
                 ->select('id', 'nama', 'alamat')
                 ->get();

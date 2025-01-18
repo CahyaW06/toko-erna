@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\GudangExport;
 use App\Models\Barang;
+use App\Models\Retail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
@@ -88,12 +90,17 @@ class BarangController extends Controller
         ]);
 
         try {
-            Barang::create([
+            $barang = Barang::create([
                 'kode_barang' => $validated['kode_barang'],
                 'nama' => $validated['nama'],
                 'harga' => str_replace('.', '', $validated['harga']),
                 'jumlah' => str_replace('.', '', $validated['jumlah']),
             ]);
+
+            $retails = Retail::all();
+            foreach ($retails as $key => $value) {
+                $value->barangs()->attach($barang->id);
+            }
         } catch (Exception $e) {
             return redirect()->route('stok.gudang.index')->with('error', $e->getMessage());
         }
