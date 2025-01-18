@@ -99,11 +99,11 @@ $(document).ready(function () {
                 },
                 title: 'Data Log Transaksi', // Judul di dalam file Excel
                 exportOptions: {
-                  columns: ':visible', // Ekspor semua kolom yang terlihat
+                  columns:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], // Ekspor semua kolom yang terlihat
                   format: {
                     body: function (data, row, column, node) {
                       // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
-                      if (column >= 7) {
+                      if (column == 7 || column == 8) {
                         return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                       }
                       return data; // Untuk kolom lain, tetap ekspor apa adanya

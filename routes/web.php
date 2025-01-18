@@ -35,7 +35,6 @@ Route::get('/', function() {
                 $omset += $value->nominal;
                 $totalLaku += $value->jumlah;
             } else {
-                $pengeluaran += $value->nominal;
                 $totalRugi += $value->jumlah;
             }
         }

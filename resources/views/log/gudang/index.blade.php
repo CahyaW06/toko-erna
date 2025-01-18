@@ -92,7 +92,7 @@ $(document).ready(function () {
                 },
                 title: 'Data Log Stok Gudang', // Judul di dalam file Excel
                 exportOptions: {
-                  columns: ':visible', // Ekspor semua kolom yang terlihat
+                  columns: [0, 1, 2, 3, 4, 5, 6], // Ekspor semua kolom yang terlihat
                   format: {
                     body: function (data, row, column, node) {
                       // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
