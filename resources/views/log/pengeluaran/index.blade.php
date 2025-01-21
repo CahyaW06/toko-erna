@@ -7,13 +7,13 @@
         <div class="card-body">
             <div class="row">
               <div class="col">
-                <h3 class="card-title">Data Log Retail</h3>
+                <h3 class="card-title">Data Log Pengeluaran</h3>
                 <p class="card-description">
-                  Berikut ini daftar transaksi konsinyasi barang di seluruh retail.
+                  Berikut ini daftar pengeluaran toko.
                 </p>
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
-                <a href="{{ route('log.barang.create') }}" type="button" class="btn btn-success btn-md">Tambah Konsinyasi</a>
+                <a href="{{ route('log.pengeluaran.create') }}" type="button" class="btn btn-success btn-md">Tambah Pengeluaran</a>
               </div>
             </div>
             <div class="table-responsive">
@@ -22,12 +22,7 @@
                   <tr>
                       <th>No</th>
                       <th>Tanggal Transaksi</th>
-                      <th>Retail</th>
-                      <th>Alamat</th>
-                      <th>Kode Barang</th>
-                      <th>Barang</th>
-                      <th>Status Barang</th>
-                      <th>Jumlah</th>
+                      <th>Rincian</th>
                       <th>Nominal</th>
                       <th>Aksi</th>
                   </tr>
@@ -37,11 +32,6 @@
                 <tfoot>
                   <tr>
                       <th></th>
-                      <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
@@ -66,7 +56,7 @@ $(document).ready(function () {
     scrollY: 400,
     autoWidth: false,
     ajax: {
-      url: "{{ route('log.barang.get') }}",
+      url: "{{ route('log.pengeluaran.get') }}",
       type: 'POST', // Gunakan metode POST
       headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
@@ -75,12 +65,7 @@ $(document).ready(function () {
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
       { data: 'created_at', name: 'created_at' },
-      { data: 'retail.nama', name: 'retail.nama' },
-      { data: 'retail.alamat', name: 'retail.alamat' },
-      { data: 'barang.kode_barang', name: 'barang.kode_barang' },
-      { data: 'barang.nama', name: 'barang.nama' },
-      { data: 'status', name: 'status' },
-      { data: 'jumlah', name: 'jumlah' },
+      { data: 'nama', name: 'nama' },
       { data: 'nominal', name: 'nominal' },
       { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
     ],
@@ -94,15 +79,15 @@ $(document).ready(function () {
             filename: function() {
               var date = new Date();
               var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
-              return formattedDate + '_log_retail'; // Nama file yang dihasilkan
+              return formattedDate + '_log_pengeluaran'; // Nama file yang dihasilkan
             },
-            title: 'Data Log Retail', // Judul di dalam file Excel
+            title: 'Data Log Pengeluaran', // Judul di dalam file Excel
             exportOptions: {
-              columns: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Ekspor semua kolom yang terlihat
+              columns: ':not(:last-child)', // Ekspor semua kolom yang terlihat
               format: {
                 body: function (data, row, column, node) {
                   // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
-                  if (column == 7 || column == 8) {
+                  if (column == 3) {
                     return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                   }
                   return data; // Untuk kolom lain, tetap ekspor apa adanya

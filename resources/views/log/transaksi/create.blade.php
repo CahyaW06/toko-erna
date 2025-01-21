@@ -12,15 +12,15 @@
         <form class="forms-sample" action="{{ route('log.keuangan.store') }}" method="POST">
           @csrf
           <div id="form-container">
-            <div class="d-lg-flex gap-2 align-items-center mt-3 border-bottom pb-4 pb-lg-0" id="row-input">
+            <div class="d-lg-flex gap-2 align-items-center mt-3 border-bottom pb-4 pb-lg-0 row-input">
               <div class="form-group">
                 <label for="tanggal">Tanggal</label>
-                <input type="date" class="form-control form-control-sm" name="tanggal[]" id="tanggal" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
+                <input type="date" class="form-control form-control-sm" name="tanggal[]" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
               </div>
               <div class="form-group">
                 <label for="retail">Retail</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black" name="retail[]" id="retail">
+                  <select class="form-control form-control-sm text-black" name="retail[]">
                     @foreach ($retails as $retail)
                     <option value="{{ $retail->id }}">{{ $retail->nama }}</option>
                     @endforeach
@@ -30,7 +30,7 @@
               <div class="form-group">
                 <label for="barang">Barang</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black" name="barang[]" id="barang">
+                  <select class="form-control form-control-sm text-black" name="barang[]">
                     @foreach ($barangs as $barang)
                     <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
                     @endforeach
@@ -40,7 +40,7 @@
               <div class="form-group status-form">
                 <label for="status">Status Transaksi</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black status" name="status[]" id="status">
+                  <select class="form-control form-control-sm text-black status" name="status[]">
                     <option value="1">Laku</option>
                     <option value="2">Ganti Rugi</option>
                   </select>
@@ -48,16 +48,16 @@
               </div>
               <div class="form-group">
                 <label for="jumlah">Jumlah</label>
-                <input type="integer" class="form-control form-control-sm" name="jumlah[]" id="jumlah" placeholder="Jumlah" required>
+                <input type="integer" class="form-control form-control-sm" name="jumlah[]" placeholder="Jumlah" required>
               </div>
               <div class="form-group">
                 <label for="nominal">Nominal</label>
-                <input type="integer" class="form-control form-control-sm nominal" name="nominal[]" id="nominal" placeholder="Nominal" required>
+                <input type="integer" class="form-control form-control-sm nominal" name="nominal[]" placeholder="Nominal" required>
               </div>
               <div class="form-group">
                 <label for="keterangan">Asal Barang</label>
                 <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black" name="keterangan[]" id="keterangan">
+                  <select class="form-control form-control-sm text-black" name="keterangan[]">
                     <option value="1">Konsinyasi</option>
                     <option value="2">Gudang</option>
                   </select>
@@ -81,8 +81,6 @@
 
 <script>
     $(document).ready(function () {
-      var rowCount = 1; // Menyimpan jumlah baris yang ada
-
       // Fungsi untuk update total-nominal
       function updateTotal() {
         let total = 0;
@@ -90,14 +88,6 @@
           if ($(this).parent().siblings(".status-form").find(".status").val() == 1) {total += parseInt($(this).val().replace(/[.]/g, ''));}
         });
         $("#total-nota").text(total.toLocaleString("id-ID"));
-      }
-
-      // Fungsi untuk membuat ID unik
-      function updateIds(row, count) {
-          row.find('#log_konsinyasi-1').attr('id', 'log_konsinyasi-' + count);
-          row.find('#barang-1').attr('id', 'barang-' + count);
-          row.find('#status-1').attr('id', 'status-' + count);
-          row.find('#jumlah-1').attr('id', 'jumlah-' + count);
       }
 
       // Fungsi ketika update option
@@ -125,9 +115,8 @@
 
       // Menambahkan row baru saat tombol 'Tambah Row' diklik
       $('#add-row').click(function () {
-          var newRow = $('#row-input').first().clone();
+          var newRow = $('.row-input:last').clone();
 
-          updateIds(newRow, rowCount); // Update ID untuk row baru
           $('#form-container').append(newRow);
           formatNumberInputs(); // Tambahkan kembali event listener ke input baru
           updateTotal();
@@ -138,7 +127,7 @@
       $(document).on('click', '.remove-row', function () {
           updateTotal();
           if ($('.remove-row').length > 1) {
-              $(this).closest('#row-input').remove(); // Hapus row
+              $(this).closest('.row-input').remove(); // Hapus row
           } else {
               alert("Minimal satu row input harus ada.");
           }

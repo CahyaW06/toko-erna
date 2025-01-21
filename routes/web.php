@@ -4,6 +4,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogKeuanganController;
+use App\Http\Controllers\LogPengeluaranController;
 use App\Http\Controllers\LogRetailController;
 use App\Http\Controllers\LogStokController;
 use App\Http\Controllers\LogTokoController;
@@ -60,7 +61,7 @@ Route::get('/', function() {
         return view('home.index');
     }
 })->name('home');
-Route::post('/login-user', [LoginController::class, 'authenticate'])->name('login');
+Route::post('/', [LoginController::class, 'authenticate'])->name('login');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -78,11 +79,13 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'log', 'as' => 'log.'], function() {
         Route::resource('/gudang', LogStokController::class);
         Route::post('/gudang-get-data', [LogStokController::class, 'getDatas'])->name('gudang.get');
+        Route::resource('/barang', LogRetailController::class);
+        Route::post('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
         Route::resource('/keuangan', LogKeuanganController::class);
         Route::post('/keuangan-get-data', [LogKeuanganController::class, 'getDatas'])->name('keuangan.get');
         Route::get('/keuangan-get-chart', [LogKeuanganController::class, 'chart'])->name('keuangan.chart');
-        Route::resource('/barang', LogRetailController::class);
-        Route::post('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
+        Route::resource('/pengeluaran', LogPengeluaranController::class);
+        Route::post('/pengeluaran-get-data', [LogPengeluaranController::class, 'getDatas'])->name('pengeluaran.get');
         Route::resource('/toko', LogTokoController::class);
         Route::post('/toko-get-data', [LogTokoController::class, 'getDatas'])->name('toko.get');
     });

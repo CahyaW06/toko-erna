@@ -5,11 +5,11 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Tambah Log Barang</h4>
+        <h4 class="card-title">Tambah Log Pengeluaran</h4>
         <p class="card-description">
-          Silahkan masukkan log barang yang masuk/keluar
+          Silahkan masukkan log pengeluaran
         </p>
-        <form class="forms-sample" action="{{ route('log.barang.store') }}" method="POST">
+        <form class="forms-sample" action="{{ route('log.pengeluaran.store') }}" method="POST">
           @csrf
           <div id="form-container">
             <div class="d-lg-flex gap-2 align-items-center mt-3 border-bottom pb-4 pb-lg-0 row-input">
@@ -17,42 +17,13 @@
                 <label for="tanggal">Tanggal</label>
                 <input type="date" class="form-control form-control-sm" name="tanggal[]" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" required>
               </div>
-              <div class="form-group">
-                <label for="retail">Retail</label>
-                <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black" name="retail[]">
-                    @foreach ($retails as $retail)
-                    <option value="{{ $retail->id }}">{{ $retail->nama }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="barang">Barang</label>
-                <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black" name="barang[]">
-                    @foreach ($barangs as $barang)
-                    <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-              <div class="form-group status-form">
-                <label for="status">Status Barang</label>
-                <div class="d-flex flex-column">
-                  <select class="form-control form-control-sm text-black status" name="status[]">
-                    <option value="1">Diterima</option>
-                    <option value="2">Dikembalikan</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="jumlah">Jumlah</label>
-                <input type="integer" class="form-control form-control-sm" name="jumlah[]" placeholder="Jumlah" required>
+              <div class="form-group col-lg-4">
+                <label for="nama">Rincian</label>
+                <input type="text" class="form-control form-control-sm" name="nama[]" placeholder="Rincian" required>
               </div>
               <div class="form-group">
                 <label for="nominal">Nominal</label>
-                <input type="integer" class="form-control form-control-sm nominal" name="nominal[]" placeholder="Nominal" required>
+                <input type="integer" class="form-control form-control-sm nominal angka" name="nominal[]" placeholder="Nominal" required>
               </div>
               <button type="button" class="btn btn-danger btn-sm remove-row ms-1 d-flex align-items-center"><i class="mdi mdi-delete"></i><span class="ms-1">Hapus</span></button>
             </div>
@@ -76,22 +47,14 @@
       function updateTotal() {
         let total = 0;
         $(".nominal").each(function () {
-          if ($(this).parent().siblings(".status-form").find(".status").val() == 1) {total += parseInt($(this).val().replace(/[.]/g, ''));}
+          total += parseInt($(this).val().replace(/[.]/g, ''));
         });
         $("#total-nota").text(total.toLocaleString("id-ID"));
       }
 
-      // Fungsi ketika update option
-      function whenStatusChanged() {
-        $(".status").change(function (e) {
-          e.preventDefault();
-          updateTotal();
-        });
-      }
-
       // Tambahkan event listener untuk format angka
       function formatNumberInputs() {
-          $(".form-control").each(function () {
+          $(".angka").each(function () {
               $(this).on('keyup', function (e) {
                   e.preventDefault();
                   if ($(this).val().length > 3) {
@@ -111,7 +74,6 @@
           $('#form-container').append(newRow);
           formatNumberInputs(); // Tambahkan kembali event listener ke input baru
           updateTotal();
-          whenStatusChanged();
       });
 
       // Menghapus row saat tombol 'Hapus' diklik
@@ -125,7 +87,6 @@
 
       // Terapkan format angka pada input jumlah dan nominal
       formatNumberInputs();
-      whenStatusChanged();
   });
 </script>
 @endsection
