@@ -58,7 +58,13 @@ $(document).ready(function () {
     ordering: false,
     serverSide: true,
     processing: true,
-    ajax: "{{ route('stok.gudang.get') }}",
+    ajax: {
+      url: "{{ route('stok.gudang.get') }}",
+      type: 'POST', // Gunakan metode POST
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
+      },
+    },
     layout: {
           topStart: {
             buttons: [

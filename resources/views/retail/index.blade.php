@@ -73,7 +73,17 @@
                 processing: true,
                 scrollX: true,
                 scrollY: 400,
-                ajax: "{{ route('stok.retail.get') }}",
+                ajax: {
+                    url: "{{ route('stok.retail.get') }}",
+                    type: 'POST', // Gunakan metode POST
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
+                    },
+                    // data: function(d) {
+                    //     // Tambahkan parameter khusus jika diperlukan
+                    //     d.customParam = 'value';
+                    // }
+                },
                 columns: columns,
                 fixedColumns: {
                     start: 3

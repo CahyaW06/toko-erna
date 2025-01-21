@@ -58,85 +58,85 @@
 {{-- Datatables --}}
 <script>
 $(document).ready(function () {
-  $.ajax({
-    type: "GET",
-    url: "{{ route('log.barang.get') }}",
-    success: function (response) {
-      var table = $("#data-table").DataTable({
-        ordering: false,
-        serverSide: true,
-        processing: true,
-        scrollX: true,
-        scrollY: 400,
-        autoWidth: false,
-        ajax: "{{ route('log.barang.get') }}", // Anda bisa menggunakan data dari response jika perlu
-        columns: [
-          { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-          { data: 'created_at', name: 'created_at' },
-          { data: 'retail.nama', name: 'retail.nama' },
-          { data: 'retail.alamat', name: 'retail.alamat' },
-          { data: 'barang.kode_barang', name: 'barang.kode_barang' },
-          { data: 'barang.nama', name: 'barang.nama' },
-          { data: 'status', name: 'status' },
-          { data: 'jumlah', name: 'jumlah' },
-          { data: 'nominal', name: 'nominal' },
-          { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
-        ],
-        layout: {
-          topStart: {
-            buttons: [
-              'pageLength', // Tombol untuk mengatur panjang halaman
-              {
-                extend: 'excelHtml5',
-                text: 'Ekspor ke Excel',
-                filename: function() {
-                  var date = new Date();
-                  var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
-                  return formattedDate + '_log_retail_tes'; // Nama file yang dihasilkan
-                },
-                title: 'Data Log Retail', // Judul di dalam file Excel
-                exportOptions: {
-                  columns: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Ekspor semua kolom yang terlihat
-                  format: {
-                    body: function (data, row, column, node) {
-                      // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
-                      if (column == 7 || column == 8) {
-                        return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
-                      }
-                      return data; // Untuk kolom lain, tetap ekspor apa adanya
-                    }
+  var table = $("#data-table").DataTable({
+    ordering: false,
+    serverSide: true,
+    processing: true,
+    scrollX: true,
+    scrollY: 400,
+    autoWidth: false,
+    ajax: {
+      url: "{{ route('log.barang.get') }}",
+      type: 'POST', // Gunakan metode POST
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
+      },
+    },
+    columns: [
+      { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+      { data: 'created_at', name: 'created_at' },
+      { data: 'retail.nama', name: 'retail.nama' },
+      { data: 'retail.alamat', name: 'retail.alamat' },
+      { data: 'barang.kode_barang', name: 'barang.kode_barang' },
+      { data: 'barang.nama', name: 'barang.nama' },
+      { data: 'status', name: 'status' },
+      { data: 'jumlah', name: 'jumlah' },
+      { data: 'nominal', name: 'nominal' },
+      { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
+    ],
+    layout: {
+      topStart: {
+        buttons: [
+          'pageLength', // Tombol untuk mengatur panjang halaman
+          {
+            extend: 'excelHtml5',
+            text: 'Ekspor ke Excel',
+            filename: function() {
+              var date = new Date();
+              var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
+              return formattedDate + '_log_retail_tes'; // Nama file yang dihasilkan
+            },
+            title: 'Data Log Retail', // Judul di dalam file Excel
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Ekspor semua kolom yang terlihat
+              format: {
+                body: function (data, row, column, node) {
+                  // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
+                  if (column == 7 || column == 8) {
+                    return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                   }
+                  return data; // Untuk kolom lain, tetap ekspor apa adanya
                 }
               }
-            ],
-          },
-        },
-        scrollCollapse: true,
-        initComplete: function () {
-          var api = this.api();
+            }
+          }
+        ],
+      },
+    },
+    scrollCollapse: true,
+    initComplete: function () {
+      var api = this.api();
 
-          // Pindahkan footer ke atas tabel
-          $(api.table().header()).prepend($(api.table().footer()).children());
+      // Pindahkan footer ke atas tabel
+      $(api.table().header()).prepend($(api.table().footer()).children());
 
-          // Penerapan pencarian kolom di input field (tfoot)
-          api.columns().every(function () {
-            var that = this;
-            $('input', this.footer()).on('keyup change clear', function () {
-              if (that.search() !== this.value) {
-                that.search(this.value).draw();
-              }
-            });
-          });
-
-          // Menyesuaikan kolom setelah tabel diinisialisasi
-          api.columns.adjust().draw();
-        }
+      // Penerapan pencarian kolom di input field (tfoot)
+      api.columns().every(function () {
+        var that = this;
+        $('input', this.footer()).on('keyup change clear', function () {
+          if (that.search() !== this.value) {
+            that.search(this.value).draw();
+          }
+        });
       });
 
-      // Pastikan pemanggilan adjust dilakukan setelah tabel diinisialisasi
-      table.columns.adjust().draw();
+      // Menyesuaikan kolom setelah tabel diinisialisasi
+      api.columns.adjust().draw();
     }
   });
+
+  // Pastikan pemanggilan adjust dilakukan setelah tabel diinisialisasi
+  table.columns.adjust().draw();
 });
 </script>
 

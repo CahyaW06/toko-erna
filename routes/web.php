@@ -68,22 +68,22 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix' => 'stok', 'as' => 'stok.'], function() {
         Route::resource('/gudang', BarangController::class);
-        Route::get('/gudang-get-data', [BarangController::class, 'getDatas'])->name('gudang.get');
+        Route::post('/gudang-get-data', [BarangController::class, 'getDatas'])->name('gudang.get');
         Route::get('/gudang-get-list-barang', [BarangController::class, 'getListBarang'])->name('gudang.get-list-nama');
 
         Route::resource('/retail', RetailController::class);
-        Route::get('/retail-get-data', [RetailController::class, 'getRetails'])->name('retail.get');
+        Route::post('/retail-get-data', [RetailController::class, 'getRetails'])->name('retail.get');
     });
 
     Route::group(['prefix' => 'log', 'as' => 'log.'], function() {
         Route::resource('/gudang', LogStokController::class);
-        Route::get('/gudang-get-data', [LogStokController::class, 'getDatas'])->name('gudang.get');
+        Route::post('/gudang-get-data', [LogStokController::class, 'getDatas'])->name('gudang.get');
         Route::resource('/keuangan', LogKeuanganController::class);
-        Route::get('/keuangan-get-data', [LogKeuanganController::class, 'getDatas'])->name('keuangan.get');
+        Route::post('/keuangan-get-data', [LogKeuanganController::class, 'getDatas'])->name('keuangan.get');
         Route::get('/keuangan-get-chart', [LogKeuanganController::class, 'chart'])->name('keuangan.chart');
         Route::resource('/barang', LogRetailController::class);
-        Route::get('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
+        Route::post('/barang-get-data', [LogRetailController::class, 'getDatas'])->name('barang.get');
         Route::resource('/toko', LogTokoController::class);
-        Route::get('/toko-get-data', [LogTokoController::class, 'getDatas'])->name('toko.get');
+        Route::post('/toko-get-data', [LogTokoController::class, 'getDatas'])->name('toko.get');
     });
 });
