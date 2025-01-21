@@ -167,6 +167,7 @@ class BarangController extends Controller
 
         try {
             $barang = Barang::find($id);
+            $barang->retails()->detach();
             $barang->delete();
         } catch (Exception $e) {
             return redirect()->route('stok.gudang.index')->with('error', $e->getMessage());
