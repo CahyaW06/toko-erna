@@ -9,22 +9,10 @@ use Illuminate\Support\Facades\Schedule;
 
 Schedule::call(function () {
     $now = Carbon::now();
-    $logTransaksi = LogKeuangan::whereMonth('created_at', $now->month)
-        ->whereYear('created_at', $now->year)
-        ->get();
 
     $omset = 0;
     $pengeluaran = 0;
-
-    foreach ($logTransaksi as $key => $value) {
-        if ($value->status == "Laku") {
-            $omset += $value->nominal;
-        } else {
-            $pengeluaran += $value->nominal;
-        }
-    }
-
-    $bersih = $omset - $pengeluaran;
+    $bersih = 0;
 
     LogToko::create([
         'bulan' => $now->month,
@@ -35,4 +23,4 @@ Schedule::call(function () {
         'created_at' => $now,
         'updated_at' => $now,
     ]);
-})->lastDayOfMonth('23:59');
+})->monthly();
