@@ -10,4 +10,8 @@ class LogToko extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function logToko() {
+        return $this->belongsToMany(Barang::class, 'barang_toko');
+    }
 }

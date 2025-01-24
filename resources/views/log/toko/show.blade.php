@@ -7,9 +7,9 @@
         <div class="card-body">
             <div class="row">
               <div class="col">
-                <h3 class="card-title">Data Log Keuangan Toko</h3>
+                <h3 class="card-title">Data Rincian Keuangan Toko {{ \Carbon\Carbon::create()->month($logToko->bulan)->format('M') }} {{ $logToko->tahun }}</h3>
                 <p class="card-description">
-                  Berikut ini log keuangan toko.
+                  Berikut ini rincian pemasukan dan pengeluaran toko.
                 </p>
               </div>
             </div>
@@ -18,13 +18,13 @@
                 <thead>
                   <tr>
                       <th>No</th>
-                      <th>Tahun</th>
-                      <th>Bulan</th>
-                      <th>Omset</th>
+                      <th>Kode Barang</th>
+                      <th>Barang</th>
+                      <th>HPP</th>
+                      <th>Jumlah Penjualan</th>
+                      <th>HPP x Penjualan</th>
+                      <th>Omset Penjualan</th>
                       <th>Laba Kotor</th>
-                      <th>Pengeluaran</th>
-                      <th>Laba Bersih</th>
-                      <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -38,11 +38,16 @@
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
-                      <th></th>
+                      <th><input type="text" class="form-control"></th>
                   </tr>
                 </tfoot>
               </table>
             </div>
+        </div>
+        <div class="card-footer d-flex py-3 mx-3 justify-content-around gap-2 flex-column flex-lg-row align-middle">
+          <span class="">Total Omset: Rp {{ number_format($logToko->omset,0,',','.') }}</span>
+          <span class="">Total Pengeluaran: Rp {{ number_format($logToko->pengeluaran,0,',','.') }}</span>
+          <span class="">Total Laba Kotor: Rp {{ number_format($logToko->kotor,0,',','.') }}</span>
         </div>
       </div>
     </div>
@@ -59,7 +64,7 @@ $(document).ready(function () {
     scrollY: 400,
     autoWidth: false,
     ajax: {
-      url: "{{ route('log.toko.get') }}",
+      url: "{{ route('log.toko.rincian', ['toko' => $logToko->id]) }}",
       type: 'POST', // Gunakan metode POST
       headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
@@ -67,13 +72,13 @@ $(document).ready(function () {
     },
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-      { data: 'tahun', name: 'tahun' },
-      { data: 'bulan', name: 'bulan' },
+      { data: 'kode_barang', name: 'kode_barang' },
+      { data: 'nama', name: 'nama' },
+      { data: 'hpp', name: 'hpp' },
+      { data: 'jumlah', name: 'jumlah' },
+      { data: 'jumlah_x_hpp', name: 'jumlah_x_hpp' },
       { data: 'omset', name: 'omset' },
-      { data: 'kotor', name: 'kotor' },
-      { data: 'pengeluaran', name: 'pengeluaran' },
-      { data: 'bersih', name: 'bersih' },
-      { data: 'aksi', name: 'aksi' },
+      { data: 'laba_kotor', name: 'laba_kotor' },
     ],
     layout: {
       topStart: {
@@ -89,11 +94,10 @@ $(document).ready(function () {
             },
             title: 'Data Log Toko', // Judul di dalam file Excel
             exportOptions: {
-              columns:  [0, 1, 2, 3, 4, 5, 6], // Ekspor semua kolom yang terlihat
               format: {
                 body: function (data, row, column, node) {
                   // Jika kolom nominal (kolom ke-8) berformat Rp, ubah jadi angka biasa
-                  if (column >= 3) {
+                  if (column >= 2) {
                     return data.replace(/[Rp.,\s]/g, ''); // Hapus simbol Rp dan koma
                   }
                   return data; // Untuk kolom lain, tetap ekspor apa adanya

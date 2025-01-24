@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Barang;
+use App\Models\LogToko;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,14 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('log_tokos', function (Blueprint $table) {
+        Schema::create('barang_toko', function (Blueprint $table) {
             $table->id();
-            $table->integer('bulan');
-            $table->integer('tahun');
+            $table->foreignIdFor(LogToko::class);
+            $table->foreignIdFor(Barang::class);
+            $table->integer('jumlah')->default(0);
             $table->integer('omset')->default(0);
-            $table->integer('kotor')->default(0);
-            $table->integer('pengeluaran')->default(0);
-            $table->integer('bersih')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('log_tokos');
+        Schema::dropIfExists('barang_toko');
     }
 };

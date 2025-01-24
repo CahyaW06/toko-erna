@@ -16,11 +16,12 @@ class LogTokoSeeder extends Seeder
     {
         $data = [
             [
-                'bulan' => 10,
-                'tahun' => 2024,
-                'omset' => 10000000,
-                'pengeluaran' => 1000000,
-                'bersih' => 9000000,
+                'bulan' => 1,
+                'tahun' => 2025,
+                'omset' => 0,
+                'kotor' => 0,
+                'pengeluaran' => 0,
+                'bersih' => 0,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]
