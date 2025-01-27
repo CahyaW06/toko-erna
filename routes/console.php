@@ -5,6 +5,7 @@ use App\Models\Barang;
 use App\Models\LogToko;
 use App\Models\LogKeuangan;
 use App\Models\LogPengeluaran;
+use App\Models\LogStok;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -38,6 +39,10 @@ Schedule::call(function() {
     $logPengeluaranNow = LogPengeluaran::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
         ->get();
 
+    $logGudang = LogStok::where('status', 'Masuk')
+        ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
+        ->get();
+
     $data = $barangs->map(function($barang) use($logBarangLaku) {
         return [
             'jumlah-' . $barang->id => $logBarangLaku->where('barang_id', $barang->id)->sum('jumlah'),
@@ -57,6 +62,7 @@ Schedule::call(function() {
 
     $omset = $logBarangLaku->sum('nominal');
     $pengeluaran = $logPengeluaranNow->sum('nominal');
+    $pengeluaran += $logGudang->sum('nominal');
 
     $logTokoNow->update([
         'omset' => $omset,
@@ -64,6 +70,4 @@ Schedule::call(function() {
         'pengeluaran' => $pengeluaran,
         'bersih' => $omset - $kotor - $pengeluaran,
     ]);
-
-    return $logTokoNow->barangs;
 })->everyThreeHours();

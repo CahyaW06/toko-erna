@@ -19,14 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function() {
     if (Auth::check()) {
-        $now = Carbon::now();
-
         $logTokoNow = LogToko::where('bulan', Carbon::now()->month)->where('tahun', Carbon::now()->year)->first();
 
         $logTransaksi = LogKeuangan::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
-        ->get();
-
-        $logGudang = LogStok::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
         ->get();
 
         $stokGudang = Barang::orderBy('jumlah', 'ASC')
