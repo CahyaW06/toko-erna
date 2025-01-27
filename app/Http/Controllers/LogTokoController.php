@@ -10,6 +10,7 @@ use App\Http\Requests\StoreLogTokoRequest;
 use App\Http\Requests\UpdateLogTokoRequest;
 use App\Models\Barang;
 use App\Models\LogKeuangan;
+use App\Models\LogPengeluaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -60,23 +61,19 @@ class LogTokoController extends Controller
     public function getRincian(Request $request) {
         if ($request->ajax()) {
             $logTokoId = $request->route('toko');
-            $barangs = Barang::with('logToko')->get();
+            $barangs = Barang::with('logTokos')->get();
 
             $data = $barangs->map(function($barang) use($logTokoId) {
                 return [
                     'kode_barang' => $barang->kode_barang,
                     'nama' => $barang->nama,
                     'hpp' => $barang->harga,
-                    'jumlah' => $barang->logToko->find($logTokoId)->pivot->jumlah,
-                    'jumlah_x_hpp' => $barang->logToko->find($logTokoId)->pivot->jumlah * $barang->harga,
-                    'omset' => $barang->logToko->find($logTokoId)->pivot->omset,
-                    'laba_kotor' => $barang->logToko->find($logTokoId)->pivot->omset - ($barang->logToko->find($logTokoId)->pivot->jumlah * $barang->harga),
+                    'jumlah' => $barang->logTokos->find($logTokoId)->pivot->jumlah,
+                    'jumlah_x_hpp' => $barang->logTokos->find($logTokoId)->pivot->jumlah * $barang->harga,
+                    'omset' => $barang->logTokos->find($logTokoId)->pivot->omset,
+                    'laba_kotor' => $barang->logTokos->find($logTokoId)->pivot->omset - ($barang->logTokos->find($logTokoId)->pivot->jumlah * $barang->harga),
                 ];
             });
-
-            // $logBarang = LogKeuangan::where('status', 'Laku')
-            //     ->whereBetween('created_at', [Carbon::create($logToko->tahun, $logToko->bulan)->startOfMonth(), Carbon::create($logToko->tahun, $logToko->bulan)->endOfMonth()])
-            //     ->get();
 
             $datatable = DataTables::of($data)
                 ->addIndexColumn()

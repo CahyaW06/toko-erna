@@ -23,7 +23,7 @@ class Barang extends Model
         return $this->hasMany(LogStok::class);
     }
 
-    public function logToko() {
+    public function logTokos() {
         return $this->belongsToMany(LogToko::class, 'barang_toko')->withPivot('jumlah', 'omset');
     }
 }

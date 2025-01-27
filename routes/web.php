@@ -20,39 +20,36 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function() {
     if (Auth::check()) {
         $now = Carbon::now();
-        $logTransaksi = LogKeuangan::where('created_at', '>', $now->startOfMonth())->get();
-        $logGudang = LogStok::where('created_at', '>', $now->startOfMonth())->get();
+
+        $logTokoNow = LogToko::where('bulan', Carbon::now()->month)->where('tahun', Carbon::now()->year)->first();
+
+        $logTransaksi = LogKeuangan::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
+        ->get();
+
+        $logGudang = LogStok::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
+        ->get();
 
         $stokGudang = Barang::orderBy('jumlah', 'ASC')
         ->limit(5)->get();
 
-        $omset = 0;
-        $pengeluaran = 0;
         $totalLaku = 0;
         $totalRugi = 0;
 
         foreach ($logTransaksi as $key => $value) {
             if ($value->status == "Laku") {
-                $omset += $value->nominal;
                 $totalLaku += $value->jumlah;
             } else {
                 $totalRugi += $value->jumlah;
             }
         }
 
-        foreach ($logGudang as $key => $value) {
-            $pengeluaran += $value->nominal;
-        }
-
-        $bersih = $omset - $pengeluaran;
-
         $barangCounter = Barang::count();
 
         return view('home.index', [
             'barangCounter' => $barangCounter,
-            'omset' => $omset,
-            'pengeluaran' => $pengeluaran,
-            'bersih' => $bersih,
+            'omset' => $logTokoNow->omset,
+            'pengeluaran' => $logTokoNow->pengeluaran,
+            'bersih' => $logTokoNow->bersih,
             'totalLaku' => $totalLaku,
             'totalRugi' => $totalRugi,
             'stokGudang' => $stokGudang,
