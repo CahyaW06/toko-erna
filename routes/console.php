@@ -11,4 +11,4 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('app:create-log-toko')->monthly();
-Schedule::command('app:update-logtoko-detail')->everyMinute();
+Schedule::command('app:update-logtoko-detail')->hourly();
