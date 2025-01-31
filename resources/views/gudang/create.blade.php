@@ -38,24 +38,24 @@
     $(document).ready(function () {
         if ($("#harga").val().length > 3) {
           var n = parseInt($("#harga").val().replace(/\D/g,''),10);
-          $("#harga").val(n.toLocaleString());
+          $("#harga").val(n.toLocaleString("id-ID"));
         }
         if ($("#jumlah").val().length > 3) {
           var n = parseInt($("#jumlah").val().replace(/\D/g,''),10);
-          $("#jumlah").val(n.toLocaleString());
+          $("#jumlah").val(n.toLocaleString("id-ID"));
         }
         $("#harga").keyup(function (e) {
             e.preventDefault();
             if ($(this).val().length > 3) {
                 var n = parseInt($(this).val().replace(/\D/g,''),10);
-                $(this).val(n.toLocaleString());
+                $(this).val(n.toLocaleString("id-ID"));
             }
         });
         $("#jumlah").keyup(function (e) {
             e.preventDefault();
             if ($(this).val().length > 3) {
                 var n = parseInt($(this).val().replace(/\D/g,''),10);
-                $(this).val(n.toLocaleString());
+                $(this).val(n.toLocaleString("id-ID"));
             }
         });
     });
