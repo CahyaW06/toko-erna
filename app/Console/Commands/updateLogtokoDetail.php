@@ -31,7 +31,8 @@ class updateLogtokoDetail extends Command
      */
     public function handle()
     {
-        $logTokoNow = LogToko::where('bulan', Carbon::now()->month(1))->where('tahun', Carbon::now()->year)->first();
+        // $logTokoNow = LogToko::where('bulan', Carbon::now()->month)->where('tahun', Carbon::now()->year)->first();
+        $logTokoNow = LogToko::where('bulan', 1)->where('tahun', Carbon::now()->year)->first();
         $barangs = Barang::all();
 
         if ($logTokoNow->barangs()->count() != $barangs->count()) {
