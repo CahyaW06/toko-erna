@@ -130,4 +130,62 @@ $(document).ready(function () {
   table.columns.adjust().draw();
 });
 </script>
+
+{{-- Toast --}}
+@if (session('success'))
+    <div class="toast align-items-center text-bg-success border-0 bottom-0 end-0 position-fixed" role="alert" aria-live="polite" aria-atomic="true" id="liveToast">
+    <div class="d-flex">
+        <div class="toast-body">
+        {{ session('success') }}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress" style="height: 5px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" id="toastProgressBar"></div>
+    </div>
+    </div>
+    @elseif (session('error'))
+    <div class="toast align-items-center text-bg-danger border-0 bottom-0 end-0 position-fixed" role="alert" aria-live="polite" aria-atomic="true" id="liveToast">
+    <div class="d-flex">
+        <div class="toast-body">
+        {{ session('error') }}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress" style="height: 5px;">
+        <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" id="toastProgressBar"></div>
+    </div>
+    </div>
+@endif
+
+<script>
+    $(document).ready(function () {
+    var toastEl = document.getElementById('liveToast');
+    var toastProgressBar = document.getElementById('toastProgressBar');
+
+    if (toastEl) {
+        var toast = new bootstrap.Toast(toastEl, { delay: 5000 }); // Set toast muncul selama 5 detik
+        toast.show();
+
+        // Inisialisasi progress bar (5 detik)
+        var totalDuration = 5000; // Durasi total dalam milidetik (5 detik)
+        var intervalTime = 50; // Interval waktu untuk memperbarui progress
+        var decrement = 100 / (totalDuration / intervalTime); // Pengurangan per interval
+
+        var width = 100; // Awal width progress bar
+        var progressInterval = setInterval(function () {
+        width -= decrement;
+        toastProgressBar.style.width = width + "%";
+
+        if (width <= 0) {
+            clearInterval(progressInterval);
+        }
+        }, intervalTime);
+    }
+    });
+</script>
 @endsection
