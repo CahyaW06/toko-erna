@@ -23,6 +23,7 @@
                       <th>Omset</th>
                       <th>Laba Kotor</th>
                       <th>Pengeluaran</th>
+                      <th>Belanja Modal</th>
                       <th>Laba Bersih</th>
                       <th>Aksi</th>
                   </tr>
@@ -32,6 +33,7 @@
                 <tfoot>
                   <tr>
                       <th></th>
+                      <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
@@ -72,6 +74,7 @@ $(document).ready(function () {
       { data: 'omset', name: 'omset' },
       { data: 'kotor', name: 'kotor' },
       { data: 'pengeluaran', name: 'pengeluaran' },
+      { data: 'belanja_modal', name: 'belanja_modal' },
       { data: 'bersih', name: 'bersih' },
       { data: 'aksi', name: 'aksi' },
     ],

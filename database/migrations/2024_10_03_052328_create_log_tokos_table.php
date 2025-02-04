@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('omset')->default(0);
             $table->integer('kotor')->default(0);
             $table->integer('pengeluaran')->default(0);
+            $table->integer('belanja_modal')->default(0);
             $table->integer('bersih')->default(0);
             $table->timestamps();
         });

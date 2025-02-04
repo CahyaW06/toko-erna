@@ -1,7 +1,7 @@
 @extends('index')
 
 @section('main-panel')
-<div class="col-lg-4">
+<div class="col-xl-4">
     <div class="card">
         <div class="card-body">
           <h4 class="card-title">Ubah Data Barang</h4>

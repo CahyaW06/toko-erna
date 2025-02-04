@@ -40,11 +40,15 @@ class LogTokoController extends Controller
                 ->editColumn('pengeluaran', function($row) {
                     return 'Rp ' . number_format($row->pengeluaran,0,',','.');
                 })
+                ->editColumn('belanja_modal', function($row) {
+                    return 'Rp ' . number_format($row->belanja_modal,0,',','.');
+                })
                 ->editColumn('bersih', function($row) {
                     return 'Rp ' . number_format($row->bersih,0,',','.');
                 })
                 ->addColumn('aksi', function($row){
                     $showUrl = route('log.toko.show', ['toko' => $row->id]);
+                    $editUrl = route('log.toko.edit', ['toko' => $row->id]);
                     $csrfToken = csrf_field();
                     $methodField = method_field('PUT');
                     $updateUrl = route('log.toko.update', ['toko' => $row->id]);
@@ -57,9 +61,10 @@ class LogTokoController extends Controller
                     <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
                     </svg>
                     </a>';
-                    $btn .= '<button type="submit" class="btn btn-warning btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-repeat" viewBox="0 0 16 16">
+                    $btn .= '<button type="submit" class="btn btn-success btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-repeat" viewBox="0 0 16 16">
                     <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z"/>
                     </svg></button>';
+                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></a>';
                     $btn .= '</form>';
 
                     return $btn;
@@ -141,9 +146,34 @@ class LogTokoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LogToko $logToko)
+    public function edit(Request $request)
     {
-        //
+        $id = $request->route('toko');
+        $logToko = LogToko::find($id);
+
+        return view('log.toko.edit', [
+            'log' => $logToko
+        ]);
+    }
+
+    public function updateBelanjaModal(Request $request)
+    {
+        $id = $request->route('toko');
+        $logToko = LogToko::find($id);
+
+        $validated = $request->validate([
+            'belanja_modal' => 'required'
+        ]);
+
+        try {
+            $logToko->update([
+                'belanja_modal' => str_replace('.', '', $validated['belanja_modal']),
+            ]);
+        } catch (Exception $e) {
+            return redirect()->route('log.toko.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('log.toko.index')->with('success', 'Log berhasil diupdate');
     }
 
     /**
