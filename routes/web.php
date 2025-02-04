@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/gudang', BarangController::class);
         Route::post('/gudang-get-data', [BarangController::class, 'getDatas'])->name('gudang.get');
         Route::get('/gudang-get-list-barang', [BarangController::class, 'getListBarang'])->name('gudang.get-list-nama');
+        Route::post('/gudang/{gudang}/rincian', [BarangController::class, 'getRincian'])->name('gudang.rincian');
 
         Route::resource('/retail', RetailController::class);
         Route::post('/retail-get-data', [RetailController::class, 'getRetails'])->name('retail.get');

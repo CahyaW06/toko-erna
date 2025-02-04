@@ -51,6 +51,7 @@ class BarangController extends Controller
                 ->addColumn('aksi', function($row){
                     $csrfToken = csrf_field();
                     $methodField = method_field('DELETE');
+                    $showUrl = route('stok.gudang.show', ['gudang' => $row->id]);
                     $editUrl = route('stok.gudang.edit', ['gudang' => $row->id]);
                     $deleteUrl = route('stok.gudang.destroy', ['gudang' => $row->id]);
                     $namaBarang = $row->nama;
@@ -58,6 +59,10 @@ class BarangController extends Controller
                     $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
                     $btn .= $csrfToken;
                     $btn .= $methodField;
+                    $btn .= '<a href="'.$showUrl.'" type="button" class="btn btn-info btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
+                    <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                    <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+                    </svg></a>';
                     $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
                     $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus item '.$namaBarang.'?\')"><i class="mdi mdi-delete"></i></button>';
                     $btn .= '</form>';
@@ -66,6 +71,33 @@ class BarangController extends Controller
                 })
                 ->rawColumns(['aksi'])
                 ->make(true);
+        }
+    }
+
+    public function getRincian(Request $request) {
+        if ($request->ajax()) {
+            $barangId = $request->route('gudang');
+            $barang = Barang::find($barangId);
+
+            $data = $barang->retails
+                ->filter(function($retail) {
+                    return $retail->pivot->jumlah > 0;
+                })
+                ->map(function($retail) {
+                    return [
+                        'retail' => $retail->nama,
+                        'alamat' => $retail->alamat,
+                        'jumlah' => $retail->pivot->jumlah,
+                    ];
+                });
+
+            $datatable = DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('jumlah', function($row) {
+                    return number_format($row['jumlah'],0,',','.');
+                });
+
+            return $datatable->make(true);
         }
     }
 
@@ -113,7 +145,12 @@ class BarangController extends Controller
      */
     public function show(Request $request)
     {
-        //
+        $id = $request->route('gudang');
+        $barang = Barang::find($id);
+
+        return view('gudang.show', [
+            'barang' => $barang
+        ]);
     }
 
     /**
