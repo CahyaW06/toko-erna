@@ -13,6 +13,7 @@ use App\Models\Barang;
 use App\Models\LogKeuangan;
 use App\Models\LogStok;
 use App\Models\LogToko;
+use App\Models\Retail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -67,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('/retail', RetailController::class);
         Route::post('/retail-get-data', [RetailController::class, 'getRetails'])->name('retail.get');
+        Route::post('/retail/{retail}/rincian', [RetailController::class, 'getRincian'])->name('retail.rincian');
     });
 
     Route::group(['prefix' => 'log', 'as' => 'log.'], function() {

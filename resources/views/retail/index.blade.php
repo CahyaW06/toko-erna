@@ -26,6 +26,7 @@
                       @foreach ($barangs as $barang)
                         <th>{{ str_replace('_', ' ', $barang->nama) }}</th>
                       @endforeach
+                      <th>Omset</th>
                       <th>Aksi</th>
                   </tr>
                 </thead>
@@ -37,8 +38,9 @@
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
                       @foreach ($barangs as $barang)
-                        <th><input type="integer" class="form-control"></th>
+                        <th></th>
                       @endforeach
+                      <th></th>
                       <th></th>
                   </tr>
                 </tfoot>
@@ -65,6 +67,7 @@
               columns.push({ data: element.nama, name: element.nama });
             });
 
+            columns.push({ data: 'omset', name: 'omset' });
             columns.push({ data: 'aksi', name: 'aksi', orderable: false, searchable: false });
 
             $("#data-table").DataTable({
@@ -79,10 +82,6 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
                     },
-                    // data: function(d) {
-                    //     // Tambahkan parameter khusus jika diperlukan
-                    //     d.customParam = 'value';
-                    // }
                 },
                 columns: columns,
                 fixedColumns: {

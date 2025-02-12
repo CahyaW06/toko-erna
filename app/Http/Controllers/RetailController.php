@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\RetailExport;
 use App\Models\Barang;
+use App\Models\LogKeuangan;
+use App\Models\LogToko;
 use App\Models\Retail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,13 +30,7 @@ class RetailController extends Controller
 
     public function getRetails(Request $request) {
         if ($request->ajax()) {
-            /*
-                !update,
-                ide:
-                - dimapping dulu berdasarkan barang
-                - buat column berdasarkan map
-            */
-            $data = Retail::with('barangs')
+            $data = Retail::with(['barangs', 'logKeuangans'])
                 ->select('id', 'nama', 'alamat')
                 ->get();
 
@@ -52,14 +49,25 @@ class RetailController extends Controller
             }
 
             $dataTables
+            ->addColumn('omset', function($row) {
+                return 'Rp ' . number_format($row->logKeuangans->sum('nominal'),0,',','.');
+            })
+            ->rawColumns(['omset'])
+
             ->addColumn('aksi', function($row){
                 $csrfToken = csrf_field();
                 $methodField = method_field('DELETE');
+                $showUrl = route('stok.retail.show', ['retail' => $row->id]);
                 $editUrl = route('stok.retail.edit', ['retail' => $row->id]);
                 $deleteUrl = route('stok.retail.destroy', ['retail' => $row->id]);
                 $namaRetail = $row->nama;
 
                 $btn = '<form action="'.$deleteUrl.'" method="POST" class="d-flex gap-1">';
+                $btn .= '<a href="'.$showUrl.'" type="button" class="btn btn-info btn-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+                    <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
+                    </svg>
+                    </a>';
                 $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></i></a>';
                 $btn .= $csrfToken;
                 $btn .= $methodField;
@@ -71,6 +79,42 @@ class RetailController extends Controller
             ->rawColumns(['aksi']);
 
             return $dataTables->make(true);
+        }
+    }
+
+    public function getRincian(Request $request) {
+        if ($request->ajax()) {
+            $retailId = $request->route('retail');
+            $barangs = Barang::with('logKeuangans')->get();
+
+            $data = $barangs->map(function($barang) use($retailId) {
+                return [
+                    'kode_barang' => $barang->kode_barang,
+                    'nama' => $barang->nama,
+                    'hpp' => $barang->harga,
+                    'jumlah' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah'),
+                    'jumlah_x_hpp' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah') * $barang->harga,
+                    'omset' => $barang->logKeuangans->where('retail_id', $retailId)->sum('nominal'),
+                ];
+            });
+
+            $datatable = DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('hpp', function($row) {
+                    return 'Rp ' . number_format($row['hpp'],0,',','.');
+                })
+                ->editColumn('jumlah', function($row) {
+                    return number_format($row['jumlah'],0,',','.');
+                })
+                ->editColumn('jumlah_x_hpp', function($row) {
+                    return 'Rp ' . number_format($row['jumlah_x_hpp'],0,',','.');
+                })
+                ->editColumn('omset', function($row) {
+                    return 'Rp ' . number_format($row['omset'],0,',','.');
+                })
+                ;
+
+            return $datatable->make(true);
         }
     }
 
@@ -118,9 +162,18 @@ class RetailController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Retail $retail)
+    public function show(Request $request)
     {
-        //
+        $retailId = $request->route('retail');
+        $retail = Retail::find($retailId);
+        $logToko = LogToko::where('bulan', Carbon::now()->month)->where('tahun', Carbon::now()->year)->first();
+        $logKeuangans = LogKeuangan::where('retail_id', $retailId)->get();
+        $omset = $logKeuangans->sum('nominal');
+
+        return view('retail.show', [
+            'retail' => $retail,
+            'omset' => $omset,
+        ]);
     }
 
     /**

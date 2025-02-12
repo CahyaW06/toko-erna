@@ -18,4 +18,8 @@ class Retail extends Model
     public function logRetails() {
         return $this->hasMany(LogRetail::class);
     }
+
+    public function logKeuangans() {
+        return $this->hasMany(LogKeuangan::class);
+    }
 }
