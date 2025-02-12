@@ -26,6 +26,7 @@
                       @foreach ($barangs as $barang)
                         <th>{{ str_replace('_', ' ', $barang->nama) }}</th>
                       @endforeach
+                      <th>Konsinyasi</th>
                       <th>Omset</th>
                       <th>Aksi</th>
                   </tr>
@@ -40,6 +41,7 @@
                       @foreach ($barangs as $barang)
                         <th></th>
                       @endforeach
+                      <th></th>
                       <th></th>
                       <th></th>
                   </tr>
@@ -67,6 +69,7 @@
               columns.push({ data: element.nama, name: element.nama });
             });
 
+            columns.push({ data: 'konsinyasi', name: 'konsinyasi' });
             columns.push({ data: 'omset', name: 'omset' });
             columns.push({ data: 'aksi', name: 'aksi', orderable: false, searchable: false });
 

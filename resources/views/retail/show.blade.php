@@ -26,6 +26,7 @@
                       <th>Jumlah Penjualan</th>
                       <th>HPP x Penjualan</th>
                       <th>Omset Penjualan</th>
+                      <th>Konsinyasi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -35,10 +36,11 @@
                       <th></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
-                      <th><input type="text" class="form-control"></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
                   </tr>
                 </tfoot>
               </table>
@@ -76,6 +78,7 @@ $(document).ready(function () {
       { data: 'jumlah', name: 'jumlah' },
       { data: 'jumlah_x_hpp', name: 'jumlah_x_hpp' },
       { data: 'omset', name: 'omset' },
+      { data: 'konsinyasi', name: 'konsinyasi' },
     ],
     layout: {
       topStart: {

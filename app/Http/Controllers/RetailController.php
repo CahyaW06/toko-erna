@@ -30,7 +30,7 @@ class RetailController extends Controller
 
     public function getRetails(Request $request) {
         if ($request->ajax()) {
-            $data = Retail::with(['barangs', 'logKeuangans'])
+            $data = Retail::with(['barangs', 'logKeuangans', 'logRetails'])
                 ->select('id', 'nama', 'alamat')
                 ->get();
 
@@ -49,6 +49,11 @@ class RetailController extends Controller
             }
 
             $dataTables
+            ->addColumn('konsinyasi', function($row) {
+                return 'Rp ' . number_format($row->logRetails->sum('nominal'),0,',','.');
+            })
+            ->rawColumns(['konsinyasi'])
+
             ->addColumn('omset', function($row) {
                 return 'Rp ' . number_format($row->logKeuangans->sum('nominal'),0,',','.');
             })
@@ -85,7 +90,7 @@ class RetailController extends Controller
     public function getRincian(Request $request) {
         if ($request->ajax()) {
             $retailId = $request->route('retail');
-            $barangs = Barang::with('logKeuangans')->get();
+            $barangs = Barang::with(['logKeuangans', 'logRetails'])->get();
 
             $data = $barangs->map(function($barang) use($retailId) {
                 return [
@@ -95,6 +100,7 @@ class RetailController extends Controller
                     'jumlah' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah'),
                     'jumlah_x_hpp' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah') * $barang->harga,
                     'omset' => $barang->logKeuangans->where('retail_id', $retailId)->sum('nominal'),
+                    'konsinyasi' => $barang->logRetails->where('retail_id', $retailId)->sum('nominal'),
                 ];
             });
 
@@ -111,6 +117,9 @@ class RetailController extends Controller
                 })
                 ->editColumn('omset', function($row) {
                     return 'Rp ' . number_format($row['omset'],0,',','.');
+                })
+                ->editColumn('konsinyasi', function($row) {
+                    return 'Rp ' . number_format($row['konsinyasi'],0,',','.');
                 })
                 ;
 
