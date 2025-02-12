@@ -84,9 +84,9 @@
                     },
                 },
                 columns: columns,
-                fixedColumns: {
-                    start: 3
-                },
+                // fixedColumns: {
+                //     start: 3
+                // },
                 layout: {
                   topStart: {
                     buttons: [
