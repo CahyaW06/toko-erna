@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="row">
               <div class="col">
-                <h3 class="card-title">Data Rincian Keuangan Toko {{ \Carbon\Carbon::create()->month($logToko->bulan)->format('M') }} {{ $logToko->tahun }}</h3>
+                <h3 class="card-title">Data Rincian Konsinyasi Toko {{ \Carbon\Carbon::create()->month($logToko->bulan)->format('M') }} {{ $logToko->tahun }}</h3>
                 <p class="card-description">
                   Berikut ini rincian pemasukan dan pengeluaran toko.
                 </p>
@@ -20,11 +20,8 @@
                       <th>No</th>
                       <th>Kode Barang</th>
                       <th>Barang</th>
-                      <th>HPP</th>
-                      <th>Jumlah Penjualan</th>
-                      <th>HPP x Penjualan</th>
-                      <th>Omset Penjualan</th>
-                      <th>Laba Kotor</th>
+                      <th>Jumlah Konsinyasi</th>
+                      <th>Nominal Konsinyasi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -36,18 +33,14 @@
                       <th><input type="text" class="form-control"></th>
                       <th></th>
                       <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
                   </tr>
                 </tfoot>
               </table>
             </div>
         </div>
         <div class="card-footer d-flex py-3 mx-3 justify-content-around gap-2 flex-column flex-lg-row align-middle">
-          <span class="">Total Omset: Rp {{ number_format($logToko->omset,0,',','.') }}</span>
-          <span class="">Total Pengeluaran: Rp {{ number_format($logToko->pengeluaran,0,',','.') }}</span>
-          <span class="">Total Laba Kotor: Rp {{ number_format($logToko->kotor,0,',','.') }}</span>
+          <span class="">Total Barang Konsinyasi: {{ number_format($logToko->barangs->sum('pivot.konsinyasi'),0,',','.') }}</span>
+          <span class="">Total Nominal Konsinyasi: Rp {{ number_format($logToko->barangs->sum('pivot.nominal_konsinyasi'),0,',','.') }}</span>
         </div>
       </div>
     </div>
@@ -64,7 +57,7 @@ $(document).ready(function () {
     scrollY: 400,
     autoWidth: false,
     ajax: {
-      url: "{{ route('log.toko.rincian', ['toko' => $logToko->id]) }}",
+      url: "{{ route('log.toko.rincian-konsi', ['toko' => $logToko->id]) }}",
       type: 'POST', // Gunakan metode POST
       headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Tambahkan CSRF token
@@ -74,11 +67,8 @@ $(document).ready(function () {
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
       { data: 'kode_barang', name: 'kode_barang' },
       { data: 'nama', name: 'nama' },
-      { data: 'hpp', name: 'hpp' },
-      { data: 'jumlah', name: 'jumlah' },
-      { data: 'jumlah_x_hpp', name: 'jumlah_x_hpp' },
-      { data: 'omset', name: 'omset' },
-      { data: 'laba_kotor', name: 'laba_kotor' },
+      { data: 'konsinyasi', name: 'konsinyasi' },
+      { data: 'nominal_konsinyasi', name: 'nominal_konsinyasi' },
     ],
     layout: {
       topStart: {
@@ -90,9 +80,9 @@ $(document).ready(function () {
             filename: function() {
               var date = new Date();
               var formattedDate = date.getFullYear() + "_" + (date.getMonth() + 1) + "_" + date.getDate();
-              return formattedDate + '_rincian_toko'; // Nama file yang dihasilkan
+              return formattedDate + '_konsinyasi_toko'; // Nama file yang dihasilkan
             },
-            title: 'Data Rincian Toko', // Judul di dalam file Excel
+            title: 'Data Konsinyasi Toko', // Judul di dalam file Excel
             exportOptions: {
               format: {
                 body: function (data, row, column, node) {

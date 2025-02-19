@@ -84,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/toko', LogTokoController::class);
         Route::post('/toko-get-data', [LogTokoController::class, 'getDatas'])->name('toko.get');
         Route::post('/toko/{toko}/rincian', [LogTokoController::class, 'getRincian'])->name('toko.rincian');
+        Route::get('/toko/{toko}/konsi', [LogTokoController::class, 'showKonsi'])->name('toko.konsi');
+        Route::post('/toko/{toko}/rincian-konsi', [LogTokoController::class, 'getKonsi'])->name('toko.rincian-konsi');
         Route::put('/toko/{toko}/update-belanja-modal', [LogTokoController::class, 'updateBelanjaModal'])->name('toko.updateBelanjaModal');
     });
 });

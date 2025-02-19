@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateLogTokoRequest;
 use App\Models\Barang;
 use App\Models\LogKeuangan;
 use App\Models\LogPengeluaran;
+use App\Models\LogRetail;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -48,6 +49,7 @@ class LogTokoController extends Controller
                 })
                 ->addColumn('aksi', function($row){
                     $showUrl = route('log.toko.show', ['toko' => $row->id]);
+                    $showKonsiUrl = route('log.toko.konsi', ['toko' => $row->id]);
                     $editUrl = route('log.toko.edit', ['toko' => $row->id]);
                     $csrfToken = csrf_field();
                     $methodField = method_field('PUT');
@@ -61,10 +63,15 @@ class LogTokoController extends Controller
                     <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
                     </svg>
                     </a>';
+                    $btn .= '<a href="'.$showKonsiUrl.'" type="button" class="btn btn-warning btn-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill" viewBox="0 0 16 16">
+                    <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z"/>
+                    </svg>
+                    </a>';
                     $btn .= '<button type="submit" class="btn btn-success btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-repeat" viewBox="0 0 16 16">
                     <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z"/>
                     </svg></button>';
-                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-warning btn-sm"><i class="mdi mdi-lead-pencil"></a>';
+                    $btn .= '<a href="'.$editUrl.'" type="button" class="btn btn-danger btn-sm"><i class="mdi mdi-lead-pencil"></a>';
                     $btn .= '</form>';
 
                     return $btn;
@@ -114,6 +121,34 @@ class LogTokoController extends Controller
         }
     }
 
+    public function getKonsi(Request $request) {
+        if ($request->ajax()) {
+            $logTokoId = $request->route('toko');
+            $barangs = Barang::with('logTokos')->get();
+
+            $data = $barangs->map(function($barang) use($logTokoId) {
+                return [
+                    'kode_barang' => $barang->kode_barang,
+                    'nama' => $barang->nama,
+                    'konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->konsinyasi,
+                    'nominal_konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->nominal_konsinyasi,
+                ];
+            });
+
+            $datatable = DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('konsinyasi', function($row) {
+                    return number_format($row['konsinyasi'],0,',','.');
+                })
+                ->editColumn('nominal_konsinyasi', function($row) {
+                    return 'Rp ' . number_format($row['nominal_konsinyasi'],0,',','.');
+                })
+                ;
+
+            return $datatable->make(true);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -139,6 +174,16 @@ class LogTokoController extends Controller
         $logToko = LogToko::find($logTokoId);
 
         return view('log.toko.show',
+            ['logToko' => $logToko]
+        );
+    }
+
+    public function showKonsi(Request $request)
+    {
+        $logTokoId = $request->route('toko');
+        $logToko = LogToko::find($logTokoId);
+
+        return view('log.toko.showKonsi',
             ['logToko' => $logToko]
         );
     }
@@ -198,24 +243,21 @@ class LogTokoController extends Controller
             $logPengeluaranNow = LogPengeluaran::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
                 ->get();
 
+            $logKonsi = LogRetail::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
+                ->get();
+
             $logGudang = LogStok::where('status', 'Masuk')
                 ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
                 ->get();
 
-            $data = $barangs->map(function($barang) use($logBarangLaku) {
-                return [
-                    'jumlah-' . $barang->id => $logBarangLaku->where('barang_id', $barang->id)->sum('jumlah'),
-                    'omset-' . $barang->id => $logBarangLaku->where('barang_id', $barang->id)->sum('nominal')
-                ];
-            });
-
             $kotor = 0;
 
             foreach ($logTokoNow->barangs as $key => $value) {
-                $kotor += $data[$key]['jumlah-' . $value->id] * $value->harga;
-
-                $value->pivot->jumlah = $data[$key]['jumlah-' . $value->id];
-                $value->pivot->omset = $data[$key]['omset-' . $value->id];
+                $kotor += $logBarangLaku->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
+                $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
+                $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
+                $value->pivot->konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('jumlah');
+                $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('nominal');
                 $value->push();
             }
 

@@ -12,6 +12,6 @@ class LogToko extends Model
     protected $guarded = ['id'];
 
     public function barangs() {
-        return $this->belongsToMany(Barang::class, 'barang_toko')->withPivot('jumlah', 'omset');
+        return $this->belongsToMany(Barang::class, 'barang_toko')->withPivot('jumlah', 'omset', 'konsinyasi', 'nominal_konsinyasi');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\RetailExport;
 use App\Models\Barang;
 use App\Models\LogKeuangan;
+use App\Models\LogRetail;
 use App\Models\LogToko;
 use App\Models\Retail;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -175,13 +176,15 @@ class RetailController extends Controller
     {
         $retailId = $request->route('retail');
         $retail = Retail::find($retailId);
-        $logToko = LogToko::where('bulan', Carbon::now()->month)->where('tahun', Carbon::now()->year)->first();
         $logKeuangans = LogKeuangan::where('retail_id', $retailId)->get();
+        $logKonsi = LogRetail::where('retail_id', $retailId)->get();
         $omset = $logKeuangans->sum('nominal');
+        $konsi = $logKonsi->sum('nominal');
 
         return view('retail.show', [
             'retail' => $retail,
             'omset' => $omset,
+            'konsi' => $konsi,
         ]);
     }
 

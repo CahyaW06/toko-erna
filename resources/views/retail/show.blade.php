@@ -48,6 +48,7 @@
         </div>
         <div class="card-footer d-flex py-3 mx-3 justify-content-around gap-2 flex-column flex-lg-row align-middle">
           <span class="">Total Omset: Rp {{ number_format($omset,0,',','.') }}</span>
+          <span class="">Total Konsinyasi: Rp {{ number_format($konsi,0,',','.') }}</span>
         </div>
       </div>
     </div>
