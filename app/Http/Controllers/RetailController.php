@@ -51,7 +51,13 @@ class RetailController extends Controller
 
             $dataTables
             ->addColumn('konsinyasi', function($row) {
-                return 'Rp ' . number_format($row->logRetails->sum('nominal'),0,',','.');
+                $konsi = $row->logRetails->groupBy(function($item) {return $item->created_at->format('d M Y');});
+
+                if ($konsi->isNotEmpty()) {
+                    return 'Rp ' . number_format($konsi->first()->sum('nominal'),0,',','.');
+                }
+
+                return 'Rp ' . number_format(0,0,',','.');
             })
             ->rawColumns(['konsinyasi'])
 
@@ -93,7 +99,9 @@ class RetailController extends Controller
             $retailId = $request->route('retail');
             $barangs = Barang::with(['logKeuangans', 'logRetails'])->get();
 
-            $data = $barangs->map(function($barang) use($retailId) {
+            $konsiTerakhir = LogRetail::where('retail_id', $retailId)->get()->groupBy(function($item) {return $item->created_at->format('d M Y');})->first()->groupBy('barang_id');
+
+            $data = $barangs->map(function($barang) use($retailId, $konsiTerakhir) {
                 return [
                     'kode_barang' => $barang->kode_barang,
                     'nama' => $barang->nama,
@@ -101,7 +109,7 @@ class RetailController extends Controller
                     'jumlah' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah'),
                     'jumlah_x_hpp' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah') * $barang->harga,
                     'omset' => $barang->logKeuangans->where('retail_id', $retailId)->sum('nominal'),
-                    'konsinyasi' => $barang->logRetails->where('retail_id', $retailId)->sum('nominal'),
+                    'konsinyasi' => $konsiTerakhir->has($barang->id) ? $konsiTerakhir[$barang->id]->sum('nominal') : 0,
                 ];
             });
 
@@ -177,9 +185,8 @@ class RetailController extends Controller
         $retailId = $request->route('retail');
         $retail = Retail::find($retailId);
         $logKeuangans = LogKeuangan::where('retail_id', $retailId)->get();
-        $logKonsi = LogRetail::where('retail_id', $retailId)->get();
         $omset = $logKeuangans->sum('nominal');
-        $konsi = $logKonsi->sum('nominal');
+        $konsi = LogRetail::where('retail_id', $retailId)->get()->groupBy(function($item) {return $item->created_at->format('d M Y');})->first()->sum('nominal');
 
         return view('retail.show', [
             'retail' => $retail,

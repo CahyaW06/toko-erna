@@ -67,7 +67,6 @@ class updateLogtokoDetail extends Command
 
         $omset = $logBarangLaku->sum('nominal');
         $pengeluaran = $logPengeluaranNow->sum('nominal');
-        $pengeluaran += $logGudang->sum('nominal');
 
         $logTokoNow->update([
             'omset' => $omset,
