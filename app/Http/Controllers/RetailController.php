@@ -51,10 +51,10 @@ class RetailController extends Controller
 
             $dataTables
             ->addColumn('konsinyasi', function($row) {
-                $konsi = $row->logRetails->groupBy(function($item) {return $item->created_at->format('d M Y');});
+                $konsi = $row->logRetails->where('status', 'Diterima')->groupBy(function($item) {return $item->created_at->format('d M Y');});
 
                 if ($konsi->isNotEmpty()) {
-                    return 'Rp ' . number_format($konsi->first()->sum('nominal'),0,',','.');
+                    return 'Rp ' . number_format($konsi->last()->sum('nominal'),0,',','.');
                 }
 
                 return 'Rp ' . number_format(0,0,',','.');
@@ -99,7 +99,11 @@ class RetailController extends Controller
             $retailId = $request->route('retail');
             $barangs = Barang::with(['logKeuangans', 'logRetails'])->get();
 
-            $konsiTerakhir = LogRetail::where('retail_id', $retailId)->get()->groupBy(function($item) {return $item->created_at->format('d M Y');})->first()->groupBy('barang_id');
+            $konsi = LogRetail::where('retail_id', $retailId)->where('status', 'Diterima')->get();
+
+            $konsiTerakhir = $konsi->whenNotEmpty(function($konsi) {
+                return $konsi->groupBy(function($item) {return $item->created_at->format('d M Y');})->last()->groupBy('barang_id');
+            });
 
             $data = $barangs->map(function($barang) use($retailId, $konsiTerakhir) {
                 return [
@@ -186,12 +190,12 @@ class RetailController extends Controller
         $retail = Retail::find($retailId);
         $logKeuangans = LogKeuangan::where('retail_id', $retailId)->get();
         $omset = $logKeuangans->sum('nominal');
-        $konsi = LogRetail::where('retail_id', $retailId)->get()->groupBy(function($item) {return $item->created_at->format('d M Y');})->first()->sum('nominal');
+        $konsi = LogRetail::where('retail_id', $retailId)->where('status', 'Diterima')->get()->groupBy(function($item) {return $item->created_at->format('d M Y');});
 
         return view('retail.show', [
             'retail' => $retail,
             'omset' => $omset,
-            'konsi' => $konsi,
+            'konsi' => $konsi->isNotEmpty() ? $konsi->last()->sum('nominal') : 0,
         ]);
     }
 
