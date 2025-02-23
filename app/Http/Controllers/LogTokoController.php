@@ -132,7 +132,7 @@ class LogTokoController extends Controller
                     'nama' => $barang->nama,
                     'hpp' => $barang->harga,
                     'konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->konsinyasi,
-                    'nominal_konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->nominal_konsinyasi * $barang->harga,
+                    'nominal_konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->nominal_konsinyasi,
                 ];
             });
 

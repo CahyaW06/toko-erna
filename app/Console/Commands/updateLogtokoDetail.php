@@ -62,7 +62,8 @@ class updateLogtokoDetail extends Command
             $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
             $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
             $value->pivot->konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('jumlah');
-            $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('nominal');
+            // $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('nominal');
+            $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
             $value->push();
         }
 
