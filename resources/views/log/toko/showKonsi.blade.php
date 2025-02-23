@@ -20,6 +20,7 @@
                       <th>No</th>
                       <th>Kode Barang</th>
                       <th>Barang</th>
+                      <th>HPP</th>
                       <th>Jumlah Konsinyasi</th>
                       <th>Nominal Konsinyasi</th>
                   </tr>
@@ -31,6 +32,7 @@
                       <th></th>
                       <th><input type="text" class="form-control"></th>
                       <th><input type="text" class="form-control"></th>
+                      <th></th>
                       <th></th>
                       <th></th>
                   </tr>
@@ -67,6 +69,7 @@ $(document).ready(function () {
       { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
       { data: 'kode_barang', name: 'kode_barang' },
       { data: 'nama', name: 'nama' },
+      { data: 'hpp', name: 'hpp' },
       { data: 'konsinyasi', name: 'konsinyasi' },
       { data: 'nominal_konsinyasi', name: 'nominal_konsinyasi' },
     ],

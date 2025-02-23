@@ -130,13 +130,17 @@ class LogTokoController extends Controller
                 return [
                     'kode_barang' => $barang->kode_barang,
                     'nama' => $barang->nama,
+                    'hpp' => $barang->harga,
                     'konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->konsinyasi,
-                    'nominal_konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->nominal_konsinyasi,
+                    'nominal_konsinyasi' => $barang->logTokos->find($logTokoId)->pivot->nominal_konsinyasi * $barang->harga,
                 ];
             });
 
             $datatable = DataTables::of($data)
                 ->addIndexColumn()
+                ->editColumn('hpp', function($row) {
+                    return 'Rp ' . number_format($row['hpp'],0,',','.');
+                })
                 ->editColumn('konsinyasi', function($row) {
                     return number_format($row['konsinyasi'],0,',','.');
                 })
