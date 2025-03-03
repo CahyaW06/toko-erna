@@ -250,10 +250,6 @@ class LogTokoController extends Controller
             $logKonsi = LogRetail::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
                 ->get();
 
-            $logGudang = LogStok::where('status', 'Masuk')
-                ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
-                ->get();
-
             $kotor = 0;
 
             foreach ($logTokoNow->barangs as $key => $value) {
@@ -261,13 +257,13 @@ class LogTokoController extends Controller
                 $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
                 $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
                 $value->pivot->konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('jumlah');
-                $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('nominal');
+                // $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('nominal');
+                $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
                 $value->push();
             }
 
             $omset = $logBarangLaku->sum('nominal');
             $pengeluaran = $logPengeluaranNow->sum('nominal');
-            $pengeluaran += $logGudang->sum('nominal');
 
             $logTokoNow->update([
                 'omset' => $omset,

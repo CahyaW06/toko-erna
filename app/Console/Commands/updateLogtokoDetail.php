@@ -51,10 +51,6 @@ class updateLogtokoDetail extends Command
             ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
             ->get();
 
-        $logGudang = LogStok::where('status', 'Masuk')
-            ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
-            ->get();
-
         $kotor = 0;
 
         foreach ($logTokoNow->barangs as $key => $value) {
