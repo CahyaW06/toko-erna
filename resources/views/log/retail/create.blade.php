@@ -32,13 +32,13 @@
                 <div class="d-flex flex-column">
                   <select class="form-control form-control-sm text-black" name="barang[]">
                     @foreach ($barangs as $barang)
-                    <option value="{{ $barang->id }}">{{ $barang->nama }}</option>
+                    <option value="{{ $barang->id }}">{{ $barang->nama . ' | ' . 'Rp' . number_format($barang->harga,0,',','.') }}</option>
                     @endforeach
                   </select>
                 </div>
               </div>
               <div class="form-group status-form">
-                <label for="status">Status Barang</label>
+                <label for="status">Status</label>
                 <div class="d-flex flex-column">
                   <select class="form-control form-control-sm text-black status" name="status[]">
                     <option value="1">Diterima</option>
@@ -58,7 +58,7 @@
             </div>
           </div>
           <div class="d-md-flex gap-2 align-items-baseline justify-content-between mt-5 mt-lg-0">
-            <span class="">Total: <span class="display-5 text-bg-success px-3 rounded ms-1">Rp <span id="total-nota"></span></span></span>
+            <span class="">Total: <span class="display-5 text-bg-success px-3 rounded ms-1">Rp<span id="total-nota"></span></span></span>
             <div class="d-flex gap-1 mt-2">
               <button type="button" id="add-row" class="btn btn-warning mt-3">Tambah</button>
               <button type="submit" class="btn btn-success mt-3">Simpan</button>

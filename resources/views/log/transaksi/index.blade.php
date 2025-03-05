@@ -21,12 +21,12 @@
                 <thead>
                   <tr>
                       <th>No</th>
-                      <th>Tanggal Transaksi</th>
+                      <th>Tanggal</th>
                       <th>Retail</th>
                       <th>Alamat</th>
                       <th>Kode Barang</th>
                       <th>Barang</th>
-                      <th>Status Transaksi</th>
+                      <th>Status</th>
                       <th>Jumlah</th>
                       <th>Nominal</th>
                       <th>Asal Barang</th>

@@ -54,15 +54,15 @@ class RetailController extends Controller
                 $konsi = $row->logRetails->where('status', 'Diterima')->groupBy(function($item) {return $item->created_at->format('d M Y');});
 
                 if ($konsi->isNotEmpty()) {
-                    return 'Rp ' . number_format($konsi->last()->sum('nominal'),0,',','.');
+                    return 'Rp' . number_format($konsi->last()->sum('nominal'),0,',','.');
                 }
 
-                return 'Rp ' . number_format(0,0,',','.');
+                return 'Rp' . number_format(0,0,',','.');
             })
             ->rawColumns(['konsinyasi'])
 
             ->addColumn('omset', function($row) {
-                return 'Rp ' . number_format($row->logKeuangans->sum('nominal'),0,',','.');
+                return 'Rp' . number_format($row->logKeuangans->sum('nominal'),0,',','.');
             })
             ->rawColumns(['omset'])
 
@@ -120,19 +120,19 @@ class RetailController extends Controller
             $datatable = DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('hpp', function($row) {
-                    return 'Rp ' . number_format($row['hpp'],0,',','.');
+                    return 'Rp' . number_format($row['hpp'],0,',','.');
                 })
                 ->editColumn('jumlah', function($row) {
                     return number_format($row['jumlah'],0,',','.');
                 })
                 ->editColumn('jumlah_x_hpp', function($row) {
-                    return 'Rp ' . number_format($row['jumlah_x_hpp'],0,',','.');
+                    return 'Rp' . number_format($row['jumlah_x_hpp'],0,',','.');
                 })
                 ->editColumn('omset', function($row) {
-                    return 'Rp ' . number_format($row['omset'],0,',','.');
+                    return 'Rp' . number_format($row['omset'],0,',','.');
                 })
                 ->editColumn('konsinyasi', function($row) {
-                    return 'Rp ' . number_format($row['konsinyasi'],0,',','.');
+                    return 'Rp' . number_format($row['konsinyasi'],0,',','.');
                 })
                 ;
 

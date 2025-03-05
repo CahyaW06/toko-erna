@@ -21,7 +21,7 @@
                 <thead>
                   <tr>
                       <th>No</th>
-                      <th>Tanggal Transaksi</th>
+                      <th>Tanggal</th>
                       <th>Rincian</th>
                       <th>Nominal</th>
                       <th>Aksi</th>

@@ -42,7 +42,7 @@
         </div>
         <div class="card-footer d-flex py-3 mx-3 justify-content-around gap-2 flex-column flex-lg-row align-middle">
           <span class="">Total Barang Konsinyasi: {{ number_format($logToko->barangs->sum('pivot.konsinyasi'),0,',','.') }}</span>
-          <span class="">Total Nominal Konsinyasi: Rp {{ number_format($logToko->barangs->sum('pivot.nominal_konsinyasi'),0,',','.') }}</span>
+          <span class="">Total Nominal Konsinyasi: Rp{{ number_format($logToko->barangs->sum('pivot.nominal_konsinyasi'),0,',','.') }}</span>
         </div>
       </div>
     </div>

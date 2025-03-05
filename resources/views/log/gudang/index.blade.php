@@ -21,10 +21,10 @@
                 <thead>
                   <tr>
                       <th>No</th>
-                      <th>Tanggal Transaksi</th>
+                      <th>Tanggal</th>
                       <th>Kode Barang</th>
                       <th>Barang</th>
-                      <th>Status Barang</th>
+                      <th>Status</th>
                       <th>Jumlah</th>
                       <th>Nominal</th>
                       <th>Aksi</th>

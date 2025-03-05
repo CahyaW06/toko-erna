@@ -33,19 +33,19 @@ class LogTokoController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('omset', function($row) {
-                    return 'Rp ' . number_format($row->omset,0,',','.');
+                    return 'Rp' . number_format($row->omset,0,',','.');
                 })
                 ->editColumn('kotor', function($row) {
-                    return 'Rp ' . number_format($row->kotor,0,',','.');
+                    return 'Rp' . number_format($row->kotor,0,',','.');
                 })
                 ->editColumn('pengeluaran', function($row) {
-                    return 'Rp ' . number_format($row->pengeluaran,0,',','.');
+                    return 'Rp' . number_format($row->pengeluaran,0,',','.');
                 })
                 ->editColumn('belanja_modal', function($row) {
-                    return 'Rp ' . number_format($row->belanja_modal,0,',','.');
+                    return 'Rp' . number_format($row->belanja_modal,0,',','.');
                 })
                 ->editColumn('bersih', function($row) {
-                    return 'Rp ' . number_format($row->bersih,0,',','.');
+                    return 'Rp' . number_format($row->bersih,0,',','.');
                 })
                 ->addColumn('aksi', function($row){
                     $showUrl = route('log.toko.show', ['toko' => $row->id]);
@@ -101,19 +101,19 @@ class LogTokoController extends Controller
             $datatable = DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('hpp', function($row) {
-                    return 'Rp ' . number_format($row['hpp'],0,',','.');
+                    return 'Rp' . number_format($row['hpp'],0,',','.');
                 })
                 ->editColumn('jumlah', function($row) {
                     return number_format($row['jumlah'],0,',','.');
                 })
                 ->editColumn('jumlah_x_hpp', function($row) {
-                    return 'Rp ' . number_format($row['jumlah_x_hpp'],0,',','.');
+                    return 'Rp' . number_format($row['jumlah_x_hpp'],0,',','.');
                 })
                 ->editColumn('omset', function($row) {
-                    return 'Rp ' . number_format($row['omset'],0,',','.');
+                    return 'Rp' . number_format($row['omset'],0,',','.');
                 })
                 ->editColumn('laba_kotor', function($row) {
-                    return 'Rp ' . number_format($row['laba_kotor'],0,',','.');
+                    return 'Rp' . number_format($row['laba_kotor'],0,',','.');
                 })
                 ;
 
@@ -139,13 +139,13 @@ class LogTokoController extends Controller
             $datatable = DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('hpp', function($row) {
-                    return 'Rp ' . number_format($row['hpp'],0,',','.');
+                    return 'Rp' . number_format($row['hpp'],0,',','.');
                 })
                 ->editColumn('konsinyasi', function($row) {
                     return number_format($row['konsinyasi'],0,',','.');
                 })
                 ->editColumn('nominal_konsinyasi', function($row) {
-                    return 'Rp ' . number_format($row['nominal_konsinyasi'],0,',','.');
+                    return 'Rp' . number_format($row['nominal_konsinyasi'],0,',','.');
                 })
                 ;
 

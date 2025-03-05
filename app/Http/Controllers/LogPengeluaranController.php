@@ -32,7 +32,7 @@ class LogPengeluaranController extends Controller
                     return "";
                 })
                 ->editColumn('nominal', function($row) {
-                    return "Rp " . number_format($row->nominal,0,',','.');
+                    return "Rp" . number_format($row->nominal,0,',','.');
                 })
                 ->addColumn('aksi', function($row){
                     $csrfToken = csrf_field();

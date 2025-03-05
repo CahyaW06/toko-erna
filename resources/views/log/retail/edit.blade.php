@@ -36,7 +36,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="status">Status Barang</label>
+              <label for="status">Status</label>
               <div class="d-flex flex-column">
                 <select class="form-control form-control-sm text-black" name="status" id="status">
                   <option @if($log->status == "Diterima") selected @endif value="1">Diterima</option>

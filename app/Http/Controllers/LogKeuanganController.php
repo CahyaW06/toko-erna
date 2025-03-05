@@ -43,7 +43,7 @@ class LogKeuanganController extends Controller
                     return number_format($row->jumlah,0,',','.');
                 })
                 ->editColumn('nominal', function($row) {
-                    return "Rp " . number_format($row->nominal,0,',','.');
+                    return "Rp" . number_format($row->nominal,0,',','.');
                 })
                 ->addColumn('aksi', function($row){
                     $csrfToken = csrf_field();

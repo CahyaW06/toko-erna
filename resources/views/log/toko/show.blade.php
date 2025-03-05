@@ -45,9 +45,9 @@
             </div>
         </div>
         <div class="card-footer d-flex py-3 mx-3 justify-content-around gap-2 flex-column flex-lg-row align-middle">
-          <span class="">Total Omset: Rp {{ number_format($logToko->omset,0,',','.') }}</span>
-          <span class="">Total Pengeluaran: Rp {{ number_format($logToko->pengeluaran,0,',','.') }}</span>
-          <span class="">Total Laba Kotor: Rp {{ number_format($logToko->kotor,0,',','.') }}</span>
+          <span class="">Total Omset: Rp{{ number_format($logToko->omset,0,',','.') }}</span>
+          <span class="">Total Pengeluaran: Rp{{ number_format($logToko->pengeluaran,0,',','.') }}</span>
+          <span class="">Total Laba Kotor: Rp{{ number_format($logToko->kotor,0,',','.') }}</span>
         </div>
       </div>
     </div>
