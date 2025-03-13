@@ -40,27 +40,39 @@ class updateLogtokoDetail extends Command
             $logTokoNow->save();
         }
 
-        $logBarangLaku = LogKeuangan::where('status', 'Laku')
-            ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
-            ->get();
-
         $logPengeluaranNow = LogPengeluaran::whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
-            ->get();
-
-        $logKonsi = LogRetail::where('status', 'Diterima')
-            ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
-            ->get();
+        ->get();
 
         $kotor = 0;
 
-        foreach ($logTokoNow->barangs as $key => $value) {
-            $kotor += $logBarangLaku->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
-            $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
-            $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
-            $value->pivot->konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('jumlah');
-            // $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('nominal');
-            $value->pivot->nominal_konsinyasi = $logKonsi->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
-            $value->push();
+        if (LogToko::find($logTokoNow->id - 1) == null) {
+            $logKonsi = LogRetail::where('created_at', '<=', Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth())
+            ->get();
+            $logBarangLaku = LogKeuangan::where('status', 'Laku')->where('created_at', '<=', Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth())->get();
+
+            foreach ($logTokoNow->barangs as $key => $value) {
+                $kotor += $logBarangLaku->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
+                $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
+                $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
+                $value->pivot->konsinyasi = $logKonsi->where('barang_id', $value->id)->where('status', 'Diterima')->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah');
+                $value->pivot->nominal_konsinyasi = ($logKonsi->where('barang_id', $value->id)->where('status', 'Diterima')->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah')) * $value->harga;
+                $value->push();
+            }
+        } else {
+            $logTokoSebelumnya = LogToko::find($logTokoNow->id - 1);
+            $logKonsi = LogRetail::where('status', 'Diterima')->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])->get();
+            $logBarangLaku = LogKeuangan::where('status', 'Laku')
+                ->whereBetween('created_at', [Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->startOfMonth(), Carbon::create($logTokoNow->tahun, $logTokoNow->bulan)->endOfMonth()])
+                ->get();
+
+            foreach ($logTokoNow->barangs as $key => $value) {
+                $kotor += $logBarangLaku->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
+                $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
+                $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
+                $value->pivot->konsinyasi = $logTokoSebelumnya->barangs->find($value->id)->pivot->konsinyasi + $logKonsi->where('barang_id', $value->id)->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah');
+                $value->pivot->nominal_konsinyasi = ($logTokoSebelumnya->barangs->find($value->id)->pivot->konsinyasi + $logKonsi->where('barang_id', $value->id)->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah')) * $value->harga;
+                $value->push();
+            }
         }
 
         $omset = $logBarangLaku->sum('nominal');
