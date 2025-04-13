@@ -83,42 +83,46 @@ class LogTokoController extends Controller
     }
 
     public function getRincian(Request $request) {
-        if ($request->ajax()) {
-            $logTokoId = $request->route('toko');
-            $barangs = Barang::with('logTokos')->get();
+        try {
+            if ($request->ajax()) {
+                $logTokoId = $request->route('toko');
+                $barangs = Barang::with('logTokos')->get();
 
-            $data = $barangs->map(function($barang) use($logTokoId) {
-                return [
-                    'kode_barang' => $barang->kode_barang,
-                    'nama' => $barang->nama,
-                    'hpp' => $barang->harga,
-                    'jumlah' => $barang->logTokos->find($logTokoId)->pivot->jumlah,
-                    'jumlah_x_hpp' => $barang->logTokos->find($logTokoId)->pivot->jumlah * $barang->harga,
-                    'omset' => $barang->logTokos->find($logTokoId)->pivot->omset,
-                    'laba_kotor' => $barang->logTokos->find($logTokoId)->pivot->omset - ($barang->logTokos->find($logTokoId)->pivot->jumlah * $barang->harga),
-                ];
-            });
+                $data = $barangs->map(function($barang) use($logTokoId) {
+                    return [
+                        'kode_barang' => $barang->kode_barang,
+                        'nama' => $barang->nama,
+                        'hpp' => $barang->harga,
+                        'jumlah' => $barang->logTokos->find($logTokoId)->pivot->jumlah,
+                        'jumlah_x_hpp' => $barang->logTokos->find($logTokoId)->pivot->jumlah * $barang->harga,
+                        'omset' => $barang->logTokos->find($logTokoId)->pivot->omset,
+                        'laba_kotor' => $barang->logTokos->find($logTokoId)->pivot->omset - ($barang->logTokos->find($logTokoId)->pivot->jumlah * $barang->harga),
+                    ];
+                });
 
-            $datatable = DataTables::of($data)
-                ->addIndexColumn()
-                ->editColumn('hpp', function($row) {
-                    return 'Rp' . number_format($row['hpp'],0,',','.');
-                })
-                ->editColumn('jumlah', function($row) {
-                    return number_format($row['jumlah'],0,',','.');
-                })
-                ->editColumn('jumlah_x_hpp', function($row) {
-                    return 'Rp' . number_format($row['jumlah_x_hpp'],0,',','.');
-                })
-                ->editColumn('omset', function($row) {
-                    return 'Rp' . number_format($row['omset'],0,',','.');
-                })
-                ->editColumn('laba_kotor', function($row) {
-                    return 'Rp' . number_format($row['laba_kotor'],0,',','.');
-                })
-                ;
+                $datatable = DataTables::of($data)
+                    ->addIndexColumn()
+                    ->editColumn('hpp', function($row) {
+                        return 'Rp' . number_format($row['hpp'],0,',','.');
+                    })
+                    ->editColumn('jumlah', function($row) {
+                        return number_format($row['jumlah'],0,',','.');
+                    })
+                    ->editColumn('jumlah_x_hpp', function($row) {
+                        return 'Rp' . number_format($row['jumlah_x_hpp'],0,',','.');
+                    })
+                    ->editColumn('omset', function($row) {
+                        return 'Rp' . number_format($row['omset'],0,',','.');
+                    })
+                    ->editColumn('laba_kotor', function($row) {
+                        return 'Rp' . number_format($row['laba_kotor'],0,',','.');
+                    })
+                    ;
 
-            return $datatable->make(true);
+                return $datatable->make(true);
+            }
+        } catch (Exception $e) {
+            return redirect()->route('log.toko.index')->with('error', $e->getMessage());
         }
     }
 
