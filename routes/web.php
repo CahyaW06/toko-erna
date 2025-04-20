@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/retail', RetailController::class);
         Route::post('/retail-get-data', [RetailController::class, 'getRetails'])->name('retail.get');
         Route::post('/retail/{retail}/rincian', [RetailController::class, 'getRincian'])->name('retail.rincian');
+        Route::get('/retail/{retail}/konsi', [RetailController::class, 'getLogKonsi'])->name('retail.konsi');
     });
 
     Route::group(['prefix' => 'log', 'as' => 'log.'], function() {

@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
@@ -137,6 +138,45 @@ class RetailController extends Controller
                 ;
 
             return $datatable->make(true);
+        }
+    }
+
+    public function getLogKonsi(Request $request) {
+        if ($request->ajax()) {
+            try {
+                $retailId = $request->route('retail');
+                $retail = Retail::find($retailId);
+
+                $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retailId, function () use ($retail) {
+                    return $retail->logRetails()->where('status', 'diterima')->get()->groupBy('created_at')->last();
+                });
+
+                $logTransaksiRetail = Cache::rememberForever('recentLogTransaksiRetail' . $retailId, function () use ($retail, $logKonsiRetail) {
+                    return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
+                });
+
+                $dataRetail = $logKonsiRetail->map(function ($konsi) use ($logTransaksiRetail) {
+                    $transaksi = $logTransaksiRetail->where('barang_id', $konsi->barang_id);
+
+                    $jumlahKonsi = $konsi->jumlah;
+                    $jumlahTransaksi = $transaksi->sum('jumlah');
+
+                    return [
+                        'barang_id' => $konsi->barang_id,
+                        'kode_barang' => $konsi->barang->kode_barang,
+                        'barang' => $konsi->barang->nama,
+                        'qty_in' => $jumlahKonsi,
+                        'qty_out' => $jumlahTransaksi,
+                        'qty_c_ret' => $jumlahKonsi - $jumlahTransaksi,
+                        'harga' => $konsi->nominal,
+                        'sub_total' => $jumlahKonsi * $konsi->nominal
+                    ];
+                });
+
+                return response()->json($dataRetail);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
         }
     }
 

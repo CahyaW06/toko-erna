@@ -66,7 +66,7 @@
   <!-- container-scroller -->
 
   @include('base.script')
-  @yield('script')
+  @stack('scripts')
 </body>
 
 </html>

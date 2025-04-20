@@ -25,4 +25,6 @@
 <script src="{{ URL::asset('js/datatables.init.js') }}"></script>
 
 <script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-2.1.8/b-3.1.2/b-html5-3.1.2/date-1.5.4/fc-5.0.3/sc-2.4.3/datatables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 

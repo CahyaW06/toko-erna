@@ -8,6 +8,7 @@ use App\Models\LogRetail;
 use App\Models\Retail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -82,65 +83,94 @@ class LogRetailController extends Controller
      */
     public function store(Request $request)
     {
-        $diterima = [];
-        $dikembalikan = [];
-
-        foreach ($request->status as $key => $status) {
-            if ($status == 1) {
-                $diterima[] = $key;
-            } else {
-                $dikembalikan[] = $key;
-            }
-        }
-
         try {
-            if ($diterima != []) {
-                foreach ($diterima as $key => $value) {
-                    $retail = Retail::with('barangs')->find($request->retail[$value]);
-                    $gudang = Barang::find($request->barang[$value]);
-                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
-                    $nominal = str_replace(".", "", $request->nominal[$value]);
+            $validated = $request->validate([
+                'status' => 'required',
+                'retail' => 'required|exists:retails,id',
+                'tanggal' => 'required|date',
+            ]);
 
-                    LogRetail::create([
-                        'barang_id' => $request->barang[$value],
-                        'retail_id' => $request->retail[$value],
-                        'status' => $request->status[$value],
-                        'jumlah' => $jumlah,
-                        'nominal' => $nominal,
-                        'created_at' => $request->tanggal[$value],
+            $diterima = [];
+            $dikembalikan = [];
+
+            $retail = Retail::find($validated['retail']);
+            $tanggal = $validated['tanggal'];
+            $status = $validated['status'];
+
+            if ($request['retur'] != []) {
+                foreach ($request['retur'] as $key => $value) {
+                    array_push($dikembalikan, [
+                        'barang_id' => $request->barang_retur[$key],
+                        'jumlah' => $value,
+                        'nominal' => $request->nominal_retur[$key],
                     ]);
+                }
+            }
 
-                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
-                    $retail->push();
-
-                    $gudang->jumlah = $gudang->jumlah - $jumlah;
-                    $gudang->save();
+            if ($status == 1) {
+                foreach ($request['barang'] as $key => $value) {
+                    array_push($diterima, [
+                        'barang_id' => $value,
+                        'jumlah' => $request['jumlah'][$key],
+                        'nominal' => $request['nominal'][$key],
+                    ]);
                 }
             }
 
             if ($dikembalikan != []) {
                 foreach ($dikembalikan as $key => $value) {
-                    $retail = Retail::with('barangs')->find($request->retail[$value]);
-                    $gudang = Barang::find($request->barang[$value]);
-                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
-                    $nominal = str_replace(".", "", $request->nominal[$value]);
+                    $gudang = Barang::find($value['barang_id']);
+                    $jumlah = str_replace(".", "", $value['jumlah']);
+                    $nominal = str_replace(".", "", $value['nominal']);
 
                     LogRetail::create([
-                        'barang_id' => $request->barang[$value],
-                        'retail_id' => $request->retail[$value],
-                        'status' => $request->status[$value],
+                        'barang_id' => $gudang->id,
+                        'retail_id' => $retail->id,
+                        'status' => "Dikembalikan",
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
-                        'created_at' => $request->tanggal[$value],
+                        'created_at' => $tanggal,
                     ]);
 
-                    $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
+                    $retail->barangs->find($value['barang_id'])->pivot->jumlah = $retail->barangs->find($value['barang_id'])->pivot->jumlah - $jumlah;
                     $retail->push();
 
                     $gudang->jumlah = $gudang->jumlah + $jumlah;
                     $gudang->save();
                 }
+
+                Cache::forget('recentLogKonsiRetail' . $retail->id);
             }
+
+            if ($diterima != []) {
+                foreach ($diterima as $key => $value) {
+                    $gudang = Barang::find($value['barang_id']);
+                    $jumlah = str_replace(".", "", $value['jumlah']);
+                    $nominal = str_replace(".", "", $value['nominal']);
+
+                    LogRetail::create([
+                        'barang_id' => $value['barang_id'],
+                        'retail_id' => $retail->id,
+                        'status' => "Diterima",
+                        'jumlah' => $jumlah,
+                        'nominal' => $nominal,
+                        'created_at' => $tanggal,
+                    ]);
+
+                    $retail->barangs->find($value['barang_id'])->pivot->jumlah = $retail->barangs->find($value['barang_id'])->pivot->jumlah + $jumlah;
+                    $retail->push();
+
+                    $gudang->jumlah = $gudang->jumlah - $jumlah;
+                    $gudang->save();
+                }
+
+                Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
+                    return $retail->logRetails()->where('status', 'diterima')->get()->groupBy('created_at')->last();
+                });
+            }
+
+
+
         } catch(Exception $e) {
             return redirect()->route('log.barang.index')->with('error', $e->getMessage());
         }
