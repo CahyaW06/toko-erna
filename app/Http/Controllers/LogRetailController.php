@@ -6,6 +6,7 @@ use App\Exports\LogRetailExport;
 use App\Models\Barang;
 use App\Models\LogRetail;
 use App\Models\Retail;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -62,11 +63,6 @@ class LogRetailController extends Controller
         }
     }
 
-    public function exportExcel() {
-        $date = date('Y_m_d');
-        return Excel::download(new LogRetailExport, $date . '_retail.xlsx');
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -96,7 +92,7 @@ class LogRetailController extends Controller
             $retail = Retail::find($validated['retail']);
             $tanggal = $validated['tanggal'];
             $status = $validated['status'];
-
+            $waktu = now()->format('H:i');
 
             if ($status == 1) {
                 if ($request['retur'] != []) {
@@ -140,7 +136,7 @@ class LogRetailController extends Controller
                         'status' => "Dikembalikan",
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
-                        'created_at' => $tanggal,
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$tanggal $waktu"),
                     ]);
 
                     $retail->barangs->find($value['barang_id'])->pivot->jumlah = $retail->barangs->find($value['barang_id'])->pivot->jumlah - $jumlah;
@@ -165,7 +161,7 @@ class LogRetailController extends Controller
                         'status' => "Diterima",
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
-                        'created_at' => $tanggal,
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$tanggal $waktu"),
                     ]);
 
                     $retail->barangs->find($value['barang_id'])->pivot->jumlah = $retail->barangs->find($value['barang_id'])->pivot->jumlah + $jumlah;

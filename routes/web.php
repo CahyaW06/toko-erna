@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogKeuanganController;
 use App\Http\Controllers\LogPengeluaranController;
@@ -88,5 +89,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/toko/{toko}/konsi', [LogTokoController::class, 'showKonsi'])->name('toko.konsi');
         Route::post('/toko/{toko}/rincian-konsi', [LogTokoController::class, 'getKonsi'])->name('toko.rincian-konsi');
         Route::put('/toko/{toko}/update-belanja-modal', [LogTokoController::class, 'updateBelanjaModal'])->name('toko.updateBelanjaModal');
+    });
+
+    Route::group(['prefix' => 'export', 'as' => 'export.'], function() {
+        Route::get('/konsi-fraktur', [ExportController::class, 'export'])->name('konsi-fraktur');
     });
 });

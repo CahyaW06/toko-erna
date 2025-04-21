@@ -159,7 +159,7 @@ class RetailController extends Controller
                 });
 
                 if ($logKonsiRetail->last()->status != "Dikembalikan") {
-                    $dataRetail = $logKonsiRetail->map(function ($konsi) use ($logTransaksiRetail) {
+                    $dataRetail = $logKonsiRetail->where('status', 'Diterima')->map(function ($konsi) use ($logTransaksiRetail) {
                         $transaksi = $logTransaksiRetail->where('barang_id', $konsi->barang_id);
 
                         $jumlahKonsi = $konsi->jumlah;

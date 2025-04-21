@@ -133,9 +133,9 @@ class LogKeuanganController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         $laku = [];
         $rugi = [];
+        $waktu = now()->format('H:i');
 
         foreach ($request->status as $key => $status) {
             if ($status == 1) {
@@ -160,7 +160,7 @@ class LogKeuanganController extends Controller
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
                         'keterangan' => $request->keterangan[$value],
-                        'created_at' => $request->tanggal[$value],
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$request->tanggal[$value] $waktu"),
                     ]);
 
                     if ($request->keterangan[$value] == 1) {
@@ -197,7 +197,7 @@ class LogKeuanganController extends Controller
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
                         'keterangan' => $request->keterangan[$value],
-                        'created_at' => $request->tanggal[$value],
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$request->tanggal[$value] $waktu"),
                     ]);
 
                     if ($request->keterangan[$value] == 1) {

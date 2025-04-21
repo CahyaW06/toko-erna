@@ -60,13 +60,15 @@
         dataType: "json",
         success: function (response) {
           let total = 0;
+          let index = 0;
 
-          response.forEach((element, index) => {
+          $.each(response, function (indexOfArray, element) {
             total += element.sub_total;
+            index += 1;
 
             prevTableBody.append(
               `<tr>
-                <td>${index + 1}</td>
+                <td>${index}</td>
                 <td>${element.kode_barang}</td>
                 <td>${element.barang}</td>
                 <td>${element.qty_in.toLocaleString("id-ID")}</td>
