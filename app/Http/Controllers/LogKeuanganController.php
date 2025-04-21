@@ -160,7 +160,7 @@ class LogKeuanganController extends Controller
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
                         'keterangan' => $request->keterangan[$value],
-                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$request->tanggal[$value] $waktu"),
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "{$request->tanggal[$value]} {$waktu}"),
                     ]);
 
                     if ($request->keterangan[$value] == 1) {
@@ -172,7 +172,7 @@ class LogKeuanganController extends Controller
                     }
 
                     $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
-                        return $retail->logRetails()->where('status', 'diterima')->get()->groupBy('created_at')->last();
+                        return $retail->logRetails()->get()->groupBy('created_at')->last();
                     });
 
                     Cache::forget('recentLogTransaksiRetail' . $retail->id);
@@ -197,7 +197,7 @@ class LogKeuanganController extends Controller
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
                         'keterangan' => $request->keterangan[$value],
-                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$request->tanggal[$value] $waktu"),
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "{$request->tanggal[$value]} {$waktu}"),
                     ]);
 
                     if ($request->keterangan[$value] == 1) {

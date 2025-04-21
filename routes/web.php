@@ -92,6 +92,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::group(['prefix' => 'export', 'as' => 'export.'], function() {
-        Route::get('/konsi-fraktur', [ExportController::class, 'export'])->name('konsi-fraktur');
+        Route::get('/konsi-fraktur', [ExportController::class, 'pdfKonsiFraktur'])->name('konsi-fraktur');
     });
 });

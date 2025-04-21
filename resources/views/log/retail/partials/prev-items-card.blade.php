@@ -76,6 +76,7 @@
                 <td>
                   ${element.qty_c_ret.toLocaleString("id-ID")}
                   <input name="retur[]" value="${element.qty_c_ret}" class="d-none">
+                  <input name="barang_laku[]" value="${element.qty_out}" class="d-none">
                   <input name="barang_retur[]" value="${element.barang_id}" class="d-none">
                   <input name="nominal_retur[]" value="${element.harga}" class="d-none">
                 </td>
@@ -122,7 +123,7 @@
           margin: 10,
           filename: `laporan-konsinyasi-${retailName.text().toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`,
           image: { type: 'jpeg', quality: 1 },
-          html2canvas: { scale: 10 },
+          html2canvas: { scale: 2 },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
           pageBreak: { mode: ['css', 'legacy'], avoid: ['no-break'] }
       }).from(element).save().then(() => {

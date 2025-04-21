@@ -100,6 +100,7 @@ class LogRetailController extends Controller
                         array_push($dikembalikan, [
                             'barang_id' => $request->barang_retur[$key],
                             'jumlah' => $value,
+                            'jumlah_laku' => $request->barang_laku[$key] ?? 0,
                             'nominal' => $request->nominal_retur[$key],
                         ]);
                     }
