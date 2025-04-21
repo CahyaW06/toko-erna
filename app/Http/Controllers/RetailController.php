@@ -101,44 +101,46 @@ class RetailController extends Controller
             $retailId = $request->route('retail');
             $barangs = Barang::with(['logKeuangans', 'logRetails'])->get();
 
-            $konsi = LogRetail::where('retail_id', $retailId)->where('status', 'Diterima')->get();
+            $datatable = Cache::remember('barang_retail', 60, function () use ($retailId, $barangs) {
+                $konsi = LogRetail::where('retail_id', $retailId)->where('status', 'Diterima')->get();
 
-            $konsiTerakhir = $konsi->whenNotEmpty(function($konsi) {
-                return $konsi->groupBy(function($item) {return $item->created_at->format('d M Y');})->last()->groupBy('barang_id');
+                $konsiTerakhir = $konsi->whenNotEmpty(function($konsi) {
+                    return $konsi->groupBy(function($item) {return $item->created_at->format('d M Y');})->last()->groupBy('barang_id');
+                });
+
+                $data = $barangs->map(function($barang) use($retailId, $konsiTerakhir) {
+                    return [
+                        'kode_barang' => $barang->kode_barang,
+                        'nama' => $barang->nama,
+                        'hpp' => $barang->harga,
+                        'jumlah' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah'),
+                        'jumlah_x_hpp' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah') * $barang->harga,
+                        'omset' => $barang->logKeuangans->where('retail_id', $retailId)->sum('nominal'),
+                        'konsinyasi' => $konsiTerakhir->has($barang->id) ? $konsiTerakhir[$barang->id]->sum('nominal') : 0,
+                    ];
+                });
+
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->editColumn('hpp', function($row) {
+                        return 'Rp' . number_format($row['hpp'],0,',','.');
+                    })
+                    ->editColumn('jumlah', function($row) {
+                        return number_format($row['jumlah'],0,',','.');
+                    })
+                    ->editColumn('jumlah_x_hpp', function($row) {
+                        return 'Rp' . number_format($row['jumlah_x_hpp'],0,',','.');
+                    })
+                    ->editColumn('omset', function($row) {
+                        return 'Rp' . number_format($row['omset'],0,',','.');
+                    })
+                    ->editColumn('konsinyasi', function($row) {
+                        return 'Rp' . number_format($row['konsinyasi'],0,',','.');
+                    })
+                    ->make(true);
             });
 
-            $data = $barangs->map(function($barang) use($retailId, $konsiTerakhir) {
-                return [
-                    'kode_barang' => $barang->kode_barang,
-                    'nama' => $barang->nama,
-                    'hpp' => $barang->harga,
-                    'jumlah' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah'),
-                    'jumlah_x_hpp' => $barang->logKeuangans->where('retail_id', $retailId)->sum('jumlah') * $barang->harga,
-                    'omset' => $barang->logKeuangans->where('retail_id', $retailId)->sum('nominal'),
-                    'konsinyasi' => $konsiTerakhir->has($barang->id) ? $konsiTerakhir[$barang->id]->sum('nominal') : 0,
-                ];
-            });
-
-            $datatable = DataTables::of($data)
-                ->addIndexColumn()
-                ->editColumn('hpp', function($row) {
-                    return 'Rp' . number_format($row['hpp'],0,',','.');
-                })
-                ->editColumn('jumlah', function($row) {
-                    return number_format($row['jumlah'],0,',','.');
-                })
-                ->editColumn('jumlah_x_hpp', function($row) {
-                    return 'Rp' . number_format($row['jumlah_x_hpp'],0,',','.');
-                })
-                ->editColumn('omset', function($row) {
-                    return 'Rp' . number_format($row['omset'],0,',','.');
-                })
-                ->editColumn('konsinyasi', function($row) {
-                    return 'Rp' . number_format($row['konsinyasi'],0,',','.');
-                })
-                ;
-
-            return $datatable->make(true);
+            return $datatable;
         }
     }
 
