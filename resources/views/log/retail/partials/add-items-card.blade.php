@@ -25,7 +25,7 @@
                 <div class="d-flex flex-column">
                   <select class="form-control form-control-sm text-black status" name="status">
                     <option value="1">Diterima</option>
-                    <option value="1">Dikembalikan</option>
+                    <option value="2">Dikembalikan</option>
                   </select>
                 </div>
             </div>
@@ -93,10 +93,14 @@
           const selectedValue = $(this).val();
           updateTotal();
 
-          if ($(this).val() == 2) {
+          if (selectedValue == 2) {
+            $('.jumlah').prop('disabled', true);
+            $('.nominal').prop('disabled', true);
             notaEl.hide();
           } else {
             notaEl.show();
+            $('.jumlah').prop('disabled', false);
+            $('.nominal').prop('disabled', false);
           }
         });
       }

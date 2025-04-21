@@ -13,6 +13,8 @@
                 </p>
               </div>
               <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
+                <button type="button" class="btn btn-info">Rekap Konsinyasi Item</button>
+                <button type="button" class="btn btn-warning">Rekap Konsinyasi Fraktur</button>
                 <a href="{{ route('stok.retail.create') }}" type="button" class="btn btn-success btn-md">Tambah Retail</a>
               </div>
             </div>

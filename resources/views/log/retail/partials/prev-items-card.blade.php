@@ -89,7 +89,7 @@
         error: function (xhr, status, error) {
           $('#prev-total').text(`Rp0`);
 
-          let message = 'Terjadi kesalahan';
+          let message = xhr.responseJSON.error ?? "Terjadi kesalahan";
 
           $('#prev-total').text(`Rp0`);
           prevTableBody.append(

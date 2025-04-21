@@ -97,22 +97,33 @@ class LogRetailController extends Controller
             $tanggal = $validated['tanggal'];
             $status = $validated['status'];
 
-            if ($request['retur'] != []) {
-                foreach ($request['retur'] as $key => $value) {
-                    array_push($dikembalikan, [
-                        'barang_id' => $request->barang_retur[$key],
-                        'jumlah' => $value,
-                        'nominal' => $request->nominal_retur[$key],
-                    ]);
-                }
-            }
 
             if ($status == 1) {
+                if ($request['retur'] != []) {
+                    foreach ($request['retur'] as $key => $value) {
+                        array_push($dikembalikan, [
+                            'barang_id' => $request->barang_retur[$key],
+                            'jumlah' => $value,
+                            'nominal' => $request->nominal_retur[$key],
+                        ]);
+                    }
+                }
+
                 foreach ($request['barang'] as $key => $value) {
                     array_push($diterima, [
                         'barang_id' => $value,
                         'jumlah' => $request['jumlah'][$key],
                         'nominal' => $request['nominal'][$key],
+                    ]);
+                }
+            } else {
+                $barangs = $retail->barangs()->wherePivot('jumlah', '>', 0)->get();
+
+                foreach ($barangs as $key => $value) {
+                    array_push($dikembalikan, [
+                        'barang_id' => $value->id,
+                        'jumlah' => $value->pivot->jumlah,
+                        'nominal' => 0,
                     ]);
                 }
             }
@@ -168,8 +179,6 @@ class LogRetailController extends Controller
                     return $retail->logRetails()->where('status', 'diterima')->get()->groupBy('created_at')->last();
                 });
             }
-
-
 
         } catch(Exception $e) {
             return redirect()->route('log.barang.index')->with('error', $e->getMessage());
