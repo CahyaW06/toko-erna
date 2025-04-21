@@ -20,9 +20,9 @@
                   <tr>
                       <th>No</th>
                       <th>Outlet</th>
-                      <th class="text-start">Total</th>
-                      <th class="text-start">Paid</th>
-                      <th class="text-start">Due</th>
+                      <th class="text-end">Total</th>
+                      <th class="text-end">Paid</th>
+                      <th class="text-end">Due</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -30,9 +30,9 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $data['retail_name'] }}</td>
-                        <td class="">@number($data['total'])</td>
-                        <td class="">@number($data['paid'])</td>
-                        <td class="">@number($data['due'])</td>
+                        <td class="text-end">@number($data['total'])</td>
+                        <td class="text-end">@number($data['paid'])</td>
+                        <td class="text-end">@number($data['due'])</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -41,13 +41,13 @@
                     <td colspan="2" class="text-end">
                       <span class="fw-bold">Grand Total</span>
                     </td>
-                    <td>
+                    <td class="text-end">
                       <span class="fw-bold" id="final-total">@number($finalTotal)</span>
                     </td>
-                    <td>
+                    <td class="text-end">
                       <span class="fw-bold" id="final-paid">@number($finalPaid)</span>
                     </td>
-                    <td>
+                    <td class="text-end">
                       <span class="fw-bold" id="final-due">@number($finalDue)</span>
                     </td>
                   </tr>
@@ -67,7 +67,7 @@ $(document).ready(function () {
 
     html2pdf().set({
         margin: 10,
-        filename: `Laporan Konsinyasi per Fraktur.pdf`,
+        filename: `Laporan Konsinyasi per Fraktur-${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },

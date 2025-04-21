@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 class ExportController extends Controller
 {
     public function pdfKonsiFraktur(Request $request) {
-        $retails = Retail::all();
+        $retails = Retail::has('logRetails')->get();
 
         $dataRetails = $retails->map(function ($retail) {
             $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
@@ -18,15 +18,11 @@ class ExportController extends Controller
             });
 
             $logTransaksiRetail = Cache::rememberForever('recentLogTransaksiRetail' . $retail->id, function () use ($retail, $logKonsiRetail) {
-                if (empty($logKonsiRetail)) {
-                    return [];
-                }
-
                 return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
             });
 
-            $total = empty($logKonsiRetail) ? 0 : $logKonsiRetail->sum('nominal');
-            $paid = empty($logTransaksiRetail) ? 0 : $logTransaksiRetail->sum('nominal');
+            $total = $logKonsiRetail->sum('nominal');
+            $paid = $logTransaksiRetail->sum('nominal');
             return [
                 'retail_name' => $retail->nama,
                 'total' => $total,
@@ -44,5 +40,36 @@ class ExportController extends Controller
         ];
 
         return view('pdf.konsifraktur', $data);
+    }
+
+    public function pdfKonsiItem(Request $request) {
+        $retails = Retail::has('logRetails')->get();
+
+        $dataRetails = $retails->map(function ($retail) {
+            $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
+                return $retail->logRetails()->get()->groupBy('created_at')->last();
+            });
+
+            $rincianRetail = $logKonsiRetail->map(function ($konsi) {
+                return [
+                    'kode_barang' => $konsi->barang->kode_barang,
+                    'nama_barang' => $konsi->barang->nama,
+                    'qty' => $konsi->jumlah,
+                    'omset' => $konsi->nominal * $konsi->jumlah,
+                    'pl' => $konsi->nominal - $konsi->barang->harga,
+                ];
+            });
+
+            return [
+                'retail_name' => $retail->nama,
+                'dataPerRetail' => $rincianRetail,
+                'finalOmset' => $rincianRetail->sum('omset'),
+                'finalPl' => $rincianRetail->sum('pl')
+            ];
+        });
+
+        return view('pdf.konsiitem', [
+            'dataRetails' => $dataRetails
+        ]);
     }
 }

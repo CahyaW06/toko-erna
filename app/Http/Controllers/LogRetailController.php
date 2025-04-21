@@ -172,6 +172,8 @@ class LogRetailController extends Controller
                     $gudang->save();
                 }
 
+                Cache::forget('recentLogKonsiRetail' . $retail->id);
+
                 Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
                     return $retail->logRetails()->where('status', 'diterima')->get()->groupBy('created_at')->last();
                 });
