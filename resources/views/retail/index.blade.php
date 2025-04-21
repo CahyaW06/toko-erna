@@ -5,16 +5,21 @@
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-            <div class="row">
-              <div class="col">
+            <div class="d-flex flex-xl-row flex-column align-items-center mb-4 gap-3">
+              <div class="flex-grow-1">
                 <h3 class="card-title">Data Stok Retail</h3>
                 <p class="card-description">
                   Berikut ini daftar dari seluruh retail.
                 </p>
               </div>
-              <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
-                <a href="{{ route('export.konsi-item') }}" type="button" class="btn btn-info">Rekap Konsinyasi Item</a>
-                <a href="{{ route('export.konsi-fraktur') }}" type="button" class="btn btn-warning">Rekap Konsinyasi Fraktur</a>
+              <div class="d-flex flex-column flex-xl-row justify-content-end gap-2 h-50">
+                <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Rekap Konsinyasi
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="{{ route('export.konsi-item') }}" class="dropdown-item">per Item</a></li>
+                  <li><a href="{{ route('export.konsi-fraktur') }}" class="dropdown-item">per Fraktur</a></li>
+                </ul>
                 <a href="{{ route('stok.retail.create') }}" type="button" class="btn btn-success btn-md">Tambah Retail</a>
               </div>
             </div>
