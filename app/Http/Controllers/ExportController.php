@@ -69,7 +69,8 @@ class ExportController extends Controller
         });
 
         return view('pdf.konsiitem', [
-            'dataRetails' => $dataRetails
+            'dataRetails' => $dataRetails,
+            'totalOmset' => $dataRetails->sum('finalOmset'),
         ]);
     }
 }

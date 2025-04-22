@@ -1,5 +1,30 @@
 @extends('index')
 
+@section('head')
+<style>
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  .no-break {
+    page-break-inside: avoid !important;
+  }
+</style>
+@endsection
+
 @section('main-panel')
 <div class="card flex-grow-1" id="laporan">
     <div class="card-body">
@@ -68,10 +93,13 @@ $(document).ready(function () {
     html2pdf().set({
         margin: 10,
         filename: `Laporan Konsinyasi per Fraktur-${new Date().toISOString().split('T')[0]}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
+        image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        // pageBreak: { mode: ['css', 'legacy'], avoid: ['no-break'] }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+        pageBreak: {
+          mode: ['css', 'legacy'],
+          avoid: ['tr', '.no-break']
+        }
     }).from(element).save().then(() => {
       $('button').show();
     });
