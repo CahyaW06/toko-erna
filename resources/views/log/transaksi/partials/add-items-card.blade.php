@@ -1,8 +1,8 @@
 <div class="card flex-grow-1" id="add-item-card">
     <div class="card-body">
-      <h4 class="card-title">Tambah Log Barang</h4>
+      <h4 class="card-title">Tambah Log Transaksi</h4>
       <p class="card-description">
-        Silahkan masukkan log barang yang masuk/keluar
+        Silahkan masukkan log transaksi yang baru
       </p>
       <div class="forms-sample" id="add-item-form">
         <div class="form-group">
@@ -24,10 +24,17 @@
                 <label for="status">Status</label>
                 <div class="d-flex flex-column">
                   <select class="form-control form-control-sm text-black status" name="status">
-                    <option value="1">Diterima</option>
-                    <option value="2">Dikembalikan</option>
+                    <option value="1">Laku</option>
+                    <option value="2">Rugi</option>
                   </select>
                 </div>
+            </div>
+            <div class="form-group flex-grow-1">
+              <label for="keterangan">Asal Barang</label>
+              <select class="form-control form-control-sm text-black" name="keterangan">
+                <option value="1">Konsinyasi</option>
+                <option value="2">Gudang</option>
+              </select>
             </div>
         </div>
 
@@ -92,16 +99,6 @@
 
           const selectedValue = $(this).val();
           updateTotal();
-
-          if (selectedValue == 2) {
-            $('.jumlah').prop('disabled', true);
-            $('.nominal').prop('disabled', true);
-            notaEl.hide();
-          } else {
-            notaEl.show();
-            $('.jumlah').prop('disabled', false);
-            $('.nominal').prop('disabled', false);
-          }
         });
       }
 

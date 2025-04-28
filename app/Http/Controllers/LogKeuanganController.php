@@ -133,79 +133,117 @@ class LogKeuanganController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'retail' => 'required|exists:retails,id',
+            'tanggal' => 'required',
+            'status' => 'required',
+            'keterangan' => 'required',
+        ]);
+
         $laku = [];
         $rugi = [];
+        $retail = Retail::find($validated['retail']);
+        $tanggal = $validated['tanggal'];
+        $status = $validated['status'];
+        $keterangan = $validated['keterangan'];
         $waktu = now()->format('H:i');
 
-        foreach ($request->status as $key => $status) {
-            if ($status == 1) {
-                $laku[] = $key;
+        if ($status == 1) {
+            if ($keterangan == 1) {
+                foreach ($request['barang'] as $key => $value) {
+                    array_push($laku, [
+                        'barang_id' => $value,
+                        'jumlah_konsi' => str_replace(".", "", $request->jumlah[$key]),
+                        'jumlah_gudang' => 0,
+                        'nominal' => str_replace(".", "", $request->nominal[$key]),
+                    ]);
+                }
             } else {
-                $rugi[] = $key;
+                foreach ($request['barang'] as $key => $value) {
+                    array_push($laku, [
+                        'barang_id' => $value,
+                        'jumlah_konsi' => 0,
+                        'jumlah_gudang' => str_replace(".", "", $request->jumlah[$key]),
+                        'nominal' => str_replace(".", "", $request->nominal[$key]),
+                    ]);
+                }
+            }
+        } else {
+            foreach ($request['barang'] as $key => $value) {
+                $jumlahKonsi = $retail->barangs->find($value)->pivot->jumlah;
+                array_push($rugi, [
+                    'barang_id' => $value,
+                    'jumlah_konsi' => 0,
+                    'jumlah_gudang' => str_replace(".", "", $request->jumlah[$key]),
+                    'nominal' => str_replace(".", "", $request->nominal[$key]),
+                ]);
             }
         }
 
         try {
             if ($laku != []) {
                 foreach ($laku as $key => $value) {
-                    $retail = Retail::with('barangs')->find($request->retail[$value]);
-                    $gudang = Barang::find($request->barang[$value]);
-                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
-                    $nominal = str_replace(".", "", $request->nominal[$value]);
+                    $gudang = Barang::find($value['barang_id']);
+                    $jumlahKonsi = $value['jumlah_konsi'];
+                    $jumlahGudang = $value['jumlah_gudang'];
+                    $jumlah = ($jumlahKonsi != 0) ? $jumlahKonsi : $jumlahGudang;
+                    $nominal = $value['nominal'];
 
                     LogKeuangan::create([
-                        'barang_id' => $request->barang[$value],
-                        'retail_id' => $request->retail[$value],
-                        'status' => $request->status[$value],
+                        'barang_id' => $gudang->id,
+                        'retail_id' => $retail->id,
+                        'status' => $status,
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
-                        'keterangan' => $request->keterangan[$value],
-                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "{$request->tanggal[$value]} {$waktu}"),
+                        'keterangan' => $keterangan,
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "{$tanggal} {$waktu}"),
                     ]);
 
-                    if ($request->keterangan[$value] == 1) {
-                        $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah - $jumlah;
+                    if ($keterangan == 1) {
+                        $retail->barangs->find($gudang->id)->pivot->jumlah -= $jumlah;
                         $retail->push();
+
+                        $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
+                            return $retail->logRetails()->get()->groupBy('created_at')->last();
+                        });
+
+                        Cache::forget('recentLogTransaksiRetail' . $retail->id);
+
+                        Cache::rememberForever('recentLogTransaksiRetail' . $retail->id, function () use ($retail, $logKonsiRetail) {
+                            if ($logKonsiRetail) {
+                                return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
+                            }
+                            return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->get();
+                        });
                     } else {
                         $gudang->jumlah -= $jumlah;
                         $gudang->save();
                     }
-
-                    $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
-                        return $retail->logRetails()->get()->groupBy('created_at')->last();
-                    });
-
-                    Cache::forget('recentLogTransaksiRetail' . $retail->id);
-
-                    Cache::rememberForever('recentLogTransaksiRetail' . $retail->id, function () use ($retail, $logKonsiRetail) {
-                        return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
-                    });
                 }
             }
 
             if ($rugi != []) {
                 foreach ($rugi as $key => $value) {
-                    $retail = Retail::with('barangs')->find($request->retail[$value]);
-                    $gudang = Barang::find($request->barang[$value]);
-                    $jumlah = str_replace(".", "", $request->jumlah[$value]);
-                    $nominal = str_replace(".", "", $request->nominal[$value]);
+                    $gudang = Barang::find($value['barang_id']);
+                    $jumlahKonsi = $value['jumlah_konsi'];
+                    $jumlahGudang = $value['jumlah_gudang'];
+                    $jumlah = ($jumlahKonsi != 0) ? $jumlahKonsi : $jumlahGudang;
+                    $nominal = $value['nominal'];
 
                     LogKeuangan::create([
-                        'barang_id' => $request->barang[$value],
-                        'retail_id' => $request->retail[$value],
-                        'status' => $request->status[$value],
+                        'barang_id' => $gudang->id,
+                        'retail_id' => $retail->id,
+                        'status' => $status,
                         'jumlah' => $jumlah,
                         'nominal' => $nominal,
                         'keterangan' => $request->keterangan[$value],
-                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "{$request->tanggal[$value]} {$waktu}"),
+                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "{$tanggal} {$waktu}"),
                     ]);
 
-                    if ($request->keterangan[$value] == 1) {
-                        $retail->barangs->find($request->barang[$value])->pivot->jumlah = $retail->barangs->find($request->barang[$value])->pivot->jumlah + $jumlah;
-                        $retail->push();
-                    }
+                    $retail->barangs->find($gudang->id)->pivot->jumlah += $jumlah;
+                    $retail->push();
 
-                    $gudang->jumlah = $gudang->jumlah - $jumlah;
+                    $gudang->jumlah -= $jumlah;
                     $gudang->save();
                 }
             }

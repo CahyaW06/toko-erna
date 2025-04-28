@@ -100,8 +100,8 @@ class LogRetailController extends Controller
                         array_push($dikembalikan, [
                             'barang_id' => $request->barang_retur[$key],
                             'jumlah' => $value,
-                            'jumlah_laku' => $request->barang_laku[$key] ?? 0,
-                            'nominal' => $request->nominal_retur[$key],
+                            'jumlah_laku' => str_replace(".", "", $request->barang_laku[$key]) ?? 0,
+                            'nominal' => str_replace(".", "", $request->nominal_retur[$key]),
                         ]);
                     }
                 }
@@ -109,8 +109,8 @@ class LogRetailController extends Controller
                 foreach ($request['barang'] as $key => $value) {
                     array_push($diterima, [
                         'barang_id' => $value,
-                        'jumlah' => $request['jumlah'][$key],
-                        'nominal' => $request['nominal'][$key],
+                        'jumlah' => str_replace(".", "", $request['jumlah'][$key]),
+                        'nominal' => str_replace(".", "", $request['nominal'][$key]),
                     ]);
                 }
             } else {
@@ -128,8 +128,8 @@ class LogRetailController extends Controller
             if ($dikembalikan != []) {
                 foreach ($dikembalikan as $key => $value) {
                     $gudang = Barang::find($value['barang_id']);
-                    $jumlah = str_replace(".", "", $value['jumlah']);
-                    $nominal = str_replace(".", "", $value['nominal']);
+                    $jumlah = $value['jumlah'];
+                    $nominal = $value['nominal'];
 
                     LogRetail::create([
                         'barang_id' => $gudang->id,
@@ -153,8 +153,8 @@ class LogRetailController extends Controller
             if ($diterima != []) {
                 foreach ($diterima as $key => $value) {
                     $gudang = Barang::find($value['barang_id']);
-                    $jumlah = str_replace(".", "", $value['jumlah']);
-                    $nominal = str_replace(".", "", $value['nominal']);
+                    $jumlah = $value['jumlah'];
+                    $nominal = $value['nominal'];
 
                     LogRetail::create([
                         'barang_id' => $value['barang_id'],
