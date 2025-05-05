@@ -28,7 +28,8 @@ class DatabaseSeeder extends Seeder
             // LogKeuanganSeeder::class,
             // LogStokSeeder::class,
             // LogTokoSeeder::class,
-            BarangToko::class,
+            // BarangToko::class,
+            AlterLogKeuangan::class
         ]);
     }
 }
