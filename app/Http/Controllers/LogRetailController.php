@@ -131,20 +131,23 @@ class LogRetailController extends Controller
                     $jumlah = $value['jumlah'];
                     $nominal = $value['nominal'];
 
-                    LogRetail::create([
-                        'barang_id' => $gudang->id,
-                        'retail_id' => $retail->id,
-                        'status' => "Dikembalikan",
-                        'jumlah' => $jumlah,
-                        'nominal' => $nominal,
-                        'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$tanggal $waktu"),
-                    ]);
+                    if ($jumlah > 0) {
+                        LogRetail::create([
+                            'barang_id' => $gudang->id,
+                            'retail_id' => $retail->id,
+                            'status' => "Dikembalikan",
+                            'jumlah' => $jumlah,
+                            'nominal' => $nominal,
+                            'created_at' => Carbon::createFromFormat('Y-m-d H:i', "$tanggal $waktu"),
+                        ]);
 
-                    $retail->barangs->find($value['barang_id'])->pivot->jumlah = $retail->barangs->find($value['barang_id'])->pivot->jumlah - $jumlah;
-                    $retail->push();
+                        $retail->barangs->find($value['barang_id'])->pivot->jumlah = $retail->barangs->find($value['barang_id'])->pivot->jumlah - $jumlah;
+                        $retail->push();
 
-                    $gudang->jumlah = $gudang->jumlah + $jumlah;
-                    $gudang->save();
+                        $gudang->jumlah = $gudang->jumlah + $jumlah;
+                        $gudang->save();
+                    }
+
                 }
 
                 Cache::forget('recentLogKonsiRetail' . $retail->id);
