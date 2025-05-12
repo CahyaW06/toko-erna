@@ -172,8 +172,8 @@ class RetailController extends Controller
                             'qty_in' => $jumlahKonsi,
                             'qty_out' => $jumlahTransaksi,
                             'qty_c_ret' => $jumlahKonsi - $jumlahTransaksi,
-                            'harga' => $konsi->nominal,
-                            'sub_total' => $jumlahKonsi * $konsi->nominal
+                            'harga' => $konsi->nominal/$jumlahKonsi,
+                            'sub_total' => $konsi->nominal
                         ];
                     });
                 } else {
