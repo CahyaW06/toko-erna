@@ -13,13 +13,6 @@
                 </p>
               </div>
               <div class="d-flex flex-column flex-xl-row justify-content-end gap-2 h-50">
-                <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  Rekap Konsinyasi
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a href="{{ route('export.konsi-item') }}" class="dropdown-item">per Item</a></li>
-                  <li><a href="{{ route('export.konsi-fraktur') }}" class="dropdown-item">per Fraktur</a></li>
-                </ul>
                 <a href="{{ route('stok.retail.create') }}" type="button" class="btn btn-success btn-md">Tambah Retail</a>
               </div>
             </div>
