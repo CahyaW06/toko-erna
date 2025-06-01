@@ -94,5 +94,7 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'export', 'as' => 'export.'], function() {
         Route::get('/konsi-fraktur', [ExportController::class, 'pdfKonsiFraktur'])->name('konsi-fraktur');
         Route::get('/konsi-item', [ExportController::class, 'pdfKonsiItem'])->name('konsi-item');
+        Route::get('/transaksi-fraktur', [ExportController::class, 'pdfTransaksiFraktur'])->name('transaksi-fraktur');
+        Route::get('/transaksi-item', [ExportController::class, 'pdfTransaksiItem'])->name('transaksi-item');
     });
 });

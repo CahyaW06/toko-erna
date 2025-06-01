@@ -5,14 +5,21 @@
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-            <div class="row">
-              <div class="col">
+            <div class="d-flex flex-xl-row flex-column align-items-center mb-4 gap-3">
+              <div class="flex-grow-1">
                 <h3 class="card-title">Data Log Transaksi</h3>
                 <p class="card-description">
                   Berikut ini daftar transaksi pembelian/ganti rugi barang di seluruh retail.
                 </p>
               </div>
-              <div class="col d-flex justify-content-end gap-1 me-3 mb-2 h-50">
+              <div class="d-flex flex-column flex-xl-row justify-content-end gap-2 h-50">
+                <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Rekap Transaksi
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="{{ route('export.transaksi-item') }}" class="dropdown-item">per Item</a></li>
+                  <li><a href="{{ route('export.transaksi-fraktur') }}" class="dropdown-item">per Fraktur</a></li>
+                </ul>
                 <a href="{{ route('log.keuangan.create') }}" type="button" class="btn btn-success btn-md">Tambah Transaksi</a>
               </div>
             </div>

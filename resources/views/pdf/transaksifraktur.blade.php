@@ -30,9 +30,9 @@
     <div class="card-body">
         <div class="d-flex flex-xl-row flex-column justify-content-xl-between align-items-baseline mb-3 gap-4 py-3">
           <div>
-            <h4 class="card-title">Detail Konsinyasi per Fraktur</h4>
+            <h4 class="card-title">Detail Transaksi per Fraktur</h4>
             <p class="card-description">
-              Berikut ini rekap konsinyasi per fraktur, mulai dari total konsinyasi, total yang sudah laku, serta total yang belum laku pada fraktur.
+              Berikut ini rekap transaksi per fraktur, mulai dari total transaksi, total konsinyasi seharusnya, serta total yang belum dibayarkan pada fraktur.
             </p>
           </div>
           <div>
@@ -92,7 +92,7 @@ $(document).ready(function () {
 
     html2pdf().set({
         margin: 10,
-        filename: `Laporan Konsinyasi per Fraktur-${new Date().toISOString().split('T')[0]}.pdf`,
+        filename: `Laporan Transaksi per Fraktur-${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },

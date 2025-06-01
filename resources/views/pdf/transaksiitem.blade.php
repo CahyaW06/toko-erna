@@ -30,9 +30,9 @@
     <div class="card-body">
         <div class="d-flex flex-xl-row flex-column justify-content-xl-between align-items-baseline gap-4 py-3">
           <div>
-            <h4 class="card-title">Detail Konsinyasi per Item</h4>
+            <h4 class="card-title">Detail Transaksi per Item</h4>
             <p class="card-description">
-              Berikut ini rekap konsinyasi per fraktur dengan rincian setiap barang yang ada.
+              Berikut ini rekap transaksi per fraktur dengan rincian setiap barang yang ada.
             </p>
           </div>
           {{-- <div>
@@ -44,7 +44,7 @@
             <table class="table text-center">
               <thead>
                 <tr>
-                  <th>Total Konsinyasi</th>
+                  <th>Total Transaksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -65,7 +65,7 @@
                           <th>Kode Barang</th>
                           <th>Nama Barang</th>
                           <th class="text-end">Qty</th>
-                          <th class="text-end">Konsinyasi</th>
+                          <th class="text-end">Transaksi</th>
                           <th class="text-end">PL</th>
                       </tr>
                     </thead>
