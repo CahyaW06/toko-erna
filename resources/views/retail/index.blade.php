@@ -79,6 +79,8 @@
                 processing: true,
                 scrollX: true,
                 scrollY: 400,
+                paging: true,
+                lengthMenu: [10, 25, 50, 100, 500],
                 ajax: {
                     url: "{{ route('stok.retail.get') }}",
                     type: 'POST', // Gunakan metode POST

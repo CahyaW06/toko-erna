@@ -55,6 +55,8 @@ $(document).ready(function () {
     scrollX: true,
     scrollY: 400,
     autoWidth: false,
+    paging: true,
+    lengthMenu: [10, 25, 50, 100, 500],
     ajax: {
       url: "{{ route('log.pengeluaran.get') }}",
       type: 'POST', // Gunakan metode POST

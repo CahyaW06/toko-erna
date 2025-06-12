@@ -58,6 +58,8 @@ $(document).ready(function () {
     ordering: false,
     serverSide: true,
     processing: true,
+    paging: true,
+    lengthMenu: [10, 25, 50, 100, 500],
     ajax: {
       url: "{{ route('stok.gudang.get') }}",
       type: 'POST', // Gunakan metode POST
