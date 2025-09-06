@@ -202,19 +202,6 @@ class LogKeuanganController extends Controller
                     if ($keterangan == 1) {
                         $retail->barangs->find($gudang->id)->pivot->jumlah -= $jumlah;
                         $retail->push();
-
-                        $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
-                            return $retail->logRetails()->get()->groupBy('created_at')->last();
-                        });
-
-                        Cache::forget('recentLogTransaksiRetail' . $retail->id);
-
-                        Cache::rememberForever('recentLogTransaksiRetail' . $retail->id, function () use ($retail, $logKonsiRetail) {
-                            if ($logKonsiRetail) {
-                                return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
-                            }
-                            return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->get();
-                        });
                     } else {
                         $gudang->jumlah -= $jumlah;
                         $gudang->save();

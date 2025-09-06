@@ -15,13 +15,8 @@ class ExportController extends Controller
         })->get();
 
         $dataRetails = $retails->map(function ($retail) {
-            $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
-                return $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
-            });
-
-            $logTransaksiRetail = Cache::rememberForever('recentLogTransaksiRetail' . $retail->id, function () use ($retail, $logKonsiRetail) {
-                return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
-            });
+            $logKonsiRetail = $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
+            $logTransaksiRetail = $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
 
             $total = $logKonsiRetail->sum('nominal');
             $paid = $logTransaksiRetail->sum('nominal');
@@ -49,9 +44,7 @@ class ExportController extends Controller
         })->get();
 
         $dataRetails = $retails->map(function ($retail) {
-            $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
-                return $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
-            });
+            $logKonsiRetail = $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
 
             $rincianRetail = $logKonsiRetail->map(function ($konsi) {
                 return [
@@ -83,13 +76,8 @@ class ExportController extends Controller
         })->get();
 
         $dataRetails = $retails->map(function ($retail) {
-            $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
-                return $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
-            });
-
-            $logTransaksiRetail = Cache::rememberForever('recentLogTransaksiRetail' . $retail->id, function () use ($retail, $logKonsiRetail) {
-                return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
-            });
+            $logKonsiRetail = $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
+            $logTransaksiRetail = $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
 
             $total = $logKonsiRetail->sum('nominal');
             $paid = $logTransaksiRetail->sum('nominal');
@@ -117,13 +105,8 @@ class ExportController extends Controller
         })->get();
 
         $dataRetails = $retails->map(function ($retail) {
-            $logKonsiRetail = Cache::rememberForever('recentLogKonsiRetail' . $retail->id, function () use ($retail) {
-                return $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
-            });
-
-            $logTransaksiRetail = Cache::rememberForever('recentLogTransaksiRetail' . $retail->id, function () use ($retail, $logKonsiRetail) {
-                return $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
-            });
+            $logKonsiRetail = $retail->logRetails()->where('status', 'Diterima')->get()->groupBy('created_at')->last();
+            $logTransaksiRetail = $retail->logKeuangans()->where('status', 'Laku')->where('keterangan', 'Konsinyasi')->where('created_at', '>=', $logKonsiRetail->last()->created_at)->get();
 
             $rincianRetail = $logTransaksiRetail->map(function ($transaksi) {
                 return [
