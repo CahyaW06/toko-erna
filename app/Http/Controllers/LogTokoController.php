@@ -257,11 +257,13 @@ class LogTokoController extends Controller
 
                 foreach ($logTokoNow->barangs as $key => $value) {
                     $kotor += $logBarangLaku->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
-                    $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
-                    $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
-                    $value->pivot->konsinyasi = $logKonsi->where('barang_id', $value->id)->where('status', 'Diterima')->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah');
-                    $value->pivot->nominal_konsinyasi = ($logKonsi->where('barang_id', $value->id)->where('status', 'Diterima')->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah')) * $value->harga;
-                    $value->push();
+
+                    $value->update([
+                        'pivot.jumlah' => $logBarangLaku->where('barang_id', $value->id)->sum('jumlah'),
+                        'pivot.omset' => $logBarangLaku->where('barang_id', $value->id)->sum('nominal'),
+                        'pivot.konsinyasi' => $logKonsi->where('barang_id', $value->id)->where('status', 'Diterima')->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah'),
+                        'pivot.nominal_konsinyasi' => ($logKonsi->where('barang_id', $value->id)->where('status', 'Diterima')->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah')) * $value->harga,
+                    ]);
                 }
             } else {
                 $logTokoSebelumnya = LogToko::find($logTokoNow->id - 1);
@@ -272,11 +274,13 @@ class LogTokoController extends Controller
 
                 foreach ($logTokoNow->barangs as $key => $value) {
                     $kotor += $logBarangLaku->where('barang_id', $value->id)->sum('jumlah') * $value->harga;
-                    $value->pivot->jumlah = $logBarangLaku->where('barang_id', $value->id)->sum('jumlah');
-                    $value->pivot->omset = $logBarangLaku->where('barang_id', $value->id)->sum('nominal');
-                    $value->pivot->konsinyasi = $logTokoSebelumnya->barangs->find($value->id)->pivot->konsinyasi + $logKonsi->where('barang_id', $value->id)->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah');
-                    $value->pivot->nominal_konsinyasi = ($logTokoSebelumnya->barangs->find($value->id)->pivot->konsinyasi + $logKonsi->where('barang_id', $value->id)->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah')) * $value->harga;
-                    $value->push();
+
+                    $value->update([
+                        'pivot.jumlah' => $logBarangLaku->where('barang_id', $value->id)->sum('jumlah'),
+                        'pivot.omset' => $logBarangLaku->where('barang_id', $value->id)->sum('nominal'),
+                        'pivot.konsinyasi' => ($logTokoSebelumnya->barangs->find($value->id)->pivot->konsinyasi ?? 0) + $logKonsi->where('barang_id', $value->id)->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah'),
+                        'pivot.nominal_konsinyasi' => (($logTokoSebelumnya->barangs->find($value->id)->pivot->konsinyasi ?? 0) + $logKonsi->where('barang_id', $value->id)->sum('jumlah') - $logBarangLaku->where('barang_id', $value->id)->where('keterangan', 'Konsinyasi')->sum('jumlah')) * $value->harga,    
+                    ]);
                 }
             }
 
